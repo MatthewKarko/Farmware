@@ -1,0 +1,1 @@
+ORG_CODE_LENGTH = 6
