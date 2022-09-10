@@ -11,4 +11,6 @@ deep insight into the farm’s practices to assist decisions.
 |:----:|:------:|:---:|
 | Keegan Potgieter | kpot0443 | 500409208 |
 | Utkarsh Vashisht  | uvas7225 | 490589593 |
-
+| Shirley Andrew | sand5508 | 490300448 |
+| Matt Karko | | |
+| Luke Henning-Smith | | |
