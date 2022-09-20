@@ -1,2 +1,3 @@
 ./farmware/frontend/node_modules/
 ./farmware/frontend/package-lock.json
+.DS_Store

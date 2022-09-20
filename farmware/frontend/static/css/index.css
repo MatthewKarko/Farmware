@@ -5,7 +5,6 @@ html, body {
 }
 
 #main {
-    position: fixed;
     height: 100%;
     width: 100%;
     left: 0;
