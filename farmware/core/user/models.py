@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.utils.translation import ugettext_lazy as _
 
-from ..api.models import Organisation, Team
-
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
 
@@ -40,18 +38,19 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     objects = UserManager()
 
-    class Roles(models.TextChoices):
+    class Roles(models.TextChoices): # sa: simplify to just admin, worker?
         ADMIN = 'ADMIN', 'Admin'
         OFFICE = 'OFFICE', 'Office'
         TEAM_LEADER = 'TEAM LEADER', 'Team Leader'
         WORKER = 'WORKER', 'Worker'
 
+    id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(_('email address'), unique=True)
 
     organisation = models.ForeignKey(
-        Organisation,
+        'core_api.Organisation',
         on_delete=models.CASCADE
     )
 
@@ -63,7 +62,7 @@ class User(AbstractUser):
         )
 
     teams = models.ManyToManyField(
-        Team,
+        'core_api.Team',
         blank=True
     )
 
