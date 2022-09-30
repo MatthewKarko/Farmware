@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from .models import Organisation, Team
-from ..user.models import User
+from .models.organisation import Organisation
+from .models.team import Team
 
 class OrganisationSerialiser(serializers.ModelSerializer):
     class Meta:
@@ -11,12 +11,12 @@ class OrganisationSerialiser(serializers.ModelSerializer):
 class TeamSerialiser(serializers.ModelSerializer):
     # TODO: fix
     # Create a custom method field
-    # current_user = serializers.SerializerMethodField('_user')
+    current_user = serializers.SerializerMethodField('_user')
 
     # Use this method for the custom field
-    # def _user(self) -> User:
-    #     request = self.context.get('request', None)
-    #     if request: return request.user
+    def _user(self, obj):
+        request = self.context.get('request', None)
+        if request: return request.user
 
     class Meta:
         model = Team

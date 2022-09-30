@@ -1,7 +1,7 @@
+from django.conf import settings
 from django.db import models
 
 class Stock(models.Model):
-    id = models.AutoField(primary_key=True)
     produce_id = models.ForeignKey('core_api.Produce', on_delete=models.DO_NOTHING)
     variety_id = models.ForeignKey('core_api.ProduceVariety', on_delete=models.DO_NOTHING)
     quantity = models.FloatField()
@@ -10,11 +10,10 @@ class Stock(models.Model):
     date_seeded = models.DateTimeField()
     date_planted = models.DateTimeField()
     date_picked = models.DateTimeField()
-    ehd = models.DateTimeField() # earliest harvest date
+    ehd = models.DateTimeField() # Earliest Harvest Date
     date_completed = models.DateTimeField()
     area_code = models.ForeignKey('core_api.AreaCode', on_delete=models.DO_NOTHING)
 
 class StockPickers(models.Model):
-    id = models.AutoField(primary_key=True)
     stock_id = models.ManyToManyField(Stock)
-    user_id = models.ForeignKey('core_user.User', on_delete=models.DO_NOTHING)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)

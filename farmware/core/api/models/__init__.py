@@ -3,7 +3,6 @@ from .customer import Customer
 from .order import Order
 from .order import OrderStock
 from .organisation import Organisation
-from .organisation import OrganisationCode
 from .organisation import generate_random_org_code
 from .produce import Produce
 from .produce import ProduceQuantitySuffix
