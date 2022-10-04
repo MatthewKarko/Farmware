@@ -31,10 +31,6 @@ const GlobalContextProvider = ({children}) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   }, [state])
 
-  useEffect(() => {
-    var storage = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    console.log(storage);
-  })
 
   return (
    <Context.Provider value={{state, dispatch}}>
