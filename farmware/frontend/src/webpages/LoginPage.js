@@ -12,23 +12,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useValue } from '../context/GlobalContextProvider';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const theme = createTheme();
 
 export default function LoginPage() {
+  const {state:{currentUser, pages} , dispatch} = useValue(); 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -36,6 +26,8 @@ export default function LoginPage() {
       email: data.get('email'),
       password: data.get('password'),
     });
+    dispatch({type:'UPDATE_USER', payload:data.get('email')});
+
   };
 
   return (
@@ -62,10 +54,11 @@ export default function LoginPage() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Username"
               name="email"
               autoComplete="email"
               autoFocus
+              
             />
             <TextField
               margin="normal"
@@ -103,7 +96,6 @@ export default function LoginPage() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
