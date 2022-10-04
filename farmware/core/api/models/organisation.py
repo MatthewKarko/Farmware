@@ -1,7 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
-from . import constants
+from .. import constants
 
 import random
 import string
@@ -18,15 +16,12 @@ def generate_random_org_code() -> str:
 class Organisation(models.Model):
     code = models.CharField(
         max_length=constants.ORG_CODE_LENGTH, 
-        default=generate_random_org_code, 
-        unique=True, primary_key=True
+        default=generate_random_org_code,
+        primary_key=True
         )
-    name = models.CharField(max_length=100)
 
-class Team(models.Model):
-    category = models.CharField(max_length=100, unique=True, primary_key=True)
-    name = models.CharField(max_length=100, default=category.name)
-    organisation = models.ForeignKey(
-        Organisation,
-        on_delete=models.CASCADE
-    )
+    name = models.CharField(max_length=50)
+    logo = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name + ' [' + self.code + ']'

@@ -1,57 +1,74 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
 
-from ..api.models import Organisation, Team
+from core.api.models.organisation import Organisation
+from ..api.constants import ORG_CODE_LENGTH
 
 class UserManager(BaseUserManager):
-    """Define a model manager for User model with no username field."""
+    """User Manager."""
+    def create_user(self, email, first_name, last_name, organisation, password=None, **extra_fields):
+        """Create and save a regular User with the given email and password."""
+        if not email: 
+            raise ValueError('You must provide an email address.')
 
-    use_in_migrations = True
+        if not organisation:
+            raise ValueError('You must provide an organisation.')
 
-    def _create_user(self, email, password, **extra_fields):
-        """Create and save a User with the given email and password."""
-        if not email:
-            raise ValueError('The given email must be set')
+        if type(organisation) == str:
+            if organisation.isdigit() and len(organisation) != ORG_CODE_LENGTH:
+                raise ValueError('Invalid organisation code.')
+
+            organisation = Organisation.objects.filter(code=organisation).first()
+
+            if organisation is None:
+                raise ValueError('Organisation does not exist.')
+
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(
+            email=email, 
+            first_name=first_name, 
+            last_name=last_name, 
+            organisation=organisation,
+            password=password, 
+            **extra_fields)
+
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
-        """Create and save a regular User with the given email and password."""
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
-
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self, email, first_name, last_name, organisation, password, **extra_fields):
         """Create and save a SuperUser with the given email and password."""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self._create_user(email, password, **extra_fields)
+        return self.create_user(email, first_name, last_name, organisation, password, **extra_fields)
 
-class User(AbstractUser):
-    objects = UserManager()
+class User(AbstractBaseUser, PermissionsMixin):
 
     class Roles(models.TextChoices):
         ADMIN = 'ADMIN', 'Admin'
+        WORKER = 'WORKER', 'Worker'
         OFFICE = 'OFFICE', 'Office'
         TEAM_LEADER = 'TEAM LEADER', 'Team Leader'
-        WORKER = 'WORKER', 'Worker'
+
+    objects = UserManager()
 
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(_('email address'), unique=True)
 
     organisation = models.ForeignKey(
-        Organisation,
+        'core_api.Organisation',
         on_delete=models.CASCADE
     )
 
@@ -63,27 +80,16 @@ class User(AbstractUser):
         )
 
     teams = models.ManyToManyField(
-        Team,
+        'core_api.Team',
         blank=True
     )
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
 
     username = None
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'organisation']
 
-class AdminManager(models.Manager):
-    def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(roles=User.Roles.ADMIN, organisation=self.model.organisation)
-
-class Admin(User):
-    objects = AdminManager
-
-    class Meta:
-        proxy = True
-
-    def save(self, *args, **kwargs):
-        if not self.pk: self.role = User.Roles.ADMIN
-
-        return super().save(*args, **kwargs)
+    def get_users(self):
+        return User.objects.filter(organisation__code=self.organisation.code)
