@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers, exceptions
@@ -10,7 +11,7 @@ from ..api.models.organisation import Organisation
 class UserSerialiser(serializers.ModelSerializer):
     """Serialiser for the User model."""
     class Meta:
-        model = User
+        model = settings.AUTH_USER_MODEL
         fields = [
             'id',
             'email',
@@ -25,7 +26,7 @@ class LoginSerialiser(UserSerialiser):
     email = serializers.EmailField()
 
     class Meta:
-        model = User
+        model = settings.AUTH_USER_MODEL
         fields = ['email', 'password']
 
 
@@ -35,7 +36,7 @@ class RegisterAdminSerialiser(UserSerialiser):
     first_name = serializers.CharField(required=False)
 
     class Meta:
-        model = User
+        model = settings.AUTH_USER_MODEL
         fields = [
             'id',
             'first_name', 'last_name', 'password', 'email', 'username', 
@@ -67,7 +68,7 @@ class RegisterUserSerialiser(UserSerialiser):
     org_code = serializers.CharField(max_length=ORG_CODE_LENGTH, write_only=True)
 
     class Meta:
-        model = User
+        model = settings.AUTH_USER_MODEL
         fields = [
             'id',
             'first_name', 'last_name', 'password', 'email', 

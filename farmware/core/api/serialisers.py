@@ -1,29 +1,33 @@
+from django.conf import settings
 from rest_framework import serializers
 
 from .models.organisation import Organisation
 from .models.team import Team
 
 class OrganisationSerialiser(serializers.ModelSerializer):
+    organisation = serializers.ModelField(settings.AUTH_USER_MODEL, write_only=True)
     class Meta:
         model = Organisation
-        fields = ('org_code', 'org_name')
+        fields = ('org_code', 'org_name', 'organisation')
 
-class TeamSerialiser(serializers.ModelSerializer):
-    # TODO: fix
-    # Create a custom method field
-    current_user = serializers.SerializerMethodField('_user')
-
-    # Use this method for the custom field
-    def _user(self, obj):
-        request = self.context.get('request', None)
-        if request: return request.user
-
+class TeamCreationSerialiser(serializers.ModelSerializer):
+    name = serializers.CharField(allow_blank=True)
     class Meta:
         model = Team
-        fields = ('category', 'name')
+        fields = ['category', 'name']
 
     def create(self, validated_data):
-        print('Team VD:', validated_data)
-        # print('User:', self._user())
+        # If name is not given, default to category name
+        if validated_data['name'] == '': 
+            validated_data['name'] = validated_data['category']
+        
+        # Add organisational data
+        validated_data['organisation'] = self.\
+            context['request'].user.organisation
+        
+        return Team.objects.create(**validated_data)
 
-        return super().create(**validated_data)
+class TeamSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = '__all__'

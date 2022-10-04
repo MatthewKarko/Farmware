@@ -54,13 +54,14 @@ class UserManager(BaseUserManager):
         return self.create_user(email, first_name, last_name, organisation, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    objects = UserManager()
 
     class Roles(models.TextChoices):
         ADMIN = 'ADMIN', 'Admin'
         WORKER = 'WORKER', 'Worker'
         OFFICE = 'OFFICE', 'Office'
         TEAM_LEADER = 'TEAM LEADER', 'Team Leader'
+
+    objects = UserManager()
 
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

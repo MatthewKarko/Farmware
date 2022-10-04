@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/user/', include('core.user.urls', namespace='user')),
     
     # REST Framework API-Auth
-    path('api-auth', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     path('', include('frontend.urls')),
 
