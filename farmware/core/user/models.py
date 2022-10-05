@@ -26,6 +26,8 @@ class UserManager(BaseUserManager):
 
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
+        # TODO: delete once in production / email verification is implemented.
+        extra_fields.setdefault('is_active', True)
 
         email = self.normalize_email(email)
         user = self.model(
