@@ -3,9 +3,10 @@ from rest_framework import serializers
 
 from .models.organisation import Organisation
 from .models.team import Team
+from ..user.models import User
 
 class OrganisationSerialiser(serializers.ModelSerializer):
-    organisation = serializers.ModelField(settings.AUTH_USER_MODEL, write_only=True)
+    organisation = serializers.ModelField(User, write_only=True)
     class Meta:
         model = Organisation
         fields = ('org_code', 'org_name', 'organisation')

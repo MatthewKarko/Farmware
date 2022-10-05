@@ -11,7 +11,7 @@ from ..api.models.organisation import Organisation
 class UserSerialiser(serializers.ModelSerializer):
     """Serialiser for the User model."""
     class Meta:
-        model = settings.AUTH_USER_MODEL
+        model = User
         fields = [
             'id',
             'email',
@@ -26,7 +26,7 @@ class LoginSerialiser(UserSerialiser):
     email = serializers.EmailField()
 
     class Meta:
-        model = settings.AUTH_USER_MODEL
+        model = User
         fields = ['email', 'password']
 
 
@@ -36,7 +36,7 @@ class RegisterAdminSerialiser(UserSerialiser):
     first_name = serializers.CharField(required=False)
 
     class Meta:
-        model = settings.AUTH_USER_MODEL
+        model = User
         fields = [
             'id',
             'first_name', 'last_name', 'password', 'email', 'username', 
@@ -68,7 +68,7 @@ class RegisterUserSerialiser(UserSerialiser):
     org_code = serializers.CharField(max_length=ORG_CODE_LENGTH, write_only=True)
 
     class Meta:
-        model = settings.AUTH_USER_MODEL
+        model = User
         fields = [
             'id',
             'first_name', 'last_name', 'password', 'email', 
@@ -91,6 +91,5 @@ class RegisterUserSerialiser(UserSerialiser):
                 first_name=validated_data['first_name'],
                 last_name=validated_data['last_name'],
                 organisation=organisation,
-                password=validated_data['password'],
-                **self.data)
+                password=validated_data['password'])
         return user
