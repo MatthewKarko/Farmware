@@ -1,9 +1,13 @@
+import json
+
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 
+from .models import User
 from .serialisers import RegisterUserSerialiser, RegisterAdminSerialiser
 
 
@@ -20,15 +24,9 @@ class UserRegistration(APIView):
             serializer = RegisterUserSerialiser(data=data)
 
         if serializer.is_valid():
-            user = serializer.save()
+            user: User = serializer.save()
             if user:
-                refresh = RefreshToken.for_user(user)
+                # TODO: send confirmation email
+                return Response({'user_id': user.id}, status=status.HTTP_201_CREATED)
 
-                response = {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                    'user': serializer.data,
-                }
-                return Response(response, status=status.HTTP_201_CREATED)
-                
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
