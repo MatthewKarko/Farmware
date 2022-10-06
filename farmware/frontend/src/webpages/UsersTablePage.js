@@ -11,11 +11,11 @@ import {
 } from "react-router-dom";
 
 export default function UsersTablePage() {
+
     return (
         <>
             <Navbar/> 
-
             <UsersTable/>
-            </>
+        </>
     );
 }
