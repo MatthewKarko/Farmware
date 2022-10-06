@@ -1,37 +1,43 @@
 import React, { useState, useEffect, Fragment } from "react";
-import '../../css/UsersTable.css';
 import data from "./mock-data.json";
-import ReadOnlyRow from "./ReadOnlyRow";
-import EditableRow from "./EditableRow";
-
-//The resource that helped make the table: https://github.com/chrisblakely01/react-creating-a-table/tree/main/src
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Button from '@mui/material/Button';
+import '../../css/UsersTable.css';
 
 function UsersTable() {
 
-  //This small snippet of code is for the modal
-  const [alert, setAlert] = useState("");
-  const [displayModal, setDisplayModal] = useState(false);
+  const [displayEditModal, setDisplayEditModal] = useState(false);
+  const [displayNewModal, setDisplayNewModal] = useState(false);
 
-
-  const [contacts, setContacts] = useState(data);
-
-  const [addFormData, setAddFormData] = useState({
+  //Stores temporary changes
+  const [temporaryUser, setTemporaryUser] = useState({
     firstName: "",
     lastName: "",
     address: "",
     phoneNumber: "",
     email: "",
-    role: "",
+    role: ""
   });
 
-  const [editFormData, setEditFormData] = useState({
-    firstName: "",
-    lastName: "",
-    address: "",
-    phoneNumber: "",
-    email: "",
-    role: "",
-  });
+  const clearState = () => {
+    const formValues = {
+      firstName: '',
+      lastName: '',
+      address: '',
+      phoneNumber: '',
+      email: '',
+      role: '',
+    };
+    setTemporaryUser({...formValues});
+    
+    console.log("reset form data")
+  };
 
   const [editContactId, setEditContactId] = useState(null);
 
@@ -41,91 +47,74 @@ function UsersTable() {
     const fieldName = event.target.getAttribute("name");
     const fieldValue = event.target.value;
 
-    const newFormData = { ...addFormData };
+    const newFormData = { ...temporaryUser };
     newFormData[fieldName] = fieldValue;
 
-    setAddFormData(newFormData);
+    setTemporaryUser({...newFormData});
   };
 
-  const handleEditFormChange = (event) => {
+  const handleEditSubmit = (event) => {
     event.preventDefault();
+    console.log("Edit user submitted");
 
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
-
-    const newFormData = { ...editFormData };
-    newFormData[fieldName] = fieldValue;
-
-    setEditFormData(newFormData);
-  };
-
-  const handleAddFormSubmit = (event) => {
-    event.preventDefault();
-
-    const newContact = {
-      firstName: addFormData.firstName,
-      lastName: addFormData.lastName,
-      address: addFormData.address,
-      phoneNumber: addFormData.phoneNumber,
-      email: addFormData.email,
-      role: addFormData.role,
+    const newUser = {
+      firstName: temporaryUser.firstName,
+      lastName: temporaryUser.lastName,
+      address: temporaryUser.address,
+      phoneNumber: temporaryUser.phoneNumber,
+      email: temporaryUser.email,
+      role: temporaryUser.role,
     };
 
-    const newContacts = [...contacts, newContact];
-    setContacts(newContacts);
+    //TO DO: Send the UPDATE request from here based on newUser.
+    console.log(newUser);
+
+    //reset values
+    clearState();
   };
 
-  const handleEditFormSubmit = (event) => {
+  const handleNewUserSubmit = (event) => {
     event.preventDefault();
 
-    const editedContact = {
-      id: editContactId,
-      firstName: editFormData.firstName,
-      lastName: editFormData.lastName,
-      address: editFormData.address,
-      phoneNumber: editFormData.phoneNumber,
-      email: editFormData.email,
-      role: editFormData.role,
+    const newUser = {
+      firstName: temporaryUser.firstName,
+      lastName: temporaryUser.lastName,
+      address: temporaryUser.address,
+      phoneNumber: temporaryUser.phoneNumber,
+      email: temporaryUser.email,
+      role: temporaryUser.role,
     };
 
-    const newContacts = [...contacts];
+    //TO DO: Send the POST request from here based on newUser.
+    console.log("New user submitted");
+    console.log(newUser);
 
-    const index = contacts.findIndex((contact) => contact.id === editContactId);
-
-    newContacts[index] = editedContact;
-
-    setContacts(newContacts);
-    setEditContactId(null);
+    //reset edit form
+    clearState();
   };
 
-  const handleEditClick = (event, contact) => {
+  const handleEditClick = (event, row) => {
     event.preventDefault();
-    setEditContactId(contact.id);
+    setEditContactId(row.id);
 
     const formValues = {
-      firstName: contact.firstName,
-      lastName: contact.lastName,
-      address: contact.address,
-      phoneNumber: contact.phoneNumber,
-      email: contact.email,
-      role: contact.role,
+      firstName: row.firstName,
+      lastName: row.lastName,
+      address: row.address,
+      phoneNumber: row.phoneNumber,
+      email: row.email,
+      role: row.role,
     };
+    // console.log("prior = " + temporaryUser.firstName);
+    setTemporaryUser({...formValues});
+    // console.log("after = " + temporaryUser.lastName);
 
-    setEditFormData(formValues);
-  };
+    //Log the data that wants to be edited
+    console.log("Edit button pressed for values:");
+    console.log(formValues);
 
-  const handleCancelClick = () => {
-    setEditContactId(null);
-  };
-
-  const handleDeleteClick = (contactId) => {
-    const newContacts = [...contacts];
-
-    const index = contacts.findIndex((contact) => contact.id === contactId);
-
-    newContacts.splice(index, 1);
-
-    setContacts(newContacts);
+    //cause the modal to open.
+    setDisplayEditModal(!displayEditModal);
   };
 
   return (
@@ -133,115 +122,199 @@ function UsersTable() {
       <div className='offset' >
         <br></br>
         <h2>Users table</h2>
+        <TableContainer component={Paper} className="table">
+      <Table sx={{ minWidth: 650}} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell className="tableCell">ID</TableCell>
+            <TableCell className="tableCell">First name</TableCell>
+            <TableCell className="tableCell">Last name</TableCell>
+            <TableCell className="tableCell">Address</TableCell>
+            <TableCell className="tableCell">Phone Number</TableCell>
+            <TableCell className="tableCell">Email</TableCell>
+            <TableCell className="tableCell">Role</TableCell>
+            <TableCell className="tableCell">Edit</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((row) => (
+            <TableRow key={row.id}>
+              <TableCell className="tableCell">{row.id}</TableCell>
+              <TableCell className="tableCell">{row.firstName}</TableCell>
+              <TableCell className="tableCell">{row.lastName}</TableCell>
+              <TableCell className="tableCell">{row.address}</TableCell>
+              <TableCell className="tableCell">{row.phoneNumber}</TableCell>
+              <TableCell className="tableCell">{row.email}</TableCell>
+              <TableCell className="tableCell">{row.role}</TableCell>
+              <TableCell className="tableCell">
+                  <Button variant="outlined" size="medium" onClick={(event) => handleEditClick(event, row)}
+            >Edit</Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
 
-        <form onSubmit={handleEditFormSubmit}>
-          <table>
-            <thead>
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Address</th>
-                <th>Phone Number</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contacts.map((contact) => (
-                <Fragment>
-                  {editContactId === contact.id ? (
-                    <EditableRow
-                      editFormData={editFormData}
-                      handleEditFormChange={handleEditFormChange}
-                      handleCancelClick={handleCancelClick}
-                    />
-                  ) : (
-                    <ReadOnlyRow
-                      contact={contact}
-                      handleEditClick={handleEditClick}
-                      handleDeleteClick={handleDeleteClick}
-                    />
-                  )}
-                </Fragment>
-              ))}
-            </tbody>
-          </table>
-        </form>
+    {/* Create add new user button */}
+    <br></br>
+    <Button variant="outlined" size="large" onClick={() => {setDisplayNewModal(!displayNewModal);}}
+        >Add new user</Button>
 
 
-
-
-
-    {/* Below is the code for the modal for the 'add user' button */}
-        <button
-      className="TriggerButton CenterAlign"
-      onClick={() => setDisplayModal(!displayModal)}
-    >
-      Add Users
-    </button>
-
-    <div className={`Modal ${displayModal ? "Show" : ""}`}>
-      <h3>Add new user:</h3>
+    <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
       <button
         className="Close"
-        onClick={() => setDisplayModal(!displayModal)}
+        onClick={() => {setDisplayEditModal(!displayEditModal); clearState();} }
       >
         X
       </button>
+      
+      <h1>Edit modal</h1>
 
-      <form onSubmit={handleAddFormSubmit}>
+      <form onSubmit={handleEditSubmit}>
+      <label>First Name:</label>
         <input
           type="text"
           name="firstName"
           required="required"
           placeholder="Enter a first name..."
+          value={temporaryUser.firstName}
           onChange={handleAddFormChange}
-        />
+        /><br></br>
+        <label>Last Name:</label>
         <input
           type="text"
           name="lastName"
           required="required"
           placeholder="Enter a last name..."
+          value={temporaryUser.lastName}
           onChange={handleAddFormChange}
-        />
+        /><br></br>
+        <label>Address:</label>
         <input
           type="text"
           name="address"
           required="required"
           placeholder="Enter an address..."
+          value={temporaryUser.address}
           onChange={handleAddFormChange}
-        />
+        /><br></br>
+        <label>Phone Number:</label>
         <input
           type="text"
           name="phoneNumber"
           required="required"
           placeholder="Enter a phone number..."
+          value={temporaryUser.phoneNumber}
           onChange={handleAddFormChange}
-        />
+        /><br></br>
+        <label>Email:</label>
         <input
           type="email"
           name="email"
           required="required"
           placeholder="Enter an email..."
+          value={temporaryUser.email}
           onChange={handleAddFormChange}
-        />
+        /><br></br>
+        <label>Role:</label>
         <input
           type="text"
           name="role"
           required="required"
           placeholder="Enter a role..."
+          value={temporaryUser.role}
           onChange={handleAddFormChange}
-        />
-        <button type="submit" onClick={() => setDisplayModal(!displayModal)}>Add</button>
+        /><br></br>
+        <Button type="submit" variant="outlined" size="large" onClick={() => setDisplayEditModal(!displayEditModal)}
+            >Add</Button>
       </form>
-    </div>
+      </div>
 
     {/* Below snippet makes it so that if you click out of the modal it exits. */}
     <div
-      className={`Overlay ${displayModal ? "Show" : ""}`}
-      onClick={() => {setDisplayModal(!displayModal)}}
-    />  
+      className={`Overlay ${displayEditModal ? "Show" : ""}`}
+      onClick={() => {setDisplayEditModal(!displayEditModal); clearState();}}
+    /> 
+
+
+
+<div className={`Modal ${displayNewModal ? "Show" : ""}`}>
+      <button
+        className="Close"
+        onClick={() => {setDisplayNewModal(!displayNewModal); clearState();}}
+      >
+        X
+      </button>
+      
+      <h1>New user modal</h1>
+
+      <form onSubmit={handleNewUserSubmit} className='formUsers'>
+      <label>First Name:</label>
+        <input
+          type="text"
+          name="firstName"
+          required="required"
+          // placeholder="Enter a first name..."
+          value={temporaryUser.firstName}
+          onChange={handleAddFormChange}
+        /><br></br>
+        <label>Last Name:</label>
+        <input
+          type="text"
+          name="lastName"
+          required="required"
+          // placeholder="Enter a last name..."
+          value={temporaryUser.lastName}
+          onChange={handleAddFormChange}
+        /><br></br>
+        <label>Address:</label>
+        <input
+          type="text"
+          name="address"
+          required="required"
+          // placeholder="Enter an address..."
+          value={temporaryUser.address}
+          onChange={handleAddFormChange}
+        /><br></br>
+        <label>Phone Number:</label>
+        <input
+          type="text"
+          name="phoneNumber"
+          required="required"
+          // placeholder="Enter a phone number..."
+          value={temporaryUser.phoneNumber}
+          onChange={handleAddFormChange}
+        /><br></br>
+        <label>Email:</label>
+        <input
+          type="email"
+          name="email"
+          required="required"
+          // placeholder="Enter an email..."
+          value={temporaryUser.email}
+          onChange={handleAddFormChange}
+        /><br></br>
+        <label>Role:</label>
+        <input
+          type="text"
+          name="role"
+          required="required"
+          // placeholder="Enter a role..."
+          value={temporaryUser.role}
+          onChange={handleAddFormChange}
+        /><br></br>
+        <Button type="submit" variant="outlined" size="large" onClick={() => setDisplayEditModal(!displayNewModal)}
+            >Add</Button>
+      </form>
+      </div>
+
+    {/* Below snippet makes it so that if you click out of the modal it exits. */}
+    <div
+      className={`Overlay ${displayNewModal ? "Show" : ""}`}
+      onClick={() => {setDisplayNewModal(!displayNewModal); clearState();}}
+    />
       </div>
     </>
   )
