@@ -3,7 +3,6 @@ import { render } from "react-dom";
 import App from "./App";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 import LoginPage from "./webpages/LoginPage";
 import SignUpPage from "./webpages/SignUpPage";
 const routing = (
