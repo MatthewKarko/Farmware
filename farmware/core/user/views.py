@@ -10,6 +10,9 @@ from rest_framework.permissions import AllowAny
 from .models import User
 from .serialisers import RegisterUserSerialiser, RegisterAdminSerialiser
 
+TRUE = 'TRUE'
+FALSE = 'FALSE'
+
 
 class UserRegistration(APIView):
     permission_classes = [AllowAny]
@@ -18,7 +21,7 @@ class UserRegistration(APIView):
         data = request.data
 
         # See if a new organisation is trying to be made
-        if data.get('new_org', False) == 'True':
+        if data.get('new_org', FALSE).upper() == TRUE:
             serializer = RegisterAdminSerialiser(data=data)
         else:
             serializer = RegisterUserSerialiser(data=data)
