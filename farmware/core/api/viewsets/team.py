@@ -29,7 +29,6 @@ class TeamViewSet(ModelViewSet):
         serialiser = self.get_serializer(data=data)
 
         # Ensure data is valid
-        # serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
 
         try:
