@@ -170,7 +170,7 @@ function UsersTable() {
         X
       </button>
       
-      <h1>Edit modal</h1>
+      <h1>Edit User</h1>
 
       <form onSubmit={handleEditSubmit}>
       <label>First Name:</label>
@@ -248,7 +248,7 @@ function UsersTable() {
         X
       </button>
       
-      <h1>New user modal</h1>
+      <h1>Create New User</h1>
 
       <form onSubmit={handleNewUserSubmit} className='formUsers'>
       <label>First Name:</label>
