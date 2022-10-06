@@ -8,9 +8,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
 
-from .models.team import Team
-from .serialisers import TeamCreationSerialiser, TeamSerialiser
-from ..user.models import User
+from ..models.team import Team
+from ..serialisers import TeamCreationSerialiser, TeamSerialiser
+from ...user.models import User
 
 
 class TeamViewSet(ModelViewSet):

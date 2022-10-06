@@ -1,15 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
-
-from .models.organisation import Organisation
-from .models.team import Team
-from ..user.models import User
-
-class OrganisationSerialiser(serializers.ModelSerializer):
-    organisation = serializers.ModelField(User, write_only=True)
-    class Meta:
-        model = Organisation
-        fields = ('code', 'name', 'organisation')
+from ..models.team import Team
 
 class TeamCreationSerialiser(serializers.ModelSerializer):
     name = serializers.CharField(allow_blank=True)
