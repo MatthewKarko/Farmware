@@ -25,7 +25,8 @@ class TeamViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
 
-        serialiser = TeamCreationSerialiser(data=data)
+        self.serializer_class = TeamCreationSerialiser
+        serialiser = self.get_serializer(data=data)
 
         # Ensure data is valid
         # serialiser = self.get_serializer(data=data)
@@ -43,5 +44,5 @@ class TeamViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         user: User = request.user
 
-        serializer = TeamSerialiser(self.get_queryset(**{'organisation':user.organisation}), many=True)
-        return Response(serializer.data)
+        serialiser = TeamSerialiser(self.get_queryset(**{'organisation':user.organisation}), many=True)
+        return Response(serialiser.data)
