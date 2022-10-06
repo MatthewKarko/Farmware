@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { Switch } from '@mui/material';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -18,23 +20,33 @@ import { useNavigate } from 'react-router-dom';
 const theme = createTheme();
 
 export default function SignUp() {
+  const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-
-    axiosInstance.post(`user/register/`,{
+    
+    var postObject = {
       first_name: data.get('firstName'),
       last_name: data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
-      org_code: data.get('org_code')
-
-    }).then((res)=>{
+      new_org: checked
+    } 
+    
+    if(checked == true){
+      
+      postObject["org_name"] = data.get('org_name')
+    }else{
+      postObject["org_code"] = data.get('org_code')
+    }
+    
+   
+    axiosInstance.post(`user/register/`, postObject).then((res)=>{
       navigate('/login')
       console.log(res)
       console.log(res.data)
@@ -104,6 +116,30 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
+                <FormControlLabel
+                control={<Switch value="remember" color="primary" checked={checked} onChange={handleChange} />}
+                label="Create New Organisation"
+                />
+              </Grid>
+
+              {checked ? (
+                <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="org_name"
+                  label="Organisation Name"
+                  type="org_name"
+                  id="org_name"
+                  autoComplete="org_name"
+                />
+              </Grid>
+              
+              ) : 
+              
+              
+              (
+                <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -114,6 +150,10 @@ export default function SignUp() {
                   autoComplete="org_code"
                 />
               </Grid>
+                
+              )}
+              
+              
             </Grid>
             <Button
               type="submit"

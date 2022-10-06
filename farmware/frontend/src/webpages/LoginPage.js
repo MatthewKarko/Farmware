@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
+import AlertDialog from '../components/AlertDialog';
 
 
 
@@ -37,8 +38,12 @@ export default function LoginPage() {
 					'JWT ' + localStorage.getItem('access_token');
 				navigate('/');
 				// console.log(res);
-				console.log(res.data);
-			});
+       
+			})
+      .catch((err) => {
+        // console.log("AXIOS ERROR: ", err);
+        alert("Incorrect creditials entered");
+      });
   };
 
   return (
