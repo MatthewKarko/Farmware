@@ -9,7 +9,7 @@ class OrganisationSerialiser(serializers.ModelSerializer):
     organisation = serializers.ModelField(User, write_only=True)
     class Meta:
         model = Organisation
-        fields = ('org_code', 'org_name', 'organisation')
+        fields = ('code', 'name', 'organisation')
 
 class TeamCreationSerialiser(serializers.ModelSerializer):
     name = serializers.CharField(allow_blank=True)
