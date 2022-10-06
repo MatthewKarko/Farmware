@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
-
-import LoginPage from "./LoginPage";
-import SignUpPage from "./SignUpPage";
-
+import '../css/HomePage.css';
 import { 
     BrowserRouter as Router, 
     Routes, 
@@ -11,13 +8,15 @@ import {
     Redirect
 } from "react-router-dom";
 
-export default class HomePage extends Component {
-    constructor(props) {
-        super(props);
-    } 
-
-    render() {
-        // return <p>hello</p>;
-        return (<p>Hello</p>);
-    }
+export default function HomePage() {
+    return (
+        <div className="App">
+      <header className="App-header">
+        <br></br>
+        <br></br>
+        <br></br>
+        <h1>this is the home page when no user is logged in.</h1>
+      </header>
+    </div>
+    );
 }
