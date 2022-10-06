@@ -12,23 +12,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import axiosInstance from '../axios';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme();
 
-export default function SignUpPage() {
+export default function SignUp() {
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -36,6 +26,19 @@ export default function SignUpPage() {
       email: data.get('email'),
       password: data.get('password'),
     });
+
+    axiosInstance.post(`user/register/`,{
+      first_name: data.get('firstName'),
+      last_name: data.get('lastName'),
+      email: data.get('email'),
+      password: data.get('password'),
+      org_code: data.get('org_code')
+
+    }).then((res)=>{
+      navigate('/login')
+      console.log(res)
+      console.log(res.data)
+    })
   };
 
   return (
@@ -101,9 +104,14 @@ export default function SignUpPage() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+                <TextField
+                  required
+                  fullWidth
+                  name="org_code"
+                  label="Organisation Code"
+                  type="org_code"
+                  id="org_code"
+                  autoComplete="org_code"
                 />
               </Grid>
             </Grid>
@@ -117,14 +125,13 @@ export default function SignUpPage() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
