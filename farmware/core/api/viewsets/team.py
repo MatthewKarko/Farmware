@@ -1,6 +1,5 @@
-from django.contrib.auth import authenticate, login
 from django.db import IntegrityError
-from django.http import QueryDict # TODO: remove?
+from django.http import QueryDict
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -11,16 +10,21 @@ from rest_framework.response import Response
 from ..models.team import Team
 from ..serialisers import TeamCreationSerialiser, TeamSerialiser
 from ...user.models import User
+from ...user.permissions import IsInOrganisation
 
 
 class TeamViewSet(ModelViewSet):
     """Team View"""
     serializer_class = TeamCreationSerialiser
-    permission_classes = [IsAuthenticated]
-    queryset = Team.objects.all()
+    permission_classes = [IsAuthenticated, IsInOrganisation]
+    # queryset = Team.objects.all()
 
     def get_queryset(self, **kwargs):
-        return Team.objects.all().filter(**kwargs)
+        user: User = self.request.user
+        return Team.objects.all().filter(
+            organisation=user.organisation,
+            **kwargs
+            )
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
@@ -41,7 +45,5 @@ class TeamViewSet(ModelViewSet):
         return Response({'success': 'Team created.'}, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
-        user: User = request.user
-
-        serialiser = TeamSerialiser(self.get_queryset(**{'organisation':user.organisation}), many=True)
+        serialiser = TeamSerialiser(self.get_queryset(), many=True)
         return Response(serialiser.data)
