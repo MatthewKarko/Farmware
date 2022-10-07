@@ -1,24 +1,23 @@
-import json
-
-from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 
-from .models import User
-from .serialisers import RegisterUserSerialiser, RegisterAdminSerialiser
+from ..models import User
+from ..serialisers import RegisterUserSerialiser, RegisterAdminSerialiser
+
+TRUE = 'TRUE'
+FALSE = 'FALSE'
 
 
-class UserRegistration(APIView):
+class UserRegistrationView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
         data = request.data
 
         # See if a new organisation is trying to be made
-        if data.get('new_org', False) == 'True':
+        if data.get('new_org', FALSE).upper() == TRUE:
             serializer = RegisterAdminSerialiser(data=data)
         else:
             serializer = RegisterUserSerialiser(data=data)

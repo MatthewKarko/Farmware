@@ -13,7 +13,7 @@ router = DefaultRouter()
 router.register('teams', TeamViewSet, 'team')
 
 urlpatterns = [
-    path('', OrganisationsView.as_view(), name='NAME NAME TEST'),
+    path('organisation/', OrganisationsView.as_view(), name='api-organisation'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
