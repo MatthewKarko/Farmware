@@ -11,7 +11,7 @@ from .viewsets import UserViewSet
 router = DefaultRouter()
 app_name = 'user'
 
-router.register('user-vs', UserViewSet, 'user')
+router.register('', UserViewSet, 'user')
 
 urlpatterns = [
     # Register user endpoint

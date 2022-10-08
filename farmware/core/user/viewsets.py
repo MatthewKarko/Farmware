@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from .permissions import IsInOrganisation
 from .models import User
-from .serialisers import RegisterUserSerialiser, RegisterAdminSerialiser, UserSerialiser
+from .serialisers import RegisterUserSerialiser, RegisterAdminSerialiser, UserSerialiser, UserUpdateSerialiser
 
 TRUE = 'TRUE'
 FALSE = 'FALSE'
@@ -54,6 +54,24 @@ class UserViewSet(ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def partial_update(self, request, *args, **kwargs):
+        data: QueryDict = request.data
+        user: User = self.request.user
+        serializer = UserUpdateSerialiser(instance=user, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        # User can not edit a ROLE, admin can.
+        # if 'role' in data:
+        #     if user.role < User.Roles.ORGANISATION_ADMIN: 
+        #     if user.role < User.Roles.ADMIN:
+        #         data.pop('role')
+        #     else:
+        #         if 
+            # if user.role < User.Roles.ADMIN and 'role' in data:
+            #     data.pop('role')
+
+        return super().partial_update(request, *args, **kwargs)
+
     def list(self, request, *args, **kwargs):
-        serialiser = self.get_serializer(self.get_queryset(), many=True)
+        serialiser = self.get_serializer(instance=self.get_queryset(), many=True)
         return Response(serialiser.data)
