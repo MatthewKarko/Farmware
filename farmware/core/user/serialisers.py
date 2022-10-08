@@ -1,7 +1,7 @@
-from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers, exceptions
+from rest_framework.fields import CurrentUserDefault, empty
 
 from .models import User
 from ..api.constants import ORG_CODE_LENGTH
@@ -10,6 +10,7 @@ from ..api.models.organisation import Organisation
 
 class UserSerialiser(serializers.ModelSerializer):
     """Serialiser for the User model."""
+
     class Meta:
         model = User
         fields = [
@@ -19,6 +20,42 @@ class UserSerialiser(serializers.ModelSerializer):
             'organisation', 'role', 'teams'
         ]
         read_only_field = ['created', 'updated']
+        extra_kwargs = {'password': {'write_only': True}}
+
+
+class UserUpdateSerialiser(serializers.ModelSerializer):
+    """Serialiser for the User model."""
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'email',
+            'first_name', 'last_name', 'password', 
+            'organisation', 'role', 'teams'
+        ]
+        read_only_field = ['created', 'updated']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def __init__(self, instance=None, data=empty, **kwargs):
+        if instance is not None:
+            self.role = serializers.ChoiceField(
+                choices=filter(lambda x: x[0] > instance.role, User.Roles.choices)
+            )
+
+        super().__init__(instance, data, **kwargs)
+
+    def validate_role(self, value):
+        if type(value) == str:
+            try:
+                value = User.Roles.labels.index(value)
+            except ValueError:
+                raise serializers.ValidationError("Role is not an option.")
+
+        if value not in self.role.choices:
+            raise serializers.ValidationError("Illegal role allocation.")
+
+        return value
 
 
 class LoginSerialiser(UserSerialiser):
@@ -60,7 +97,7 @@ class RegisterAdminSerialiser(UserSerialiser):
                 last_name=validated_data['last_name'],
                 organisation=organisation, 
                 password=validated_data['password'],
-                role=User.Roles.ADMIN)
+                role=User.Roles.ORGANISATION_ADMIN)
         return user
 
 
