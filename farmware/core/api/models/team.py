@@ -17,4 +17,4 @@ class Team(models.Model):
         ]
 
     def __str__(self) -> str:
-        return str(self.organisation) + ': ' + self.category
+        return self.name

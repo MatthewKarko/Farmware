@@ -59,7 +59,8 @@ class RegisterAdminSerialiser(UserSerialiser):
                 first_name=validated_data['first_name'],
                 last_name=validated_data['last_name'],
                 organisation=organisation, 
-                password=validated_data['password'])
+                password=validated_data['password'],
+                role=User.Roles.ADMIN)
         return user
 
 

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'frontend.apps.FrontendConfig',
 
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     # 'rest_framework.authtoken',
     # 'rest_auth',
     # 'allauth',
@@ -160,7 +161,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
@@ -169,6 +170,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000",
     "http://localhost:3000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",
 ]
 
 # # django-allauth settings
@@ -223,3 +228,4 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 ###############################################################################
+REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'}
