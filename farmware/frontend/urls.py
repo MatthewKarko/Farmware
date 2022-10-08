@@ -11,6 +11,7 @@ urlpatterns = [
     path('dashboard',index),
     path('accountsettings',index),
     path('userstable',index),
+    path('order',index),
     path('docs/',include_docs_urls(title='FarmwareAPI')),
     path('schema', get_schema_view(
         title='FarmwareAPI',

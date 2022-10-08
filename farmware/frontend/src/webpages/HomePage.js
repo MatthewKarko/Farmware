@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import { version } from 'react';
+
 import '../css/HomePage.css';
 import { 
     BrowserRouter as Router, 
@@ -9,6 +11,8 @@ import {
 } from "react-router-dom";
 
 export default function HomePage() {
+  console.log(version);
+
     return (
         <div className="App">
       <header className="App-header">

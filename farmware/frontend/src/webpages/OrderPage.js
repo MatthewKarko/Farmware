@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Navbar from '../components/Navbar';
-import DashboardWidgets from '../components/DashboardComponents/DashboardWidgets';
+import OrderTable from '../components/OrdersComponents/OrderTable';
 import '../css/DashboardPage.css';
 import axios from 'axios';
 import axiosInstance from '../axios.js';
@@ -14,11 +14,11 @@ import {
     Redirect
 } from "react-router-dom";
 
-export default function DashboardPage() {
+export default function OrderPage() {
     return (
         <>
             <Navbar/> 
-            <DashboardWidgets/>
+            <OrderTable/>
         </>
     );
 }
