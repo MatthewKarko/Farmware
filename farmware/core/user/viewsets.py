@@ -7,9 +7,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
 
-from .permissions import IsInOrganisation
+from .permissions import IsInOrganisation, IsInHierarchy
 from .models import User
-from .serialisers import RegisterUserSerialiser, RegisterAdminSerialiser, UserSerialiser, UserUpdateSerialiser
+from .serialisers import (
+    RegisterUserSerialiser, 
+    RegisterAdminSerialiser, 
+    UserSerialiser, 
+    UserUpdateSerialiser
+)
 
 TRUE = 'TRUE'
 FALSE = 'FALSE'
@@ -18,7 +23,7 @@ FALSE = 'FALSE'
 class UserViewSet(ModelViewSet):
     """User View Set"""
     serializer_class = UserSerialiser
-    permission_classes = [IsAuthenticated, IsInOrganisation]
+    permission_classes = [IsAuthenticated, IsInOrganisation, IsInHierarchy]
     queryset = User.objects.all()
 
     def get_queryset(self, **kwargs):
