@@ -209,11 +209,7 @@ SIMPLE_JWT = {
     'JWK_URL': None,
     'LEEWAY': 0,
 
-<<<<<<< HEAD
-    'AUTH_HEADER_TYPES': ('Bearer', 'JWT'),
-=======
     'AUTH_HEADER_TYPES': ('JWT',),
->>>>>>> a98df93613c6c4c6feed1625a8fc9f52ecdf49f7
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
