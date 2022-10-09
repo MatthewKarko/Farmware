@@ -1,4 +1,3 @@
-from urllib import request
 from django.db import IntegrityError
 from django.http import QueryDict
 
@@ -9,10 +8,12 @@ from rest_framework import status
 
 from ..models import Produce
 from ...user.models import User
+from ...user.permissions import IsInOrganisation
 from ..serialisers import ProduceSerialiser
 
 class ProduceViewSet(ModelViewSet):
     serializer_class = ProduceSerialiser
+    permission_classes = [IsAuthenticated, IsInOrganisation]
 
     def get_queryset(self, **kwargs):
         user: User = self.request.user
@@ -22,13 +23,7 @@ class ProduceViewSet(ModelViewSet):
         )
 
     def create(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response({'error': 'You must be logged in to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
-
-        user: User = self.request.user
         data: QueryDict = request.data
-        if user.organisation.code != data['organisation']:
-            return Response({'error': 'You do not have access to the provided organisation.'}, status=status.HTTP_403_FORBIDDEN)
 
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
@@ -42,43 +37,16 @@ class ProduceViewSet(ModelViewSet):
 
         return Response({'success': 'Produce created.'}, status=status.HTTP_200_OK)
 
-    def retrieve(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response({'error': 'You must be logged in to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
-        return super().retrieve(request, *args, **kwargs)
-    
     def update(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response({'error': 'You must be logged in to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
-
         user: User = self.request.user
         data: QueryDict = request.data
-        if user.organisation.code != data['organisation']:
-            return Response({'error': 'You do not have access to the provided organisation.'}, status=status.HTTP_403_FORBIDDEN)
-        
         return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response({'error': 'You must be logged in to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
-
         user: User = self.request.user
         data: QueryDict = request.data
-        if user.organisation.code != data['organisation']:
-            return Response({'error': 'You do not have access to the provided organisation.'}, status=status.HTTP_403_FORBIDDEN)
-
         return super().partial_update(request, *args, **kwargs)
 
-    def destroy(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response({'error': 'You must be logged in to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
-
-        super().destroy(request, *args, **kwargs)
-        return Response({'success': 'Produce deleted.'}, status=status.HTTP_200_OK)
-
     def list(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response({'error': 'You must be logged in to query for produce.'}, status=status.HTTP_403_FORBIDDEN)
-
         serialiser = ProduceSerialiser(self.get_queryset(), many=True)
         return Response(serialiser.data)
