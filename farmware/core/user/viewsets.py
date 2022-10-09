@@ -1,14 +1,13 @@
-from django.db import IntegrityError
 from django.http import QueryDict
 
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from rest_framework.response import Response
 
-from .permissions import IsInOrganisation, IsInHierarchy
 from .models import User
+from .permissions import IsInOrganisation, UserHierarchy
 from .serialisers import (
     RegisterUserSerialiser, 
     RegisterAdminSerialiser, 
@@ -23,7 +22,7 @@ FALSE = 'FALSE'
 class UserViewSet(ModelViewSet):
     """User View Set"""
     serializer_class = UserSerialiser
-    permission_classes = [IsAuthenticated, IsInOrganisation, IsInHierarchy]
+    # permission_classes = [IsAuthenticated, IsInOrganisation]
     queryset = User.objects.all()
 
     def get_queryset(self, **kwargs):
@@ -33,13 +32,21 @@ class UserViewSet(ModelViewSet):
             **kwargs
             )
 
-    # def get_object(self):
-    #     lookup_field_value = self.kwargs[self.lookup_field]
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        permission_classes = [IsAuthenticated]
 
-    #     obj = User.objects.get(lookup_field_value)
-    #     self.check_object_permissions(self.request, obj)
+        if self.action != 'create':
+            print('not create')
+            permission_classes.append(IsInOrganisation)
 
-    #     return obj
+        if 'update' in self.action:
+            print('update')
+            permission_classes.append(UserHierarchy)
+
+        return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
         """Create a new user."""
