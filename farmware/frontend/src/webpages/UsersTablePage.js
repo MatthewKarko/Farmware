@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Navbar from '../components/Navbar';
 import UsersTable from '../components/UserTableComponents/UsersTable';
-
+import '../css/DashboardPages.css';
 import { 
     BrowserRouter as Router, 
     Routes, 
@@ -13,9 +13,12 @@ import {
 export default function UsersTablePage() {
 
     return (
-        <>
+        <div className='mainContainer'>
             <Navbar/> 
+            <div className='componentContainer'>
             <UsersTable/>
-        </>
+            </div>
+            
+        </div>
     );
 }

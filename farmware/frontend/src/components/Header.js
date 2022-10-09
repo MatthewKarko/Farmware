@@ -23,7 +23,7 @@ const Header = () => {
         <React.Fragment>
             
             <AppBar
-                position="fixed"
+                position="sticky"
                 display="flex"
                 sx={{background: "#026946"}}
             >
@@ -45,7 +45,6 @@ const Header = () => {
                     {
                         isMatch ? (
                             <>
-
                             <DrawerComp />
                             </>
                         ) : (

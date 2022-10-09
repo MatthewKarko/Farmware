@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import HomePage from "./webpages/HomePage";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import Header from "./components/Header";
+
 import LoginPage from "./webpages/LoginPage";
 import SignUpPage from "./webpages/SignUpPage";
 import DashboardPage from "./webpages/DashboardPage";
@@ -12,7 +12,7 @@ import OrderPage from "./webpages/OrderPage";
 
 const routing = (
     <Router>
-        <Header />
+        
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

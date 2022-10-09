@@ -7,8 +7,8 @@ import Container from '@mui/material/Container';
 function DashboardWidgets() {
     return (
         <>
-            <div className="offset">
-                <Container maxWidth="md" component="main" sx={{ paddingTop: "20px", marginLeft: "0px" }}>
+            <div>
+                <Container maxWidth="md" component="main" sx={{ paddingTop: "0px", marginLeft: "0px" }}>
                     <h2>Orders:</h2>
                     <OrdersWidgetDashboard />
                 </Container>

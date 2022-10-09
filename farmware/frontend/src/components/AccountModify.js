@@ -13,7 +13,7 @@ function AccountModify() {
 
     return (
         <>
-            <div className='offset' >
+            <div>
                 <h1> Manage account </h1>
                 <h1> Welcome, Firstname Lastname </h1>
                 <div className='column'>

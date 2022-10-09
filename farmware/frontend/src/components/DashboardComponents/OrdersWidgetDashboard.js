@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { useNavigate } from 'react-router-dom';
 
 import ordersData from "./mock-data-orders.json";
-import '../../css/DashboardWidgets.css';
+// import '../../css/DashboardWidgets.css';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
