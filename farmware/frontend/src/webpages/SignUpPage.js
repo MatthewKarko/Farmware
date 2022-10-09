@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { Switch } from '@mui/material';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -12,30 +14,43 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import axiosInstance from '../axios';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme();
 
-export default function SignUpPage() {
+export default function SignUp() {
+  const [checked, setChecked] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    
+    var postObject = {
+      first_name: data.get('firstName'),
+      last_name: data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
-    });
+      new_org: checked
+    } 
+    
+    if(checked == true){
+      
+      postObject["org_name"] = data.get('org_name')
+    }else{
+      postObject["org_code"] = data.get('org_code')
+    }
+    
+   
+    axiosInstance.post(`user/register/`, postObject).then((res)=>{
+      navigate('/login')
+      console.log(res)
+      console.log(res.data)
+    })
   };
 
   return (
@@ -102,10 +117,43 @@ export default function SignUpPage() {
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+                control={<Switch value="remember" color="primary" checked={checked} onChange={handleChange} />}
+                label="Create New Organisation"
                 />
               </Grid>
+
+              {checked ? (
+                <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="org_name"
+                  label="Organisation Name"
+                  type="org_name"
+                  id="org_name"
+                  autoComplete="org_name"
+                />
+              </Grid>
+              
+              ) : 
+              
+              
+              (
+                <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="org_code"
+                  label="Organisation Code"
+                  type="org_code"
+                  id="org_code"
+                  autoComplete="org_code"
+                />
+              </Grid>
+                
+              )}
+              
+              
             </Grid>
             <Button
               type="submit"
@@ -117,14 +165,13 @@ export default function SignUpPage() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
