@@ -15,14 +15,13 @@ from .serialisers import (
     UserUpdateSerialiser
 )
 
+
 TRUE = 'TRUE'
 FALSE = 'FALSE'
 
-
 class UserViewSet(ModelViewSet):
-    """User View Set"""
+    """User View Set."""
     serializer_class = UserSerialiser
-    # permission_classes = [IsAuthenticated, IsInOrganisation]
     queryset = User.objects.all()
 
     def get_queryset(self, **kwargs):
@@ -33,17 +32,14 @@ class UserViewSet(ModelViewSet):
             )
 
     def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
+        """Instantiates and returns the list of permissions that this viewset 
+        requires."""
         permission_classes = [IsAuthenticated]
 
         if self.action != 'create':
-            print('not create')
             permission_classes.append(IsInOrganisation)
 
-        if 'update' in self.action:
-            print('update')
+        if ('update' in self.action) or (self.actions == 'delete'):
             permission_classes.append(UserHierarchy)
 
         return [permission() for permission in permission_classes]
@@ -67,23 +63,23 @@ class UserViewSet(ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, *args, **kwargs):
+        """Update a user's information."""
+        # Data and user
         data: QueryDict = request.data
         user: User = self.request.user
-        serializer = UserUpdateSerialiser(instance=user, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
 
-        # User can not edit a ROLE, admin can.
-        # if 'role' in data:
-        #     if user.role < User.Roles.ORGANISATION_ADMIN: 
-        #     if user.role < User.Roles.ADMIN:
-        #         data.pop('role')
-        #     else:
-        #         if 
-            # if user.role < User.Roles.ADMIN and 'role' in data:
-            #     data.pop('role')
+        # Serialiser
+        serialiser = UserUpdateSerialiser(
+            instance=user, 
+            data=data, 
+            partial=True)
+        serialiser.is_valid(raise_exception=True)
 
         return super().partial_update(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        serialiser = self.get_serializer(instance=self.get_queryset(), many=True)
+        """List all users in one's organisation."""
+        serialiser = self.get_serializer(
+            instance=self.get_queryset(), many=True
+            )
         return Response(serialiser.data)
