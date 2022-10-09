@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useLocation } from 'react-router-dom';
-import '../../css/OrderTable.css';
 import ordersData from "../DashboardComponents/mock-data-orders.json";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,7 +14,7 @@ function OrderTable() {
   const location = useLocation();
   return (
     <>
-      <div className="offset">
+      <div>
         <h1> {location.state.customer}</h1>
 
         <TableContainer component={Paper} className="table">

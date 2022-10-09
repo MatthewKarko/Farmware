@@ -9,8 +9,8 @@
     width: 250px;
     height: 100vh;
     display: flex;
-    position: fixed;
-    padding-top: 80px;
+    position: sticky;
+    /* padding-top: 80px; */
     border-right: thick solid #000000;
 }
 
@@ -66,10 +66,6 @@ span {
     font-size: 16px;
 }
 
-.offset {
-    margin-left: 300px;
-    padding-bottom: 100px;
-}
 
 .column {
     float: left;

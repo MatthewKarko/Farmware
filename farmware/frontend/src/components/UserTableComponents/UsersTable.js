@@ -119,7 +119,7 @@ function UsersTable() {
 
   return (
     <>
-      <div className='offset' >
+      <div>
         <br></br>
         <h2>Users table</h2>
         <TableContainer component={Paper} className="table">
