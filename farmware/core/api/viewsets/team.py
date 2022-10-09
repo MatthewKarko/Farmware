@@ -15,7 +15,6 @@ class TeamViewSet(ModelViewSet):
     """Team View"""
     serializer_class = TeamCreationSerialiser
     permission_classes = [IsAuthenticated, IsInOrganisation]
-    # queryset = Team.objects.all()
 
     def get_queryset(self, **kwargs):
         user: User = self.request.user
@@ -45,3 +44,7 @@ class TeamViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         serialiser = TeamSerialiser(self.get_queryset(), many=True)
         return Response(serialiser.data)
+    
+    def destroy(self, request, *args, **kwargs):
+        super().destroy(request, *args, **kwargs)
+        return Response({'success': 'Team deleted.'}, status=status.HTTP_200_OK)
