@@ -1,14 +1,13 @@
-from django.db import IntegrityError
 from django.http import QueryDict
 
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from rest_framework.response import Response
 
-from .permissions import IsInOrganisation, IsInHierarchy
 from .models import User
+from .permissions import IsInOrganisation, UserHierarchy
 from .serialisers import (
     RegisterUserSerialiser, 
     RegisterAdminSerialiser, 
@@ -16,14 +15,13 @@ from .serialisers import (
     UserUpdateSerialiser
 )
 
+
 TRUE = 'TRUE'
 FALSE = 'FALSE'
 
-
 class UserViewSet(ModelViewSet):
-    """User View Set"""
+    """User View Set."""
     serializer_class = UserSerialiser
-    permission_classes = [IsAuthenticated, IsInOrganisation, IsInHierarchy]
     queryset = User.objects.all()
 
     def get_queryset(self, **kwargs):
@@ -33,13 +31,18 @@ class UserViewSet(ModelViewSet):
             **kwargs
             )
 
-    # def get_object(self):
-    #     lookup_field_value = self.kwargs[self.lookup_field]
+    def get_permissions(self):
+        """Instantiates and returns the list of permissions that this viewset 
+        requires."""
+        permission_classes = [IsAuthenticated]
 
-    #     obj = User.objects.get(lookup_field_value)
-    #     self.check_object_permissions(self.request, obj)
+        if self.action != 'create':
+            permission_classes.append(IsInOrganisation)
 
-    #     return obj
+        if ('update' in self.action) or (self.actions == 'delete'):
+            permission_classes.append(UserHierarchy)
+
+        return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
         """Create a new user."""
@@ -60,23 +63,23 @@ class UserViewSet(ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, *args, **kwargs):
+        """Update a user's information."""
+        # Data and user
         data: QueryDict = request.data
         user: User = self.request.user
-        serializer = UserUpdateSerialiser(instance=user, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
 
-        # User can not edit a ROLE, admin can.
-        # if 'role' in data:
-        #     if user.role < User.Roles.ORGANISATION_ADMIN: 
-        #     if user.role < User.Roles.ADMIN:
-        #         data.pop('role')
-        #     else:
-        #         if 
-            # if user.role < User.Roles.ADMIN and 'role' in data:
-            #     data.pop('role')
+        # Serialiser
+        serialiser = UserUpdateSerialiser(
+            instance=user, 
+            data=data, 
+            partial=True)
+        serialiser.is_valid(raise_exception=True)
 
         return super().partial_update(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        serialiser = self.get_serializer(instance=self.get_queryset(), many=True)
+        """List all users in one's organisation."""
+        serialiser = self.get_serializer(
+            instance=self.get_queryset(), many=True
+            )
         return Response(serialiser.data)
