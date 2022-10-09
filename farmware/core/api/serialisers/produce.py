@@ -6,14 +6,14 @@ from ..models.produce import ProduceQuantitySuffix
 class ProduceSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Produce
-        fields = ['name']
+        fields = '__all__'
 
 class ProduceVarietySerialiser(serializers.ModelSerializer):
     class Meta:
         model = ProduceVariety
-        fields = ['produce_id', 'variety']
+        fields = '__all__'
 
 class ProduceQuantitySuffixSerialiser(serializers.ModelSerializer):
     class Meta:
         model = ProduceQuantitySuffix
-        fields = ['produce_id', 'suffix', 'base_equivalent']
+        fields = '__all__'
