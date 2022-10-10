@@ -24,6 +24,10 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerialiser
     queryset = User.objects.all()
 
+    # def initialize_request(self, request, *args, **kwargs):
+    #     self.action = self.action_map.get(request.method.lower())
+    #     return super().initialize_request(request, *args, **kwargs)
+
     def get_queryset(self, **kwargs):
         user: User = self.request.user
         return User.objects.all().filter(
@@ -34,12 +38,11 @@ class UserViewSet(ModelViewSet):
     def get_permissions(self):
         """Instantiates and returns the list of permissions that this viewset 
         requires."""
-
         if self.action == 'create': return [AllowAny]
 
         permission_classes = [IsAuthenticated, IsInOrganisation]
 
-        if ('update' in self.action) or (self.actions == 'delete'):
+        if ('update' in self.action) or (self.action == 'delete'):
             permission_classes.append(UserHierarchy)
 
         return [permission() for permission in permission_classes]
@@ -83,3 +86,15 @@ class UserViewSet(ModelViewSet):
             instance=self.get_queryset(), many=True
             )
         return Response(serialiser.data)
+
+    # @action(detail=True, methods=['post'])
+    # def set_password(self, request, pk=None):
+    #     user = self.get_object()
+    #     serializer = PasswordSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         user.set_password(serializer.validated_data['password'])
+    #         user.save()
+    #         return Response({'status': 'password set'})
+    #     else:
+    #         return Response(serializer.errors,
+    #                         status=status.HTTP_400_BAD_REQUEST)
