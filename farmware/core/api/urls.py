@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-from django.urls import path
-
-from .views import OrganisationsView, UsersView
-
-urlpatterns = [
-    path('', OrganisationsView.as_view(), name='NAME NAME TEST'),
-]
-=======
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
@@ -28,4 +19,3 @@ urlpatterns = [
 ]
 
 urlpatterns += router.urls
->>>>>>> master
