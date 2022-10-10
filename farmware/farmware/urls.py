@@ -11,7 +11,7 @@ urlpatterns = [
     # path('api/', include(('core.routers', 'core'), namespace='core-api')),
 
     # API
-    path('api/', include('core.api.urls')),
+    path('api/', include(('core.api.urls', 'core'), namespace='api')),
     
     # REST Framework API-Auth
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),

@@ -10,7 +10,6 @@ from ..api.models.organisation import Organisation
 
 class UserSerialiser(serializers.ModelSerializer):
     """Serialiser for the User model."""
-
     class Meta:
         model = User
         fields = [

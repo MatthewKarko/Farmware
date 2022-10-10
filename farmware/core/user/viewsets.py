@@ -1,4 +1,11 @@
+from django.contrib.sites.shortcuts import get_current_site
+# from django.core.mail import EmailMessage
+from django.core.mail import send_mail
 from django.http import QueryDict
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.html import strip_tags
+from django.utils.http import urlsafe_base64_encode
 
 from rest_framework import status, mixins, generics
 from rest_framework.decorators import action
@@ -14,6 +21,7 @@ from .serialisers import (
     UserSerialiser, 
     UserUpdateSerialiser
 )
+from .tokens import account_activation_token
 
 
 TRUE = 'TRUE'
@@ -106,9 +114,30 @@ class UserViewSet(
             user: User = serliaser.save()
             if user:
                 # TODO: send confirmation email
+                self.send_email_verification(request, user)
                 return Response({'user_id': user.id}, status=status.HTTP_201_CREATED)
 
         return Response(serliaser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def send_email_verification(self, request, user: User) -> None:
+        current_site = get_current_site(request)
+        mail_subject = 'Activate your blog account.'
+        html_message = render_to_string('activate_account_email.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+            'token':account_activation_token.make_token(user),
+        })
+        plain_message = strip_tags(html_message)
+        to_email = user.email
+        send_mail(
+            subject=mail_subject, 
+            message=plain_message,
+            from_email=None,
+            recipient_list=[to_email],
+            html_message=html_message
+        )
+        # TODO: add verification / error checking
 
     # @action(detail=True, methods=['post'])
     # def set_password(self, request, pk=None):

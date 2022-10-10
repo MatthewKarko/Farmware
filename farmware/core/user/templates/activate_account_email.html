@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Account Activation</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    </head>
+    <body>
+        <div class="container" style="margin:auto; max-width:653px; padding-top: 1rem; padding-bottom: 1rem;">
+            {% block content %}
+            {% autoescape off %}
+            Hi {{ user.first_name }},
+
+            please click 
+            <a href="http://{{ domain }}{% url 'api:user:activate' uidb64=uid token=token %}">here</a> 
+            to confirm your registration.
+            {% endautoescape %}
+            {% endblock content %}
+        </div>
+    </body>
+</html>
