@@ -24,10 +24,6 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerialiser
     queryset = User.objects.all()
 
-    # def initialize_request(self, request, *args, **kwargs):
-    #     self.action = self.action_map.get(request.method.lower())
-    #     return super().initialize_request(request, *args, **kwargs)
-
     def get_queryset(self, **kwargs):
         user: User = self.request.user
         return User.objects.all().filter(
