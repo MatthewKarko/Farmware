@@ -6,6 +6,7 @@ import '../css/HomePage.css';
 import Header from '../components/Header';
 import logoFarmware from '../images/logo transparent.png';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { textAlign } from '@mui/system';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -30,21 +31,22 @@ export default function HomePage() {
           <Grid container rowSpacing={0} columnSpacing={{ xs: 1, sm: 2, md: 4 }}
             alignItems="center"
             justifyContent="center"
+            textAlign="center"
             style={{ minHeight: '60vh' }}>
 
             <Grid item xs={4}>
-              <Typography align="center" variant='h4' sx={{
+              <Typography align='center' variant='h4' sx={{
                 fontFamily: 'Lato',
                 paddingBottom: '15px',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
               }}>Welcome to Farmware</Typography>
-              <Typography align="center" variant='h7' sx={{
+              <Typography align='center' variant='h7' sx={{
                 fontFamily: 'Lato',
                 paddingBottom: '20px',
                 fontStyle: 'italic'
               }}>Farmware services the need for a digitised regulatory compliance aid—it provides an interface for farm admins and workers to collect and manage the required data for Freshcare standards.</Typography>
                
-               <Typography align="center" variant='h7' sx={{
+               <Typography align='center' variant='h7' sx={{
                 fontFamily: 'Lato',
                 margin: '10px',
                 fontStyle: 'italic'
