@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Navbar from '../components/Navbar';
 import AccountModify from '../components/AccountModify';
 import '../css/DashboardPages.css';
+import Header from '../components/Header';
 import { 
     BrowserRouter as Router, 
     Routes, 
@@ -15,6 +16,7 @@ export default function AccountSettingsPage() {
         <div className='mainContainer'>
             <Navbar/> 
             <div className='componentContainer'>
+            <Header />
             <AccountModify/>
             </div>
             

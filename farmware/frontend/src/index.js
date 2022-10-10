@@ -9,14 +9,16 @@ import DashboardPage from "./webpages/DashboardPage";
 import AccountSettingsPage from "./webpages/AccountSettingsPage";
 import UsersTablePage from "./webpages/UsersTablePage";
 import OrderPage from "./webpages/OrderPage";
+import Logout from "./components/Logout";
 
 const routing = (
     <Router>
-        
+
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />}/>
+            <Route path="/logout" element={<Logout />}/>
             <Route path="/dashboard" element={<DashboardPage />}/>
             <Route path="/accountsettings" element={<AccountSettingsPage />}/>
             <Route path="/userstable" element={<UsersTablePage />}/>
