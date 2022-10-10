@@ -1,90 +1,197 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
-import * as FaIcons from 'react-icons/fa';
-import * as AiIcons from 'react-icons/ai';
+import { Link } from "react-router-dom";
 import '../css/Navbar.css';
-import { IconContext } from 'react-icons';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import DescriptionIcon from '@mui/icons-material/Description';
+import PersonIcon from '@mui/icons-material/Person';
+import GroupIcon from '@mui/icons-material/Group';
+import EggIcon from '@mui/icons-material/Egg';
+import SettingsIcon from '@mui/icons-material/Settings';
+
+import logo from '../images/logo.jpg';
+import { Container } from '@mui/system';
+
+const drawerWidth = 240;
 
 function Navbar() {
     return (
-        <>
-            <IconContext.Provider value={{ color: '#000' }}>
-                <nav className='nav-menu'>
-                    <ul className='nav-menu-items'>
+        <div className='navbar'>
+            <Box>
+                <Drawer
+                    sx={{
+                        width: drawerWidth,
+                        flexShrink: 0,
+                        '& .MuiDrawer-paper': {
+                            width: drawerWidth,
+                            boxSizing: 'border-box',
+                        },
+                    }}
+                    variant="permanent"
+                    anchor="left"
+                >
+                    <Container sx={{
+                        width: drawerWidth,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        margin: "10px",
+                    }}>
+                        <img src={logo} alt="fireSpot" className='logoimage' />
+                    </Container>
 
-                        {/* <h1 className='fname'>Farm Name</h1> */}
 
-                        <li className='nav-text'>
-                            <Link to='/dashboard'>
-                                <AiIcons.AiOutlineHome />
-                                <span>Dashboard</span>
-                            </Link>
-                        </li>
+                    <List sx={{
+                        margin: "10px",
+                    }}>
+                        <ListItem key="Dashboard" disablePadding>
+                            <ListItemButton component={Link} to="/dashboard"  sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <DashboardIcon sx={{ color: "#000000" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Dashboard" />
+                            </ListItemButton>
+                        </ListItem>
 
-                        <li className='nav-text'>
-                            <Link to='/dashboard'>
-                                <AiIcons.AiOutlineContainer />
-                                <span>Orders</span>
-                            </Link>
-                        </li>
+                        <ListItem key="Orders" disablePadding>
+                            <ListItemButton component={Link} to="/" sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <InboxIcon sx={{ color: "#000000" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Orders" />
+                            </ListItemButton>
+                        </ListItem>
 
-                        <li className='nav-text'>
-                            <Link to='/dashboard'>
-                                <AiIcons.AiOutlineDropbox />
-                                <span>Packaging</span>
-                            </Link>
-                        </li>
+                        <ListItem key="Packaging" disablePadding>
+                            <ListItemButton component={Link} to="/" sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <Inventory2Icon sx={{ color: "#000000" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Packaging" />
+                            </ListItemButton>
+                        </ListItem>
 
-                        <li className='nav-text'>
-                            <Link to='/dashboard'>
-                                <AiIcons.AiOutlineForm />
-                                <span>Stock</span>
-                            </Link>
-                        </li>
-                        <br></br>
-                        <h1 className='subtext'>Accounts</h1>
+                        <ListItem key="Stock" disablePadding>
+                            <ListItemButton component={Link} to="/" sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <DescriptionIcon sx={{ color: "#000000" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Stock" />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                    <Divider />
+                    <List sx={{
+                        margin: "10px",
+                    }}>
+                        <ListItem key="Account Settings" disablePadding>
+                            <ListItemButton component={Link} to="/accountsettings"  sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <SettingsIcon sx={{ color: "#000000" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Account Settings" />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
 
-                        <li className='nav-text'>
-                            <Link to='/accountsettings'>
-                                <AiIcons.AiOutlineSetting />
-                                <span>Account Settings</span>
-                            </Link>
-                        </li>
-                        <br></br>
-                        <h1 className='subtext'>Tables</h1>
+                    <Divider />
 
-                        <li className='nav-text'>
-                            <Link to='/userstable'>
-                                <AiIcons.AiOutlineUser />
-                                <span>Users</span>
-                            </Link>
-                        </li>
-                        
-                        <li className='nav-text'>
-                            <Link to='/dashboard'>
-                                <AiIcons.AiFillHome />
-                                <span>Produce</span>
-                            </Link>
-                        </li>
-                        
-                        <li className='nav-text'>
-                            <Link to='/dashboard'>
-                                <AiIcons.AiOutlineUsergroupAdd />
-                                <span>Customers</span>
-                            </Link>
-                        </li>
+                    <List sx={{
+                        margin: "10px",
+                    }}>
+                        <ListItem key="Users" disablePadding>
+                            <ListItemButton component={Link} to="/userstable"  sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <PersonIcon sx={{ color: "#000000" }}/>
+                                </ListItemIcon>
+                                <ListItemText primary="Users" />
+                            </ListItemButton>
+                        </ListItem>
 
-                        <li className='nav-text'>
-                            <Link to='/dashboard'>
-                                <AiIcons.AiOutlineDropbox />
-                                <span>Packaging</span>
-                            </Link>
-                        </li>
-                    </ul>
-                </nav>
+                        <ListItem key="Produce" disablePadding>
+                            <ListItemButton component={Link} to="/"  sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <EggIcon sx={{ color: "#000000" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Produce" />
+                            </ListItemButton>
+                        </ListItem>
 
-            </IconContext.Provider>
-        </>
+                        <ListItem key="Customers" disablePadding>
+                            <ListItemButton component={Link} to="/"  sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <GroupIcon sx={{ color: "#000000" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Customers" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem key="Packaging" disablePadding>
+                            <ListItemButton component={Link} to="/"  sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <Inventory2Icon sx={{ color: "#000000" }}/>
+                                </ListItemIcon>
+                                <ListItemText primary="Packaging" />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Drawer>
+            </Box>
+        </div>
     )
 }
 

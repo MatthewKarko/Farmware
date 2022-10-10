@@ -10,7 +10,6 @@ import LoginPage from '../webpages/LoginPage';
 import DrawerComp from './DrawerComp';
 import AgricultureIcon from '@mui/icons-material/Agriculture';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-const PAGES = ["Login", "Signup"];
 
 const Header = () => {
     const theme = useTheme();
