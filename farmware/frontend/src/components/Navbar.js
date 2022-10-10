@@ -37,21 +37,35 @@ function Navbar() {
                             boxSizing: 'border-box',
                         },
                     }}
+                    PaperProps={{
+                        sx: {
+                            backgroundColor: "#404040",
+                        }
+                    }}
                     variant="permanent"
                     anchor="left"
                 >
                     <Container sx={{
                         width: drawerWidth,
-                        alignItems: "center",
                         justifyContent: "center",
-                        margin: "10px",
+                        paddingTop:"10px",
+                        paddingLeft:"10px",
+                        color: "#ffffff"
                     }}>
-                        <img src={logo} alt="fireSpot" className='logoimage' />
+                        <Typography variant='h4' sx={{
+                            fontFamily: 'Lato',
+                            color: "#028357",
+                            fontWeight: 'bold'
+                        }}>Farmware</Typography>
+                        <Typography variant='h6' sx={{
+                            fontFamily: 'Lato',
+                        }}>Org Name</Typography>
                     </Container>
 
 
                     <List sx={{
                         margin: "10px",
+                        color: "#ffffff"
                     }}>
                         <ListItem key="Dashboard" disablePadding>
                             <ListItemButton component={Link} to="/dashboard"  sx={{
@@ -61,7 +75,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <DashboardIcon sx={{ color: "#000000" }} />
+                                    <DashboardIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Dashboard" />
                             </ListItemButton>
@@ -75,7 +89,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <InboxIcon sx={{ color: "#000000" }} />
+                                    <InboxIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Orders" />
                             </ListItemButton>
@@ -89,7 +103,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <Inventory2Icon sx={{ color: "#000000" }} />
+                                    <Inventory2Icon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Packaging" />
                             </ListItemButton>
@@ -103,15 +117,16 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <DescriptionIcon sx={{ color: "#000000" }} />
+                                    <DescriptionIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Stock" />
                             </ListItemButton>
                         </ListItem>
                     </List>
-                    <Divider />
+                    <Divider/>
                     <List sx={{
                         margin: "10px",
+                        color: "#ffffff"
                     }}>
                         <ListItem key="Account Settings" disablePadding>
                             <ListItemButton component={Link} to="/accountsettings"  sx={{
@@ -121,7 +136,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <SettingsIcon sx={{ color: "#000000" }} />
+                                    <SettingsIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Account Settings" />
                             </ListItemButton>
@@ -132,6 +147,7 @@ function Navbar() {
 
                     <List sx={{
                         margin: "10px",
+                        color: "#ffffff"
                     }}>
                         <ListItem key="Users" disablePadding>
                             <ListItemButton component={Link} to="/userstable"  sx={{
@@ -141,7 +157,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <PersonIcon sx={{ color: "#000000" }}/>
+                                    <PersonIcon sx={{ color: "#ffffff" }}/>
                                 </ListItemIcon>
                                 <ListItemText primary="Users" />
                             </ListItemButton>
@@ -155,7 +171,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <EggIcon sx={{ color: "#000000" }} />
+                                    <EggIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Produce" />
                             </ListItemButton>
@@ -169,7 +185,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <GroupIcon sx={{ color: "#000000" }} />
+                                    <GroupIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Customers" />
                             </ListItemButton>
@@ -183,7 +199,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <Inventory2Icon sx={{ color: "#000000" }}/>
+                                    <Inventory2Icon sx={{ color: "#ffffff" }}/>
                                 </ListItemIcon>
                                 <ListItemText primary="Packaging" />
                             </ListItemButton>
