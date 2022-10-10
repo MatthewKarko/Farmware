@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers, exceptions
-from rest_framework.fields import CurrentUserDefault, empty
+from rest_framework.fields import empty
 
 from .models import User
 from ..api.constants import ORG_CODE_LENGTH
@@ -10,7 +10,6 @@ from ..api.models.organisation import Organisation
 
 class UserSerialiser(serializers.ModelSerializer):
     """Serialiser for the User model."""
-
     class Meta:
         model = User
         fields = [
@@ -23,19 +22,11 @@ class UserSerialiser(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
 
-class UserUpdateSerialiser(serializers.ModelSerializer):
+class UserUpdateSerialiser(UserSerialiser):
     """Serialiser for the User model."""
-
-    class Meta:
-        model = User
-        fields = [
-            'id',
-            'email',
-            'first_name', 'last_name', 'password', 
-            'organisation', 'role', 'teams'
-        ]
-        read_only_field = ['created', 'updated']
-        extra_kwargs = {'password': {'write_only': True}}
+    class Meta(UserSerialiser.Meta):
+        fields = UserSerialiser.Meta.fields
+        fields.remove('organisation')
 
     def __init__(self, instance=None, data=empty, **kwargs):
         if instance is not None:
@@ -62,24 +53,27 @@ class LoginSerialiser(UserSerialiser):
     """Log in serialiser. Used to log a user in."""
     email = serializers.EmailField()
 
-    class Meta:
-        model = User
+    class Meta(UserSerialiser.Meta):
         fields = ['email', 'password']
 
 
-class RegisterAdminSerialiser(UserSerialiser):
+class RegisterSerialiser(UserSerialiser):
     """Registration Serialiser for admins."""
-    org_name = serializers.CharField(required=False, write_only=True)
-    first_name = serializers.CharField(required=False)
+    org_name = serializers.CharField(required=True, write_only=True)
 
-    class Meta:
-        model = User
+    class Meta(UserSerialiser.Meta):
         fields = [
-            'id',
-            'first_name', 'last_name', 'password', 'email', 'username', 
-            'org_name'
+            'first_name', 'last_name', 'password', 'email', 
         ]
-        extra_kwargs = {'password': {'write_only': True}}
+        read_only_field = ['id']
+
+
+class RegisterAdminSerialiser(RegisterSerialiser):
+    """Registration Serialiser for admins."""
+    org_name = serializers.CharField(required=True, write_only=True)
+
+    class Meta(RegisterSerialiser.Meta):
+        fields = RegisterSerialiser.Meta.fields + ['org_name']
 
     def create(self, validated_data):
         """Create an Admin."""
@@ -91,27 +85,22 @@ class RegisterAdminSerialiser(UserSerialiser):
         try:
             user = User.objects.get(email=validated_data['email'])
         except ObjectDoesNotExist:
-            user = User.objects.create_user(
+            user = User.objects.create_admin(
                 email=validated_data['email'], 
                 first_name=validated_data['first_name'],
                 last_name=validated_data['last_name'],
                 organisation=organisation, 
-                password=validated_data['password'],
-                role=User.Roles.ORGANISATION_ADMIN)
+                password=validated_data['password']
+            )
         return user
 
 
-class RegisterUserSerialiser(UserSerialiser):
+class RegisterUserSerialiser(RegisterSerialiser):
     """Registration serialiser for normal users."""
     org_code = serializers.CharField(max_length=ORG_CODE_LENGTH, write_only=True)
 
-    class Meta:
-        model = User
-        fields = [
-            'id',
-            'first_name', 'last_name', 'password', 'email', 
-            'org_code'
-        ]
+    class Meta(RegisterSerialiser.Meta):
+        fields = RegisterSerialiser.Meta.fields + ['org_code']
 
     def create(self, validated_data):
         """Create a user."""

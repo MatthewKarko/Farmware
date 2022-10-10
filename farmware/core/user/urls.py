@@ -1,10 +1,11 @@
+from django.conf.urls import url
 from django.urls import path
 
 from rest_framework.routers import DefaultRouter
 
+from .views.ActivateAccount import ActivateAccount
 from .views.BlacklistTokenUpdateView import BlacklistTokenUpdateView
 from .views.CurrentUserView import CurrentUserView
-from .views.UserRegistrationView import UserRegistrationView
 from .viewsets import UserViewSet
 
 
@@ -14,8 +15,8 @@ app_name = 'user'
 router.register('', UserViewSet, 'user')
 
 urlpatterns = [
-    # Register user endpoint
-    path('register/', UserRegistrationView.as_view(), name="register_user"),
+    # Activate account
+    path('activate/<uidb64>/<token>', ActivateAccount.as_view(), name='activate'),
 
     # JWT token blacklist
     path('logout/blacklist/', BlacklistTokenUpdateView.as_view(),

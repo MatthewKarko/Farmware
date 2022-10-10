@@ -42,6 +42,21 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def create_admin(
+        self, 
+        email, 
+        first_name, 
+        last_name, 
+        organisation, 
+        password=None, 
+        **extra_fields
+        ):
+        return self.create_user(
+            email, first_name, last_name, organisation, password, 
+            role=User.Roles.ORGANISATION_ADMIN,
+            **extra_fields
+            )
+
     def create_superuser(self, email, first_name, last_name, organisation, password, **extra_fields):
         """Create and save a SuperUser with the given email and password."""
         extra_fields.setdefault('is_staff', True)
