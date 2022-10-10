@@ -15,7 +15,7 @@ router.register('', UserViewSet, 'user')
 
 urlpatterns = [
     # Register user endpoint
-    path('register/', UserRegistrationView.as_view(), name="register_user"),
+    # path('register/', UserRegistrationView.as_view(), name="register_user"),
 
     # JWT token blacklist
     path('logout/blacklist/', BlacklistTokenUpdateView.as_view(),

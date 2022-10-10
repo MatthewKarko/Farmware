@@ -1,10 +1,10 @@
 from django.http import QueryDict
 
-from rest_framework import status
+from rest_framework import status, mixins, generics
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from .models import User
 from .permissions import IsInOrganisation, UserHierarchy
@@ -19,47 +19,58 @@ from .serialisers import (
 TRUE = 'TRUE'
 FALSE = 'FALSE'
 
-class UserViewSet(ModelViewSet):
+# class UserViewSet(ModelViewSet):
+class UserViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet
+    ):
     """User View Set."""
     serializer_class = UserSerialiser
     queryset = User.objects.all()
 
-    def get_queryset(self, **kwargs):
-        user: User = self.request.user
-        return User.objects.all().filter(
-            organisation=user.organisation,
-            **kwargs
-            )
-
     def get_permissions(self):
         """Instantiates and returns the list of permissions that this viewset 
         requires."""
-        if self.action == 'create': return [AllowAny]
 
+        # Not instantiated
+        if self.action is None: return []
+
+        # Registration
+        if 'register' in self.action: return [AllowAny()]
+
+        # All others
         permission_classes = [IsAuthenticated, IsInOrganisation]
 
+        # Updating or deleting information
         if ('update' in self.action) or (self.action == 'delete'):
             permission_classes.append(UserHierarchy)
 
         return [permission() for permission in permission_classes]
 
-    def create(self, request, *args, **kwargs):
-        """Create a new user."""
-        data: QueryDict = request.data
+    def get_queryset(self, **kwargs):
+        """Get the query set."""
+        user: User = self.request.user
+        return User.objects.all().filter(
+            organisation=user.organisation,
+            **kwargs
+            )
+    
+    def get_serializer_class(self):
+        """Get the serialiser class for the appropriate action."""
+        if self.action == 'register_admin': return RegisterAdminSerialiser
+        if self.action == 'register_user': return RegisterUserSerialiser
+        return super().get_serializer_class()
 
-        # See if a new organisation is trying to be made
-        if data.get('new_org', FALSE).upper() == TRUE:
-            serializer = RegisterAdminSerialiser(data=data)
-        else:
-            serializer = RegisterUserSerialiser(data=data)
+    @action(detail=False, methods=['post'], url_path='register/admin')
+    def register_admin(self, request):
+        return self.create_user(request)
 
-        if serializer.is_valid():
-            user: User = serializer.save()
-            if user:
-                # TODO: send confirmation email
-                return Response({'user_id': user.id}, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @action(detail=False, methods=['post'], url_path='register/user')
+    def register_user(self, request):
+        return self.create_user(request)
 
     def partial_update(self, request, *args, **kwargs):
         """Update a user's information."""
@@ -82,6 +93,20 @@ class UserViewSet(ModelViewSet):
             instance=self.get_queryset(), many=True
             )
         return Response(serialiser.data)
+
+    def create_user(self, request):
+        """Create a new user."""
+        data: QueryDict = request.data
+
+        serliaser = self.get_serializer_class()(data=data)
+
+        if serliaser.is_valid():
+            user: User = serliaser.save()
+            if user:
+                # TODO: send confirmation email
+                return Response({'user_id': user.id}, status=status.HTTP_201_CREATED)
+
+        return Response(serliaser.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # @action(detail=True, methods=['post'])
     # def set_password(self, request, pk=None):
