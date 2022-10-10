@@ -1,13 +1,29 @@
+from django.conf.urls import url
 from django.urls import path
-from .views import UserRegistration #, BlacklistTokenUpdateView
 
+from rest_framework.routers import DefaultRouter
+
+from .views.ActivateAccount import ActivateAccount
+from .views.BlacklistTokenUpdateView import BlacklistTokenUpdateView
+from .views.CurrentUserView import CurrentUserView
+from .viewsets import UserViewSet
+
+
+router = DefaultRouter()
 app_name = 'user'
 
-urlpatterns = [
-    # Register user endpoint
-    path('register/', UserRegistration.as_view(), name="register_user"),
+router.register('', UserViewSet, 'user')
 
-    # TODO: leave for now; 
-    # path('logout/blacklist/', BlacklistTokenUpdateView.as_view(),
-    #      name='blacklist')
+urlpatterns = [
+    # Activate account
+    path('activate/<uidb64>/<token>', ActivateAccount.as_view(), name='activate'),
+
+    # JWT token blacklist
+    path('logout/blacklist/', BlacklistTokenUpdateView.as_view(),
+         name='blacklist'),
+
+    # Sanity check
+    path('me/', CurrentUserView.as_view(), name='me'),
 ]
+
+urlpatterns += router.urls

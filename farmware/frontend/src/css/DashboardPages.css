@@ -1,0 +1,8 @@
+.mainContainer {
+    display: flex;
+}
+
+.componentContainer {
+    flex: 1;
+    padding-left: 0px;
+}

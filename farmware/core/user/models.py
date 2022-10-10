@@ -42,6 +42,21 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def create_admin(
+        self, 
+        email, 
+        first_name, 
+        last_name, 
+        organisation, 
+        password=None, 
+        **extra_fields
+        ):
+        return self.create_user(
+            email, first_name, last_name, organisation, password, 
+            role=User.Roles.ORGANISATION_ADMIN,
+            **extra_fields
+            )
+
     def create_superuser(self, email, first_name, last_name, organisation, password, **extra_fields):
         """Create and save a SuperUser with the given email and password."""
         extra_fields.setdefault('is_staff', True)
@@ -57,11 +72,12 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
 
-    class Roles(models.TextChoices):
-        ADMIN = 'ADMIN', 'Admin'
-        WORKER = 'WORKER', 'Worker'
-        OFFICE = 'OFFICE', 'Office'
-        TEAM_LEADER = 'TEAM LEADER', 'Team Leader'
+    class Roles(models.IntegerChoices):
+        ORGANISATION_ADMIN = 0, 'Organisation Admin'
+        ADMIN              = 1, 'Admin'
+        WORKER             = 2, 'Worker'
+        OFFICE             = 3, 'Office'
+        TEAM_LEADER        = 4, 'Team Leader'
 
     objects = UserManager()
 
@@ -74,9 +90,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         on_delete=models.CASCADE
     )
 
-    role = models.CharField(
+    role = models.SmallIntegerField( #models.CharField(
         _("role"), 
-        max_length=50,
+        # max_length=50,
         choices=Roles.choices, 
         default=Roles.WORKER
         )
