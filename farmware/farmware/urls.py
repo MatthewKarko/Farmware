@@ -1,17 +1,13 @@
 from django.contrib import admin
 from django.urls import include, path
-# from django.conf.urls import url
 # from allauth.account.views import confirm_email
 
 urlpatterns = [
     # Admin site
     path('admin/', admin.site.urls),
 
-    # TODO: leave for now; routers for viewsets
-    # path('api/', include(('core.routers', 'core'), namespace='core-api')),
-
     # API
-    path('api/', include('core.api.urls')),
+    path('api/', include(('core.api.urls', 'core'), namespace='api')),
     
     # REST Framework API-Auth
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
