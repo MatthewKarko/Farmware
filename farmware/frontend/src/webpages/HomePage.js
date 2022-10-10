@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
+import { version } from 'react';
 
-import LoginPage from "./LoginPage";
-import SignUpPage from "./SignUpPage";
-
+import '../css/HomePage.css';
 import { 
     BrowserRouter as Router, 
     Routes, 
@@ -10,14 +9,21 @@ import {
     Link, 
     Redirect
 } from "react-router-dom";
+import Header from '../components/Header';
 
-export default class HomePage extends Component {
-    constructor(props) {
-        super(props);
-    } 
+export default function HomePage() {
+  console.log(version);
 
-    render() {
-        // return <p>hello</p>;
-        return (<p>Hello</p>);
-    }
+    return (
+      <React.Fragment>
+        <Header />
+        <header className="App-header">
+          <br></br>
+          <br></br>
+          <br></br>
+          <h1>this is the home page when no user is logged in.</h1>
+        </header>
+      </React.Fragment>
+ 
+    );
 }

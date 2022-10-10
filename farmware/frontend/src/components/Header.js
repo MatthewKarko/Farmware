@@ -8,6 +8,7 @@ import { makeStyles } from '@mui/material';
 import LoginPage from '../webpages/LoginPage';
 import DrawerComp from './DrawerComp';
 import AgricultureIcon from '@mui/icons-material/Agriculture';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const PAGES = ["Login", "Signup"];
 
@@ -19,13 +20,20 @@ const Header = () => {
 
     return(
         <React.Fragment>
+            
             <AppBar
-                position="static"
+                position="sticky"
+                display="flex"
                 sx={{background: "#026946"}}
             >
                 <Toolbar>
                 <IconButton href="/" sx={{color: 'white'}}>
                                     <AgricultureIcon
+                                    sx={{marginRight: '15px'}}
+                                    />
+                </IconButton>
+                <IconButton href="/dashboard" sx={{color: 'white'}}>
+                                    <DashboardIcon
                                     sx={{marginRight: '15px'}}
                                     />
                 </IconButton>
@@ -36,7 +44,6 @@ const Header = () => {
                     {
                         isMatch ? (
                             <>
-                        
                             <DrawerComp />
                             </>
                         ) : (
