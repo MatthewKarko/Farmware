@@ -6,7 +6,6 @@ from rest_framework.routers import DefaultRouter
 from .views.ActivateAccount import ActivateAccount
 from .views.BlacklistTokenUpdateView import BlacklistTokenUpdateView
 from .views.CurrentUserView import CurrentUserView
-from .views.UserRegistrationView import UserRegistrationView
 from .viewsets import UserViewSet
 
 
@@ -16,10 +15,7 @@ app_name = 'user'
 router.register('', UserViewSet, 'user')
 
 urlpatterns = [
-    # Register user endpoint
-    # path('register/', UserRegistrationView.as_view(), name="register_user"),
-    # url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-    #     activate, name='activate'),
+    # Activate account
     path('activate/<uidb64>/<token>', ActivateAccount.as_view(), name='activate'),
 
     # JWT token blacklist

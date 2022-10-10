@@ -18,7 +18,7 @@ class ActivateAccount(APIView):
         if user is not None and account_activation_token.check_token(user, token):
             user.is_active = True
             user.save()
-            # TODO: JWT
+            # TODO: Add JWT
             return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
         else:
             return HttpResponse('Activation link is invalid!')

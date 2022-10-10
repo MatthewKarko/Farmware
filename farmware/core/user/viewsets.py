@@ -113,9 +113,9 @@ class UserViewSet(
         if serliaser.is_valid():
             user: User = serliaser.save()
             if user:
-                # TODO: send confirmation email
-                self.send_email_verification(request, user)
-                return Response({'user_id': user.id}, status=status.HTTP_201_CREATED)
+                # TODO: activate send confirmation email
+                # self.send_email_verification(request, user)
+                return Response(status=status.HTTP_201_CREATED)
 
         return Response(serliaser.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -138,15 +138,3 @@ class UserViewSet(
             html_message=html_message
         )
         # TODO: add verification / error checking
-
-    # @action(detail=True, methods=['post'])
-    # def set_password(self, request, pk=None):
-    #     user = self.get_object()
-    #     serializer = PasswordSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         user.set_password(serializer.validated_data['password'])
-    #         user.save()
-    #         return Response({'status': 'password set'})
-    #     else:
-    #         return Response(serializer.errors,
-    #                         status=status.HTTP_400_BAD_REQUEST)
