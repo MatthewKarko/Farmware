@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers, exceptions
-from rest_framework.fields import CurrentUserDefault, empty
+from rest_framework.fields import empty
 
 from .models import User
 from ..api.constants import ORG_CODE_LENGTH
@@ -25,6 +25,10 @@ class UserSerialiser(serializers.ModelSerializer):
 
 class UserUpdateSerialiser(UserSerialiser):
     """Serialiser for the User model."""
+    class Meta(UserSerialiser.Meta):
+        fields = UserSerialiser.Meta.fields
+        fields.remove('organisation')
+
     def __init__(self, instance=None, data=empty, **kwargs):
         if instance is not None:
             self.role = serializers.ChoiceField(
@@ -53,6 +57,7 @@ class LoginSerialiser(UserSerialiser):
     class Meta(UserSerialiser.Meta):
         fields = ['email', 'password']
 
+
 class RegisterSerialiser(UserSerialiser):
     """Registration Serialiser for admins."""
     org_name = serializers.CharField(required=True, write_only=True)
@@ -62,6 +67,7 @@ class RegisterSerialiser(UserSerialiser):
             'first_name', 'last_name', 'password', 'email', 
         ]
         read_only_field = ['id']
+
 
 class RegisterAdminSerialiser(RegisterSerialiser):
     """Registration Serialiser for admins."""

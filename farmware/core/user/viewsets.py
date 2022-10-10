@@ -19,7 +19,6 @@ from .serialisers import (
 TRUE = 'TRUE'
 FALSE = 'FALSE'
 
-# class UserViewSet(ModelViewSet):
 class UserViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -62,14 +61,17 @@ class UserViewSet(
         """Get the serialiser class for the appropriate action."""
         if self.action == 'register_admin': return RegisterAdminSerialiser
         if self.action == 'register_user': return RegisterUserSerialiser
+        if 'update' in self.action: return UserUpdateSerialiser
         return super().get_serializer_class()
 
     @action(detail=False, methods=['post'], url_path='register/admin')
     def register_admin(self, request):
+        """Register as an admin, i.e., create a new organisation."""
         return self.create_user(request)
 
     @action(detail=False, methods=['post'], url_path='register/user')
     def register_user(self, request):
+        """Register as a user."""
         return self.create_user(request)
 
     def partial_update(self, request, *args, **kwargs):
@@ -79,7 +81,7 @@ class UserViewSet(
         user: User = self.request.user
 
         # Serialiser
-        serialiser = UserUpdateSerialiser(
+        serialiser = self.get_serializer_class()(
             instance=user, 
             data=data, 
             partial=True)
