@@ -1,25 +1,27 @@
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.sites.shortcuts import get_current_site
-# from django.core.mail import EmailMessage
 from django.core.mail import send_mail
+from django.core import exceptions
 from django.http import QueryDict
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.html import strip_tags
 from django.utils.http import urlsafe_base64_encode
 
-from rest_framework import status, mixins, generics
+from rest_framework import status, mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from .models import User
-from .permissions import IsInOrganisation, UserHierarchy
+from .permissions import IsInOrganisation, UserHierarchy, OnlyYou
 from .serialisers import (
     RegisterUserSerialiser, 
     RegisterAdminSerialiser, 
     UserSerialiser, 
-    UserUpdateSerialiser
+    UserUpdateSerialiser,
+    PasswordSerialiser
 )
 from .tokens import account_activation_token
 
@@ -48,14 +50,19 @@ class UserViewSet(
         # Registration
         if 'register' in self.action: return [AllowAny()]
 
+        # Set Password
+        if self.action == self.set_password.__name__: 
+            return [OnlyYou()]
+
         # All others
         permission_classes = [IsAuthenticated, IsInOrganisation]
 
         # Updating or deleting information
-        if ('update' in self.action) or (self.action == 'delete'):
+        if ('update' in self.action) or (self.action == 'destroy'):
             permission_classes.append(UserHierarchy)
 
         return [permission() for permission in permission_classes]
+
 
     def get_queryset(self, **kwargs):
         """Get the query set."""
@@ -69,7 +76,10 @@ class UserViewSet(
         """Get the serialiser class for the appropriate action."""
         if self.action == 'register_admin': return RegisterAdminSerialiser
         if self.action == 'register_user': return RegisterUserSerialiser
+        if self.action == 'set_password': return PasswordSerialiser
+
         if 'update' in self.action: return UserUpdateSerialiser
+
         return super().get_serializer_class()
 
     @action(detail=False, methods=['post'], url_path='register/admin')
@@ -81,6 +91,46 @@ class UserViewSet(
     def register_user(self, request):
         """Register as a user."""
         return self.create_user(request)
+
+    @action(detail=True, methods=['post'])
+    def set_password(self, request, pk=None):
+        """Set a new password for a user."""
+        user: User = self.get_object()
+        serialiser = self.get_serializer_class()(
+            data=request.data
+            )
+
+        if str(user.id) != str(pk):
+            return Response(
+                {'error': 'You do not have permission to do that'}, 
+                status=status.HTTP_400_BAD_REQUEST
+                )
+
+        if not serialiser.is_valid(): 
+            return Response(serialiser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check old password
+        if not user.check_password(serialiser.data.get("old_password")):
+            return Response(
+                {"old_password": ["Wrong password."]}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            validate_password(serialiser.data.get("new_password"), user)
+        except exceptions.ValidationError as e:
+            errors = []
+            for error in e.error_list:
+                message = error.message
+                if error.params:
+                    message %= error.params
+                errors.append(str(message))
+
+            raise serializers.ValidationError({'new_password': errors})
+
+        user.set_password(serialiser.data.get("new_password"))
+        user.save()
+        return Response({'success': 'Password successfully updated.'}, status=status.HTTP_200_OK)
 
     def partial_update(self, request, *args, **kwargs):
         """Update a user's information."""
@@ -104,6 +154,13 @@ class UserViewSet(
             )
         return Response(serialiser.data)
 
+    def destroy(self, request, *args, **kwargs):
+        """Remove a user."""
+        resp = super().destroy(request, *args, **kwargs)
+        print(resp)
+        return Response(status=status.HTTP_200_OK)
+
+
     def create_user(self, request):
         """Create a new user."""
         data: QueryDict = request.data
@@ -120,6 +177,7 @@ class UserViewSet(
         return Response(serliaser.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def send_email_verification(self, request, user: User) -> None:
+        """Send an email verification to the given user."""
         current_site = get_current_site(request)
         mail_subject = 'Activate your blog account.'
         html_message = render_to_string('activate_account_email.html', {
@@ -138,3 +196,6 @@ class UserViewSet(
             html_message=html_message
         )
         # TODO: add verification / error checking
+
+    def change_password():
+        pass

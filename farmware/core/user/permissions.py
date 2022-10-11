@@ -3,10 +3,6 @@ from rest_framework.permissions import BasePermission
 from .models import User
 
 class IsInOrganisation(BasePermission):
-    # # for view permission
-    # def has_permission(self, request, view):
-    #     return request.user and request.user.is_authenticated
-
     # for object level permissions
     def has_object_permission(self, request, view, user_obj):
         return request.user and (
@@ -32,3 +28,11 @@ class UserHierarchy(BasePermission):
 
         # Ensure hierarchy
         return user.role < user_obj.role
+
+class OnlyYou(BasePermission):
+    """Only you have permissions."""
+    def has_object_permission(self, request, view, user_obj):
+        user: User = request.user
+
+        # User should be able to edit themselves
+        return user and (user == user_obj)
