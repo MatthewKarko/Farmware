@@ -2,6 +2,10 @@ from django.db import models
 
 class Produce(models.Model):
     name = models.TextField(max_length=100)
+    organisation = models.ForeignKey(
+        'core_api.Organisation',
+        on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
         return self.name

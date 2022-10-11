@@ -1,4 +1,7 @@
+from typing import Union
 from rest_framework.permissions import BasePermission
+
+from core.api.models.produce import ProduceQuantitySuffix, ProduceVariety
 
 from .models import User
 
@@ -7,6 +10,12 @@ class IsInOrganisation(BasePermission):
     def has_object_permission(self, request, view, user_obj):
         return request.user and (
             request.user.organisation == user_obj.organisation)
+
+class IsInProduceForeignKeyOrganisation(BasePermission):
+    def has_object_permission(self, request, view, obj : Union[ProduceVariety, ProduceQuantitySuffix]):
+        return request.user and (
+            request.user.organisation == obj.produce_id.organisation
+        )
 
 class UserHierarchy(BasePermission):
     """
