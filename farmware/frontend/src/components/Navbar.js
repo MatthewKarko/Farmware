@@ -29,7 +29,7 @@ function Navbar() {
                     }}
                     PaperProps={{
                         sx: {
-                            backgroundColor: "#404040",
+                            backgroundColor: "#303030",
                         }
                     }}
                     variant="permanent"
