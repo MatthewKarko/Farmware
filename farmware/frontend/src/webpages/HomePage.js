@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Typography, Grid, Box } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Header from '../components/Header';
-import logoFarmware from '../images/logo transparent.png';
+import logoFarmware from '../images/logo_transparent.png';
 import '../css/HomePage.css';
 
 export default function HomePage() {

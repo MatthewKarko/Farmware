@@ -34,23 +34,29 @@ export default function SignUp() {
       first_name: data.get('firstName'),
       last_name: data.get('lastName'),
       email: data.get('email'),
-      password: data.get('password'),
-      new_org: checked
+      password: data.get('password')
     } 
+
     
     if(checked == true){
       
-      postObject["org_name"] = data.get('org_name')
+      postObject["org_name"] = data.get('org_name');
+      axiosInstance.post(`user/register/admin/`, postObject).then((res)=>{
+        navigate('/login')
+        console.log(res)
+        console.log(res.data)
+      })
     }else{
-      postObject["org_code"] = data.get('org_code')
+      postObject["org_code"] = data.get('org_code');
+      axiosInstance.post(`user/register/user/`, postObject).then((res)=>{
+        navigate('/login')
+        console.log(res)
+        console.log(res.data)
+      })
     }
     
    
-    axiosInstance.post(`user/register/`, postObject).then((res)=>{
-      navigate('/login')
-      console.log(res)
-      console.log(res.data)
-    })
+    
   };
 
   return (
@@ -77,6 +83,12 @@ export default function SignUp() {
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
               <Grid container spacing={2}>
+                <Grid item xs={12} >
+                  <FormControlLabel
+                  control={<Switch value="remember" color="primary" checked={checked} onChange={handleChange} />}
+                  label="Sign up as admin"
+                  />
+                </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     autoComplete="given-name"
@@ -117,12 +129,6 @@ export default function SignUp() {
                     type="password"
                     id="password"
                     autoComplete="new-password"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                  control={<Switch value="remember" color="primary" checked={checked} onChange={handleChange} />}
-                  label="Create New Organisation"
                   />
                 </Grid>
 
@@ -167,9 +173,9 @@ export default function SignUp() {
               >
                 Sign Up
               </Button>
-              <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Link href="/login" variant="body2">
+              <Grid container justifyContent="center" alignItems="center">
+                <Grid item >
+                  <Link href="/login" variant="body2" >
                     Already have an account? Sign in
                   </Link>
                 </Grid>
