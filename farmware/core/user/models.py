@@ -75,9 +75,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Roles(models.IntegerChoices):
         ORGANISATION_ADMIN = 000, 'Organisation Admin'
         ADMIN              = 100, 'Admin'
-        WORKER             = 200, 'Worker'
+        TEAM_LEADER        = 200, 'Team Leader'
         OFFICE             = 300, 'Office'
-        TEAM_LEADER        = 400, 'Team Leader'
+        WORKER             = 400, 'Worker'
 
     objects = UserManager()
 
