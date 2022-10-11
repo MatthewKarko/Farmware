@@ -30,6 +30,8 @@ class UserUpdateSerialiser(UserSerialiser):
 
     def __init__(self, instance=None, data=empty, **kwargs):
         if instance is not None:
+            print(instance.role, type(instance.role))
+            print(User.Roles.choices)
             self.role = serializers.ChoiceField(
                 choices=filter(lambda x: x[0] > instance.role, User.Roles.choices)
             )
