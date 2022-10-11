@@ -7,10 +7,16 @@ from rest_framework_simplejwt.views import (
 )
 
 from .views import OrganisationsView
+from .viewsets import ProduceViewSet
+from .viewsets import ProduceVarietyViewSet
+from .viewsets import ProduceQuantitySuffixViewSet
 from .viewsets import TeamViewSet
 
 router = DefaultRouter()
 
+router.register('produce', ProduceViewSet, 'produce')
+router.register('produce_variety', ProduceVarietyViewSet, 'produce_variety')
+router.register('produce_quantity_suffix', ProduceQuantitySuffixViewSet, 'produce_quantity_suffix')
 router.register('teams', TeamViewSet, 'team')
 
 urlpatterns = [

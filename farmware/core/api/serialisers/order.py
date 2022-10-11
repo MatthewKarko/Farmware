@@ -6,9 +6,9 @@ from ..models.order import OrderStock
 class OrderSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['customer_id']
+        fields = '__all__'
 
 class OrderStockSerialiser(serializers.ModelSerializer):
     class Meta:
         model = OrderStock
-        fields = ['order_id', 'stock_id', 'quantity', 'quantity_suffix_id', 'invoice_number']
+        fields = '__all__'
