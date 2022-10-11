@@ -15,7 +15,6 @@ import Logout from "./components/Logout";
 
 const routing = (
     <Router>
-
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

@@ -27,8 +27,8 @@ const theme = createTheme();
 
 export default function AccountModify() {
   let navigate = useNavigate();
-  const [userObj, setUserObj] = useState({});
-  const [teamList, setTeamlist] = useState({});
+  const [userObj, setUserObj] = useState([]);
+  const [teamList, setItemlist] = useState([]);
 
   useEffect(() => {
     axiosInstance
@@ -49,13 +49,26 @@ export default function AccountModify() {
 			})
 			.then((res) => {
 				console.log(res.data);
-        setTeamlist(res.data);
-				// console.log(res);
-       
+        // res.data.map((data) => {
+        //   teamList.push(data.name);
+
+        //   setItemlist([...teamList, {
+        //     id: data.id,
+
+
+        //   }])
+
+
+          
+
+        
+        // })
+
+        // console.log(teamList);
 			})
       .catch((err) => {
-        // console.log("AXIOS ERROR: ", err);
-        alert("ERROR: Incorrect call");
+        console.log("AXIOS ERROR: ", err);
+        // alert("ERROR: Incorrect call");
     });
     
   }, []);
@@ -85,7 +98,7 @@ export default function AccountModify() {
       
      
       axiosInstance
-        .post(`user/${userObj.id}/`, postObject)
+        .patch(`user/${userObj.id}/`, postObject)
         .then((res)=>{
             alert("successfully changed account information")
             console.log(res)
@@ -162,17 +175,22 @@ export default function AccountModify() {
                 autoFocus
               />
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                <InputLabel id="demo-simple-select-label">Teams</InputLabel>
                   <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={"age"}
-                    label="Age"
+                    value={"Teams"}
+                    label="Teams"
                     onChange={handleChange}
                   >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
+                   <MenuItem key={1} value={1}>test</MenuItem>
+                  {
+                      names = ['t1', 't2', 'TestTeam'];
+                      names.map((team) => {
+                     
+                     
+                        <MenuItem key={team.id} value={team.name}>{team.name}</MenuItem>
+                    
+                      })
+                  }
                   </Select>
               </FormControl>
               <FormLabel
