@@ -58,10 +58,11 @@ class UserViewSet(
         permission_classes = [IsAuthenticated, IsInOrganisation]
 
         # Updating or deleting information
-        if ('update' in self.action) or (self.action == 'delete'):
+        if ('update' in self.action) or (self.action == 'destroy'):
             permission_classes.append(UserHierarchy)
 
         return [permission() for permission in permission_classes]
+
 
     def get_queryset(self, **kwargs):
         """Get the query set."""
@@ -152,6 +153,13 @@ class UserViewSet(
             instance=self.get_queryset(), many=True
             )
         return Response(serialiser.data)
+
+    def destroy(self, request, *args, **kwargs):
+        """Remove a user."""
+        resp = super().destroy(request, *args, **kwargs)
+        print(resp)
+        return Response(status=status.HTTP_200_OK)
+
 
     def create_user(self, request):
         """Create a new user."""
