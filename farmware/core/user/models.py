@@ -68,16 +68,16 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, first_name, last_name, organisation, password, **extra_fields)
+        return self.create_admin(email, first_name, last_name, organisation, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
 
     class Roles(models.IntegerChoices):
-        ORGANISATION_ADMIN = 0, 'Organisation Admin'
-        ADMIN              = 1, 'Admin'
-        WORKER             = 2, 'Worker'
-        OFFICE             = 3, 'Office'
-        TEAM_LEADER        = 4, 'Team Leader'
+        ORGANISATION_ADMIN = 000, 'Organisation Admin'
+        ADMIN              = 100, 'Admin'
+        TEAM_LEADER        = 200, 'Team Leader'
+        OFFICE             = 300, 'Office'
+        WORKER             = 400, 'Worker'
 
     objects = UserManager()
 
@@ -90,9 +90,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         on_delete=models.CASCADE
     )
 
-    role = models.SmallIntegerField( #models.CharField(
+    role = models.SmallIntegerField(
         _("role"), 
-        # max_length=50,
         choices=Roles.choices, 
         default=Roles.WORKER
         )
