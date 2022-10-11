@@ -119,7 +119,7 @@ function UsersTable() {
 
   return (
     <>
-      <div>
+      <div className="body">
         <br></br>
         <h2>Users table</h2>
         <TableContainer component={Paper} className="table">

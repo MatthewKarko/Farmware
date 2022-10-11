@@ -1,30 +1,21 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar';
 import DashboardWidgets from '../components/DashboardComponents/DashboardWidgets';
-import '../css/DashboardPages.css';
-import axios from 'axios';
-import axiosInstance from '../axios.js';
-import Button from '@mui/material/Button';
-
-import { 
-    BrowserRouter as Router, 
-    Routes, 
-    Route, 
-    Link, 
-    Redirect
-} from "react-router-dom";
 import Header from '../components/Header';
+import '../css/DashboardPages.css';
 
 export default function DashboardPage() {
     return (
         <div className='mainContainer'>
-            <Navbar/> 
+            <Navbar />
             <div className='componentContainer'>
-            <Header/>
-            <DashboardWidgets/>
+                <Header />
+                <div className='componentContainerContent'>
+                    <DashboardWidgets />
+                </div>
             </div>
-            
+
         </div>
-  
+
     );
 }

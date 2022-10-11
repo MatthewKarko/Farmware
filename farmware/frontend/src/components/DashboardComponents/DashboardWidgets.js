@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import PackagingWidgetDashboard from './PackagingWidgetDashboard.js'
 import OrdersWidgetDashboard from './OrdersWidgetDashboard'
-import '../../css/DashboardWidgets.css';
+import '../../css/DashboardPages.css';
 import Container from '@mui/material/Container';
 
 function DashboardWidgets() {
