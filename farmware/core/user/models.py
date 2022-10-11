@@ -73,11 +73,11 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
 
     class Roles(models.IntegerChoices):
-        ORGANISATION_ADMIN = 0, 'Organisation Admin'
-        ADMIN              = 1, 'Admin'
-        WORKER             = 2, 'Worker'
-        OFFICE             = 3, 'Office'
-        TEAM_LEADER        = 4, 'Team Leader'
+        ORGANISATION_ADMIN = 000, 'Organisation Admin'
+        ADMIN              = 100, 'Admin'
+        WORKER             = 200, 'Worker'
+        OFFICE             = 300, 'Office'
+        TEAM_LEADER        = 400, 'Team Leader'
 
     objects = UserManager()
 
@@ -90,9 +90,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         on_delete=models.CASCADE
     )
 
-    role = models.SmallIntegerField( #models.CharField(
+    role = models.SmallIntegerField(
         _("role"), 
-        # max_length=50,
         choices=Roles.choices, 
         default=Roles.WORKER
         )
