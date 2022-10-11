@@ -13,15 +13,18 @@ import {
     Link, 
     Redirect
 } from "react-router-dom";
+import Header from '../components/Header';
 
 export default function DashboardPage() {
     return (
         <div className='mainContainer'>
             <Navbar/> 
             <div className='componentContainer'>
+            <Header/>
             <DashboardWidgets/>
             </div>
             
         </div>
+  
     );
 }
