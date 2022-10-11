@@ -46,11 +46,6 @@ const Header = () => {
                                     sx={{marginRight: '15px'}}
                                     />
                         </IconButton>
-                        <IconButton href="/dashboard" sx={{color: 'white'}}>
-                                            <DashboardIcon
-                                            sx={{marginRight: '15px'}}
-                                            />
-                        </IconButton>
                         <Typography variant="h6" color="inherit" noWrap  sx={{flexGrow: 1}}>
                                     Farmware
                         </Typography>

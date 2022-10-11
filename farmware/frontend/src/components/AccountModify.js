@@ -5,6 +5,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormLabel from '@mui/material/FormLabel';
 import Checkbox from '@mui/material/Checkbox';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -24,8 +28,37 @@ const theme = createTheme();
 export default function AccountModify() {
   let navigate = useNavigate();
   const [userObj, setUserObj] = useState({});
-  const [first_name, setFirstname] = useState("");
-  const [last_name, setLastname] = useState("");
+  const [teamList, setTeamlist] = useState({});
+
+  useEffect(() => {
+    axiosInstance
+			.get(`user/me/`, {
+			})
+			.then((res) => {
+				console.log(res.data);
+        setUserObj(res.data);
+				// console.log(res);
+       
+			})
+      .catch((err) => {
+        // console.log("AXIOS ERROR: ", err);
+        alert("Incorrect creditials entered");
+      });
+    axiosInstance
+		  .get(`teams/`, {
+			})
+			.then((res) => {
+				console.log(res.data);
+        setTeamlist(res.data);
+				// console.log(res);
+       
+			})
+      .catch((err) => {
+        // console.log("AXIOS ERROR: ", err);
+        alert("ERROR: Incorrect call");
+    });
+    
+  }, []);
 
   const  handleChange = (evt) => {
     const value = evt.target.value;
@@ -67,22 +100,7 @@ export default function AccountModify() {
 
   };
 
-  useEffect(() => {
-    axiosInstance
-			.get(`user/me/`, {
-			})
-			.then((res) => {
-				console.log(res.data);
-                setUserObj(res.data);
-				// console.log(res);
-       
-			})
-      .catch((err) => {
-        // console.log("AXIOS ERROR: ", err);
-        alert("Incorrect creditials entered");
-      });
-    
-  }, []);
+  
 
   return (
     <React.Fragment>
@@ -143,20 +161,20 @@ export default function AccountModify() {
                 autoComplete="email"
                 autoFocus
               />
-              <TextField
-                sx={{mb: 10 }}
-                InputLabelProps={{ shrink: !! userObj.organisation }}
-                onChange={handleChange}
-                value={userObj.organisation}
-                margin="normal"
-                required
-                fullWidth
-                name="organisation"
-                label="Organisation Code"
-                type="organisation"
-                id="organisation"
-                autoComplete="current-organisation"
-              />
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={"age"}
+                    label="Age"
+                    onChange={handleChange}
+                  >
+                      <MenuItem value={10}>Ten</MenuItem>
+                      <MenuItem value={20}>Twenty</MenuItem>
+                      <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
+              </FormControl>
               <FormLabel
               
                 children="Enter password to confirm"
