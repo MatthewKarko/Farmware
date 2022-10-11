@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { version } from 'react';
 import { Button, Typography, Grid, Box } from '@mui/material';
-import '../css/HomePage.css';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Header from '../components/Header';
 import logoFarmware from '../images/logo transparent.png';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { textAlign } from '@mui/system';
+import '../css/HomePage.css';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -23,7 +21,6 @@ export default function HomePage() {
   });
 
   return (
-    // If i make the fonts smaller, they might fit in the centre of the page when the margins are added to each
     <React.Fragment>
       <Header />
       <div className='main'>

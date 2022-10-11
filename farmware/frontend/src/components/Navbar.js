@@ -1,15 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from "react-router-dom";
-import '../css/Navbar.css';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import { Box, Drawer, List, Typography, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Container } from '@mui/system';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -18,9 +10,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
 import EggIcon from '@mui/icons-material/Egg';
 import SettingsIcon from '@mui/icons-material/Settings';
-
-import logo from '../images/logo.jpg';
-import { Container } from '@mui/system';
+import '../css/Navbar.css';
 
 const drawerWidth = 240;
 
@@ -48,8 +38,8 @@ function Navbar() {
                     <Container sx={{
                         width: drawerWidth,
                         justifyContent: "center",
-                        paddingTop:"10px",
-                        paddingLeft:"10px",
+                        paddingTop: "10px",
+                        paddingLeft: "10px",
                         color: "#ffffff"
                     }}>
                         <Typography variant='h4' sx={{
@@ -68,7 +58,7 @@ function Navbar() {
                         color: "#ffffff"
                     }}>
                         <ListItem key="Dashboard" disablePadding>
-                            <ListItemButton component={Link} to="/dashboard"  sx={{
+                            <ListItemButton component={Link} to="/dashboard" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",
@@ -123,13 +113,13 @@ function Navbar() {
                             </ListItemButton>
                         </ListItem>
                     </List>
-                    <Divider/>
+                    <Divider />
                     <List sx={{
                         margin: "10px",
                         color: "#ffffff"
                     }}>
                         <ListItem key="Account Settings" disablePadding>
-                            <ListItemButton component={Link} to="/accountsettings"  sx={{
+                            <ListItemButton component={Link} to="/accountsettings" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",
@@ -150,21 +140,21 @@ function Navbar() {
                         color: "#ffffff"
                     }}>
                         <ListItem key="Users" disablePadding>
-                            <ListItemButton component={Link} to="/userstable"  sx={{
+                            <ListItemButton component={Link} to="/userstable" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <PersonIcon sx={{ color: "#ffffff" }}/>
+                                    <PersonIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Users" />
                             </ListItemButton>
                         </ListItem>
 
                         <ListItem key="Produce" disablePadding>
-                            <ListItemButton component={Link} to="/"  sx={{
+                            <ListItemButton component={Link} to="/" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",
@@ -178,7 +168,7 @@ function Navbar() {
                         </ListItem>
 
                         <ListItem key="Customers" disablePadding>
-                            <ListItemButton component={Link} to="/"  sx={{
+                            <ListItemButton component={Link} to="/" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",
@@ -192,14 +182,14 @@ function Navbar() {
                         </ListItem>
 
                         <ListItem key="Packaging" disablePadding>
-                            <ListItemButton component={Link} to="/"  sx={{
+                            <ListItemButton component={Link} to="/" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <Inventory2Icon sx={{ color: "#ffffff" }}/>
+                                    <Inventory2Icon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Packaging" />
                             </ListItemButton>
