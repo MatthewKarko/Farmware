@@ -5,6 +5,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormLabel from '@mui/material/FormLabel';
 import Checkbox from '@mui/material/Checkbox';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import ListItemText from '@mui/material/ListItemText';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -23,16 +28,55 @@ const theme = createTheme();
 
 export default function AccountModify() {
   let navigate = useNavigate();
-  const [userObj, setUserObj] = useState({});
-  const [first_name, setFirstname] = useState("");
-  const [last_name, setLastname] = useState("");
+  const [userObj, setUserObj] = useState([]);
+  const [teamList, setTeamlist] = useState([]);
+  const [currentTeam, setCurrentTeam] = useState('');
 
-  const  handleChange = (evt) => {
+  useEffect(() => {
+    axiosInstance
+			.get(`user/me/`, {
+			})
+			.then((res) => {
+				console.log(res.data);
+        setUserObj(res.data);
+				// console.log(res);
+       
+			})
+      .catch((err) => {
+        // console.log("AXIOS ERROR: ", err);
+        alert("Incorrect creditials entered");
+      });
+    axiosInstance
+		  .get(`teams/`, {
+			})
+			.then((res) => {
+				
+        res.data.map((data) => {
+          // teamList.push(data.name);
+          // console.log(data);
+          setTeamlist(teamList => [...teamList, data])
+          
+
+
+        })
+        
+
+        
+			})
+      .catch((err) => {
+        console.log("AXIOS ERROR: ", err);
+        // alert("ERROR: Incorrect call");
+    });
+    
+  }, []);
+
+  const handleChange = (evt) => {
     const value = evt.target.value;
     setUserObj({
       ...userObj,
       [evt.target.name]: value
     });
+
   }
 
   const handleSubmit = (event) => {
@@ -42,9 +86,8 @@ export default function AccountModify() {
     var postObject = {
         first_name: data.get('first_name'),
         last_name: data.get('last_name'),
-        email: data.get('email'),
-        organisation: data.get('organisation'),
-        password: data.get('password'),
+        email: data.get('email')
+
        
       } 
       
@@ -52,37 +95,19 @@ export default function AccountModify() {
       
      
       axiosInstance
-        .post(`user/${userObj.id}/`, postObject)
+        .patch(`user/${userObj.id}/`, postObject)
         .then((res)=>{
-            alert("successfully changed account information")
-            console.log(res)
-            navigate('/dashboard')
+            console.log(res);
+            alert("successfully changed account information");
+            navigate('/dashboard');
             
-        .catch((err) => {
-                console.log("AXIOS ERROR: ", err);
-                // alert("Incorrect creditials entered");
-              });
+        
       });
 
 
   };
 
-  useEffect(() => {
-    axiosInstance
-			.get(`user/me/`, {
-			})
-			.then((res) => {
-				console.log(res.data);
-                setUserObj(res.data);
-				// console.log(res);
-       
-			})
-      .catch((err) => {
-        // console.log("AXIOS ERROR: ", err);
-        alert("Incorrect creditials entered");
-      });
-    
-  }, []);
+  
 
   return (
     <React.Fragment>
@@ -143,20 +168,25 @@ export default function AccountModify() {
                 autoComplete="email"
                 autoFocus
               />
-              <TextField
-                sx={{mb: 10 }}
-                InputLabelProps={{ shrink: !! userObj.organisation }}
-                onChange={handleChange}
-                value={userObj.organisation}
-                margin="normal"
-                required
-                fullWidth
-                name="organisation"
-                label="Organisation Code"
-                type="organisation"
-                id="organisation"
-                autoComplete="current-organisation"
-              />
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Teams</InputLabel>
+                  <Select
+                    value={"Teams"}
+                    label="Teams"
+                    onChange={handleChange}
+                  >
+                   {/* <MenuItem key={1} value={1}>test</MenuItem> */}
+                  {
+                      // names = ['t1', 't2', 'TestTeam'];
+                      teamList.map((team) => {
+                 
+                        return(
+                        <MenuItem key={team.id} value={team.name}>{team.name}</MenuItem>
+                        )
+                      })
+                  }
+                  </Select>
+              </FormControl>
               <FormLabel
               
                 children="Enter password to confirm"
@@ -178,7 +208,7 @@ export default function AccountModify() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Submit Modifications
               </Button>
               <Grid container>
                 <Grid item xs>
@@ -186,11 +216,7 @@ export default function AccountModify() {
                     Forgot password?
                   </Link>
                 </Grid>
-                <Grid item>
-                  <Link href="/signup" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
+                
               </Grid>
             </Box>
           </Box>

@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
 import HomePage from "./webpages/HomePage";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useNavigate, Navigate } from "react-router-dom";
 
 import LoginPage from "./webpages/LoginPage";
 import SignUpPage from "./webpages/SignUpPage";
@@ -11,9 +11,10 @@ import UsersTablePage from "./webpages/UsersTablePage";
 import OrderPage from "./webpages/OrderPage";
 import Logout from "./components/Logout";
 
+
+
 const routing = (
     <Router>
-
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
