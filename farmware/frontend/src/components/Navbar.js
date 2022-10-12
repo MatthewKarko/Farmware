@@ -26,6 +26,7 @@ function Navbar() {
                             width: drawerWidth,
                             boxSizing: 'border-box',
                         },
+                        overflow: 'hidden',
                     }}
                     PaperProps={{
                         sx: {
@@ -36,7 +37,7 @@ function Navbar() {
                     anchor="left"
                 >
                     <Container sx={{
-                        width: drawerWidth,
+                        width: 200,
                         justifyContent: "center",
                         paddingTop: "10px",
                         paddingLeft: "10px",
@@ -47,9 +48,6 @@ function Navbar() {
                             color: "#028357",
                             fontWeight: 'bold'
                         }}>Farmware</Typography>
-                        <Typography variant='h6' sx={{
-                            fontFamily: 'Lato',
-                        }}>Org Name</Typography>
                     </Container>
 
 
