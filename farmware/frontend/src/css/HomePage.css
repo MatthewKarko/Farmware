@@ -4,6 +4,7 @@
   font-family: 'Lato', sans-serif;
 }
 
+/* 
 .App {
   text-align: center;
 }
@@ -17,9 +18,9 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
+} */
 
-.App-header {
+/* .App-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -41,4 +42,18 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+.main {
+  height: 100vh;
+  background: linear-gradient(to bottom right,#028357, #ffffff);
+}
+
+.homelogoimage {
+  display: flex;
+  margin: 200px;
+  width: 300px;
+  height: 180px;
+  align-items: center;
+  justify-content: center;
 }

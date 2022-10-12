@@ -27,9 +27,12 @@ class UserUpdateSerialiser(UserSerialiser):
     class Meta(UserSerialiser.Meta):
         fields = UserSerialiser.Meta.fields
         fields.remove('organisation')
+        fields.remove('password')
 
     def __init__(self, instance=None, data=empty, **kwargs):
         if instance is not None:
+            print(instance.role, type(instance.role))
+            print(User.Roles.choices)
             self.role = serializers.ChoiceField(
                 choices=filter(lambda x: x[0] > instance.role, User.Roles.choices)
             )
@@ -120,3 +123,10 @@ class RegisterUserSerialiser(RegisterSerialiser):
                 organisation=organisation,
                 password=validated_data['password'])
         return user
+
+class PasswordSerialiser(serializers.Serializer):
+    """Password serialiser."""
+    # model = User
+
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
