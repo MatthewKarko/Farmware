@@ -4,32 +4,32 @@ import '../../css/UsersTable.css';
 import axiosInstance from '../../axios';
 
 function UsersTable() {
-  
+
   const [usersList, setUsersList] = useState([]);
 
   useEffect(() => {
     axiosInstance
-			.get(`user/me/`, {
-			})
-			.then((res) => {
-				console.log(res.data);
-			})
+      .get(`user/me/`, {
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
       .catch((err) => {
         alert("ERROR: user/me failed");
       });
 
-      axiosInstance
-		  .get(`user/`, {
-			})
-			.then((res) => {
+    axiosInstance
+      .get(`user/`, {
+      })
+      .then((res) => {
         res.data.map((data) => {
           setUsersList(usersList => [...usersList, data])
           console.log(res.data)
         })
-			})
+      })
       .catch((err) => {
         alert("ERROR: Getting users failed");
-    });
+      });
   }, []);
 
 
@@ -110,8 +110,8 @@ function UsersTable() {
   };
 
   return (
-    <>
-      <React.Fragment>
+    <React.Fragment>
+      <div className="main-content">
         <Typography variant="h4" sx={{
           fontFamily: 'Lato',
           fontWeight: 'bold',
@@ -121,10 +121,11 @@ function UsersTable() {
             <TableHead>
               <TableRow>
                 <TableCell className="tableCell">ID</TableCell>
-                <TableCell className="tableCell">First name</TableCell>
-                <TableCell className="tableCell">Last name</TableCell>
+                <TableCell className="tableCell">First Name</TableCell>
+                <TableCell className="tableCell">Last Name</TableCell>
                 <TableCell className="tableCell">Email</TableCell>
                 <TableCell className="tableCell">Role</TableCell>
+                <TableCell className="tableCell">Teams</TableCell>
                 <TableCell className="tableCell">Edit</TableCell>
               </TableRow>
             </TableHead>
@@ -136,6 +137,7 @@ function UsersTable() {
                   <TableCell className="tableCell">{row.last_name}</TableCell>
                   <TableCell className="tableCell">{row.email}</TableCell>
                   <TableCell className="tableCell">{row.role}</TableCell>
+                  <TableCell className="tableCell">{row.teams}</TableCell>
                   <TableCell className="tableCell">
                     <Button variant="outlined" size="medium"
                       style={{
@@ -150,80 +152,83 @@ function UsersTable() {
             </TableBody>
           </Table>
         </TableContainer>
-      
+      </div>
 
       {/* The modal is currently not in MUI components, might change it to MUI later */}
-        <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
-          <button
-            className="Close"
-            onClick={() => { setDisplayEditModal(!displayEditModal); clearState(); }}
-          >
-            X
-          </button>
+      <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
+        <button
+          className="Close"
+          onClick={() => { setDisplayEditModal(!displayEditModal); clearState(); }}
+        >
+          X
+        </button>
 
-          <Typography variant="h4" sx={{
+        <Typography variant="h4" sx={{
           fontFamily: 'Lato',
           fontWeight: 'bold',
           margin: "20px",
         }}> Edit User</Typography>
 
-          <form onSubmit={handleEditSubmit}>
-            <label>First Name:</label>
-            <input
-              type="text"
-              name="firstName"
-              required="required"
-              placeholder="Enter a first name..."
-              value={temporaryUser.first_name}
-              onChange={handleFormChange}
-            />
-            <br></br>
-            <label>Last Name:</label>
-            <input
-              type="text"
-              name="lastName"
-              required="required"
-              placeholder="Enter a last name..."
-              value={temporaryUser.last_name}
-              onChange={handleFormChange}
-            />
-            <br></br>
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              required="required"
-              placeholder="Enter an email..."
-              value={temporaryUser.email}
-              onChange={handleFormChange}
-            />
-            <br></br>
-            <label>Role:</label>
-            <input
-              type="text"
-              name="role"
-              required="required"
-              placeholder="Enter a role..."
-              value={temporaryUser.role}
-              onChange={handleFormChange}
-            />
-            <br></br>
-            <Button type="submit" variant="outlined" size="large" style={{
-              color: "#028357",
-              borderColor: "#028357",
-            }}
-              onClick={() => setDisplayEditModal(!displayEditModal)}
-            >Add</Button>
-          </form>
-        </div>
+        <form onSubmit={handleEditSubmit}>
+          <label>First Name:</label>
+          <input
+            type="text"
+            name="firstName"
+            required="required"
+            placeholder="Enter a first name..."
+            value={temporaryUser.first_name}
+            onChange={handleFormChange}
+            style={{width: "200px"}}
+          />
+          <br></br>
+          <label>Last Name:</label>
+          <input
+            type="text"
+            name="lastName"
+            required="required"
+            placeholder="Enter a last name..."
+            value={temporaryUser.last_name}
+            onChange={handleFormChange}
+            style={{width: "200px"}}
+          />
+          <br></br>
+          <label>Email:</label>
+          <input
+            type="email"
+            name="email"
+            required="required"
+            placeholder="Enter an email..."
+            value={temporaryUser.email}
+            onChange={handleFormChange}
+            style={{width: "200px"}}
+          />
+          <br></br>
+          <label>Role:</label>
+          <input
+            type="text"
+            name="role"
+            required="required"
+            placeholder="Enter a role..."
+            value={temporaryUser.role}
+            onChange={handleFormChange}
+            style={{width: "200px"}}
+          />
+          <br></br>
+          <Button type="submit" variant="outlined" size="large" style={{
+            color: "#028357",
+            borderColor: "#028357",
+          }}
+            onClick={() => setDisplayEditModal(!displayEditModal)}
+          >Submit</Button>
+        </form>
+      </div>
 
-        {/* Below snippet makes it so that if you click out of the modal it exits. */}
-        <div
-          className={`Overlay ${displayEditModal ? "Show" : ""}`}
-          onClick={() => { setDisplayEditModal(!displayEditModal); clearState(); }}
-        />
-      </React.Fragment>
-    </>
+      {/* Below snippet makes it so that if you click out of the modal it exits. */}
+      <div
+        className={`Overlay ${displayEditModal ? "Show" : ""}`}
+        onClick={() => { setDisplayEditModal(!displayEditModal); clearState(); }}
+      />
+    </React.Fragment>
   )
 }
 

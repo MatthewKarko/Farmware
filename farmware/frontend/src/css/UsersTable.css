@@ -1,3 +1,7 @@
+.main-content {
+  margin:20px;
+} 
+
   .Modal {
     position: fixed;
     bottom: -150vh;
@@ -30,4 +34,19 @@
     margin-bottom: 20px;
     margin-left: 20px;
     align-self: center;
+  }
+
+  .Overlay {
+    background-color: rgba(0, 0, 0, 0.55);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    display: none;
+    z-index: 5;
+  }
+  
+  .Overlay.Show {
+    display: block;
   }

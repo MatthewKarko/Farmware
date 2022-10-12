@@ -18,9 +18,7 @@ export default function UsersTablePage() {
             <Navbar />
             <div className='componentContainer'>
                 <Header />
-                <div className='componentMain'>
-                    <UsersTable />
-                </div>
+                <UsersTable />
             </div>
         </div>
     );
