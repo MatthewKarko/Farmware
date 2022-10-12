@@ -4,4 +4,4 @@ from ..models.organisation import  Organisation
 class OrganisationSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Organisation
-        fields = ['code', 'name', 'logo']
+        fields = '__all__'
