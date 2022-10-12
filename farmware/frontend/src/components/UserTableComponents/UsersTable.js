@@ -7,6 +7,7 @@ function UsersTable() {
 
   const [usersList, setUsersList] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [teamsList, setTeamsList] = useState([]);
 
   useEffect(() => {
     axiosInstance
@@ -14,7 +15,7 @@ function UsersTable() {
       })
       .then((res) => {
         console.log(res.data);
-        if (res.data.role == 0) {
+        if (res.data.role < 200) {
           setIsAdmin(true)
         }
       })
@@ -33,6 +34,20 @@ function UsersTable() {
       })
       .catch((err) => {
         alert("ERROR: Getting users failed");
+      });
+
+      //get the teams and store them
+      axiosInstance
+      .get(`teams/`, {
+      })
+      .then((res) => {
+        res.data.map((data) => {
+          setTeamsList(teamsList => [...teamsList, data])
+          console.log(res.data)
+        })
+      })
+      .catch((err) => {
+        alert("ERROR: Getting teams failed");
       });
   }, []);
 
@@ -113,6 +128,8 @@ function UsersTable() {
     setDisplayEditModal(!displayEditModal);
   };
 
+  
+
   return (
     <React.Fragment>
       <div className="main-content">
@@ -141,7 +158,7 @@ function UsersTable() {
                   <TableCell className="tableCell">{row.last_name}</TableCell>
                   <TableCell className="tableCell">{row.email}</TableCell>
                   <TableCell className="tableCell">{row.role}</TableCell>
-                  <TableCell className="tableCell">{row.teams}</TableCell>
+                  <TableCell className="tableCell">convert {row.teams} to string format</TableCell>
                   {isAdmin &&
                     <TableCell className="tableCell">
                       <Button variant="outlined" size="medium"
