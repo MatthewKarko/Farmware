@@ -4,6 +4,8 @@ from ..models.team import Team
 
 class TeamCreationSerialiser(serializers.ModelSerializer):
     name = serializers.CharField(allow_blank=True)
+    # join_team = serliazers.
+
     class Meta:
         model = Team
         fields = ['category', 'name']
