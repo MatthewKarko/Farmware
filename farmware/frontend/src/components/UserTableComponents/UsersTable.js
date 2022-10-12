@@ -6,6 +6,7 @@ import axiosInstance from '../../axios';
 function UsersTable() {
 
   const [usersList, setUsersList] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     axiosInstance
@@ -13,6 +14,9 @@ function UsersTable() {
       })
       .then((res) => {
         console.log(res.data);
+        if (res.data.role == 0) {
+          setIsAdmin(true)
+        }
       })
       .catch((err) => {
         alert("ERROR: user/me failed");
@@ -37,6 +41,7 @@ function UsersTable() {
 
   //Stores temporary changes
   const [temporaryUser, setTemporaryUser] = useState({
+    id: -1,
     first_name: "",
     last_name: "",
     email: "",
@@ -45,6 +50,7 @@ function UsersTable() {
 
   const clearState = () => {
     const formValues = {
+      id: -1,
       first_name: '',
       last_name: '',
       email: '',
@@ -71,20 +77,23 @@ function UsersTable() {
 
   const handleEditSubmit = (event) => {
     event.preventDefault();
-    console.log("Edit user submitted");
 
-    const newUser = {
+    var postObject = {
       first_name: temporaryUser.first_name,
       last_name: temporaryUser.last_name,
       email: temporaryUser.email,
-      role: temporaryUser.role,
-    };
+      // role: temporaryUser.role,
+      // teams: temporaryUser.teams,
+    } 
 
-    //TO DO: Send the UPDATE request from here based on newUser.
-    console.log(newUser);
+    //Send PUT request to update user
+    axiosInstance.put(`user/${temporaryUser.id}/`, postObject)
 
     //reset values
     clearState();
+
+    //reload page
+    window.location.reload();
   };
 
   const handleEditClick = (event, row) => {
@@ -92,18 +101,13 @@ function UsersTable() {
     setEditContactId(row.id);
 
     const formValues = {
+      id: row.id,
       first_name: row.first_name,
       last_name: row.last_name,
       email: row.email,
       role: row.role,
     };
-    // console.log("prior = " + temporaryUser.firstName);
     setTemporaryUser({ ...formValues });
-    // console.log("after = " + temporaryUser.lastName);
-
-    //Log the data that wants to be edited
-    console.log("Edit button pressed for values:");
-    console.log(formValues);
 
     //cause the modal to open.
     setDisplayEditModal(!displayEditModal);
@@ -126,7 +130,7 @@ function UsersTable() {
                 <TableCell className="tableCell">Email</TableCell>
                 <TableCell className="tableCell">Role</TableCell>
                 <TableCell className="tableCell">Teams</TableCell>
-                <TableCell className="tableCell">Edit</TableCell>
+                {isAdmin && < TableCell className="tableCell">Edit</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -138,15 +142,17 @@ function UsersTable() {
                   <TableCell className="tableCell">{row.email}</TableCell>
                   <TableCell className="tableCell">{row.role}</TableCell>
                   <TableCell className="tableCell">{row.teams}</TableCell>
-                  <TableCell className="tableCell">
-                    <Button variant="outlined" size="medium"
-                      style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                      }}
-                      onClick={(event) => handleEditClick(event, row)}
-                    >Edit</Button>
-                  </TableCell>
+                  {isAdmin &&
+                    <TableCell className="tableCell">
+                      <Button variant="outlined" size="medium"
+                        style={{
+                          color: "#028357",
+                          borderColor: "#028357",
+                        }}
+                        onClick={(event) => handleEditClick(event, row)}
+                      >Edit</Button>
+                    </TableCell>
+                  }
                 </TableRow>
               ))}
             </TableBody>
@@ -173,23 +179,23 @@ function UsersTable() {
           <label>First Name:</label>
           <input
             type="text"
-            name="firstName"
+            name="first_name"
             required="required"
             placeholder="Enter a first name..."
             value={temporaryUser.first_name}
             onChange={handleFormChange}
-            style={{width: "200px"}}
+            style={{ width: "200px" }}
           />
           <br></br>
           <label>Last Name:</label>
           <input
             type="text"
-            name="lastName"
+            name="last_name"
             required="required"
             placeholder="Enter a last name..."
             value={temporaryUser.last_name}
             onChange={handleFormChange}
-            style={{width: "200px"}}
+            style={{ width: "200px" }}
           />
           <br></br>
           <label>Email:</label>
@@ -200,7 +206,7 @@ function UsersTable() {
             placeholder="Enter an email..."
             value={temporaryUser.email}
             onChange={handleFormChange}
-            style={{width: "200px"}}
+            style={{ width: "200px" }}
           />
           <br></br>
           <label>Role:</label>
@@ -211,7 +217,7 @@ function UsersTable() {
             placeholder="Enter a role..."
             value={temporaryUser.role}
             onChange={handleFormChange}
-            style={{width: "200px"}}
+            style={{ width: "200px" }}
           />
           <br></br>
           <Button type="submit" variant="outlined" size="large" style={{
