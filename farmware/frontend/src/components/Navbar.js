@@ -26,7 +26,6 @@ function Navbar() {
                             width: drawerWidth,
                             boxSizing: 'border-box',
                         },
-                        overflow: 'hidden',
                     }}
                     PaperProps={{
                         sx: {

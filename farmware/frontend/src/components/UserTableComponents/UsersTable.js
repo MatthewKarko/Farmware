@@ -1,29 +1,52 @@
 import React, { useState, useEffect, Fragment } from "react";
-import data from "./mock-data.json";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/UsersTable.css';
+import axiosInstance from '../../axios';
 
 function UsersTable() {
+  
+  const [usersList, setUsersList] = useState([]);
+
+  useEffect(() => {
+    axiosInstance
+			.get(`user/me/`, {
+			})
+			.then((res) => {
+				console.log(res.data);
+			})
+      .catch((err) => {
+        alert("ERROR: user/me failed");
+      });
+
+      axiosInstance
+		  .get(`user/`, {
+			})
+			.then((res) => {
+        res.data.map((data) => {
+          setUsersList(usersList => [...usersList, data])
+          console.log(res.data)
+        })
+			})
+      .catch((err) => {
+        alert("ERROR: Getting users failed");
+    });
+  }, []);
+
 
   const [displayEditModal, setDisplayEditModal] = useState(false);
-  const [displayNewModal, setDisplayNewModal] = useState(false);
 
   //Stores temporary changes
   const [temporaryUser, setTemporaryUser] = useState({
-    firstName: "",
-    lastName: "",
-    address: "",
-    phoneNumber: "",
+    first_name: "",
+    last_name: "",
     email: "",
     role: ""
   });
 
   const clearState = () => {
     const formValues = {
-      firstName: '',
-      lastName: '',
-      address: '',
-      phoneNumber: '',
+      first_name: '',
+      last_name: '',
       email: '',
       role: '',
     };
@@ -34,7 +57,7 @@ function UsersTable() {
 
   const [editContactId, setEditContactId] = useState(null);
 
-  const handleAddFormChange = (event) => {
+  const handleFormChange = (event) => {
     event.preventDefault();
 
     const fieldName = event.target.getAttribute("name");
@@ -51,10 +74,8 @@ function UsersTable() {
     console.log("Edit user submitted");
 
     const newUser = {
-      firstName: temporaryUser.firstName,
-      lastName: temporaryUser.lastName,
-      address: temporaryUser.address,
-      phoneNumber: temporaryUser.phoneNumber,
+      first_name: temporaryUser.first_name,
+      last_name: temporaryUser.last_name,
       email: temporaryUser.email,
       role: temporaryUser.role,
     };
@@ -66,35 +87,13 @@ function UsersTable() {
     clearState();
   };
 
-  const handleNewUserSubmit = (event) => {
-    event.preventDefault();
-
-    const newUser = {
-      firstName: temporaryUser.firstName,
-      lastName: temporaryUser.lastName,
-      address: temporaryUser.address,
-      phoneNumber: temporaryUser.phoneNumber,
-      email: temporaryUser.email,
-      role: temporaryUser.role,
-    };
-
-    //TO DO: Send the POST request from here based on newUser.
-    console.log("New user submitted");
-    console.log(newUser);
-
-    //reset edit form
-    clearState();
-  };
-
   const handleEditClick = (event, row) => {
     event.preventDefault();
     setEditContactId(row.id);
 
     const formValues = {
-      firstName: row.firstName,
-      lastName: row.lastName,
-      address: row.address,
-      phoneNumber: row.phoneNumber,
+      first_name: row.first_name,
+      last_name: row.last_name,
       email: row.email,
       role: row.role,
     };
@@ -124,21 +123,17 @@ function UsersTable() {
                 <TableCell className="tableCell">ID</TableCell>
                 <TableCell className="tableCell">First name</TableCell>
                 <TableCell className="tableCell">Last name</TableCell>
-                <TableCell className="tableCell">Address</TableCell>
-                <TableCell className="tableCell">Phone Number</TableCell>
                 <TableCell className="tableCell">Email</TableCell>
                 <TableCell className="tableCell">Role</TableCell>
                 <TableCell className="tableCell">Edit</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.map((row) => (
+              {usersList.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell className="tableCell">{row.id}</TableCell>
-                  <TableCell className="tableCell">{row.firstName}</TableCell>
-                  <TableCell className="tableCell">{row.lastName}</TableCell>
-                  <TableCell className="tableCell">{row.address}</TableCell>
-                  <TableCell className="tableCell">{row.phoneNumber}</TableCell>
+                  <TableCell className="tableCell">{row.first_name}</TableCell>
+                  <TableCell className="tableCell">{row.last_name}</TableCell>
                   <TableCell className="tableCell">{row.email}</TableCell>
                   <TableCell className="tableCell">{row.role}</TableCell>
                   <TableCell className="tableCell">
@@ -155,7 +150,9 @@ function UsersTable() {
             </TableBody>
           </Table>
         </TableContainer>
+      
 
+      {/* The modal is currently not in MUI components, might change it to MUI later */}
         <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
           <button
             className="Close"
@@ -177,8 +174,8 @@ function UsersTable() {
               name="firstName"
               required="required"
               placeholder="Enter a first name..."
-              value={temporaryUser.firstName}
-              onChange={handleAddFormChange}
+              value={temporaryUser.first_name}
+              onChange={handleFormChange}
             />
             <br></br>
             <label>Last Name:</label>
@@ -187,27 +184,8 @@ function UsersTable() {
               name="lastName"
               required="required"
               placeholder="Enter a last name..."
-              value={temporaryUser.lastName}
-              onChange={handleAddFormChange}
-            />
-            <br></br>
-            <label>Address:</label>
-            <input
-              type="text"
-              name="address"
-              required="required"
-              placeholder="Enter an address..."
-              value={temporaryUser.address}
-              onChange={handleAddFormChange}
-            /><br></br>
-            <label>Phone Number:</label>
-            <input
-              type="text"
-              name="phoneNumber"
-              required="required"
-              placeholder="Enter a phone number..."
-              value={temporaryUser.phoneNumber}
-              onChange={handleAddFormChange}
+              value={temporaryUser.last_name}
+              onChange={handleFormChange}
             />
             <br></br>
             <label>Email:</label>
@@ -217,7 +195,7 @@ function UsersTable() {
               required="required"
               placeholder="Enter an email..."
               value={temporaryUser.email}
-              onChange={handleAddFormChange}
+              onChange={handleFormChange}
             />
             <br></br>
             <label>Role:</label>
@@ -227,7 +205,7 @@ function UsersTable() {
               required="required"
               placeholder="Enter a role..."
               value={temporaryUser.role}
-              onChange={handleAddFormChange}
+              onChange={handleFormChange}
             />
             <br></br>
             <Button type="submit" variant="outlined" size="large" style={{
