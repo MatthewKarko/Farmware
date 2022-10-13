@@ -15,7 +15,7 @@ function UsersTable() {
       })
       .then((res) => {
         console.log(res.data);
-        if (res.data.role < 200) {
+        if (res.data.role.level < 200) {
           setIsAdmin(true)
         }
       })
@@ -90,14 +90,12 @@ function UsersTable() {
     setTemporaryUser({ ...newFormData });
   };
 
-  const handleEditSubmit = (event) => {
-    event.preventDefault();
-
+  const handleEditSubmit = () => {
     var postObject = {
       first_name: temporaryUser.first_name,
       last_name: temporaryUser.last_name,
       email: temporaryUser.email,
-      // role: temporaryUser.role,
+      // role: temporaryUser.role.level,
       // teams: temporaryUser.teams,
     } 
 
@@ -120,7 +118,7 @@ function UsersTable() {
       first_name: row.first_name,
       last_name: row.last_name,
       email: row.email,
-      role: row.role,
+      role: row.role.level,
     };
     setTemporaryUser({ ...formValues });
 
@@ -157,7 +155,7 @@ function UsersTable() {
                   <TableCell className="tableCell">{row.first_name}</TableCell>
                   <TableCell className="tableCell">{row.last_name}</TableCell>
                   <TableCell className="tableCell">{row.email}</TableCell>
-                  <TableCell className="tableCell">{row.role}</TableCell>
+                  <TableCell className="tableCell">{row.role.level}</TableCell>
                   <TableCell className="tableCell">convert {row.teams} to string format</TableCell>
                   {isAdmin &&
                     <TableCell className="tableCell">
@@ -188,7 +186,7 @@ function UsersTable() {
           margin: "20px",
         }}> Edit User</Typography>
 
-        <form onSubmit={handleEditSubmit}>
+        <form>
           <label>First Name:</label>
           <input
             type="text"
@@ -228,7 +226,7 @@ function UsersTable() {
             name="role"
             required="required"
             placeholder="Enter a role..."
-            value={temporaryUser.role}
+            value={temporaryUser.role.level}
             onChange={handleFormChange}
             style={{ width: "200px" }}
           />
@@ -237,7 +235,7 @@ function UsersTable() {
             color: "#028357",
             borderColor: "#028357",
           }}
-            onClick={() => setDisplayEditModal(!displayEditModal)}
+            onClick={() => {setDisplayEditModal(!displayEditModal); handleEditSubmit()}}
           >Submit</Button>
         </form>
       </div>
