@@ -36,7 +36,7 @@ function Navbar() {
                     anchor="left"
                 >
                     <Container sx={{
-                        width: drawerWidth,
+                        width: 200,
                         justifyContent: "center",
                         paddingTop: "10px",
                         paddingLeft: "10px",
@@ -47,9 +47,6 @@ function Navbar() {
                             color: "#028357",
                             fontWeight: 'bold'
                         }}>Farmware</Typography>
-                        <Typography variant='h6' sx={{
-                            fontFamily: 'Lato',
-                        }}>Org Name</Typography>
                     </Container>
 
 
@@ -134,7 +131,7 @@ function Navbar() {
                         </ListItem>
 
                         <ListItem key="Produce" disablePadding>
-                            <ListItemButton component={Link} to="/" sx={{
+                            <ListItemButton component={Link} to="/produce" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",

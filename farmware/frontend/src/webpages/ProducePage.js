@@ -1,24 +1,17 @@
 import React, { Component } from 'react';
 import Navbar from '../components/Navbar';
-import UsersTable from '../components/tables/UsersTable';
+import ProduceTable from '../components/tables/ProduceTable';
 import '../css/DashboardPages.css';
 import Header from '../components/Header';
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link,
-    Redirect
-} from "react-router-dom";
 
-export default function UsersTablePage() {
+export default function ProducePage() {
 
     return (
         <div className='mainContainer'>
             <Navbar />
             <div className='componentContainer'>
                 <Header />
-                <UsersTable />
+                <ProduceTable />
             </div>
         </div>
     );
