@@ -10,8 +10,7 @@ import AccountSettingsPage from "./webpages/AccountSettingsPage";
 import UsersTablePage from "./webpages/UsersTablePage";
 import OrderPage from "./webpages/OrderPage";
 import Logout from "./components/Logout";
-
-
+import ProducePage from "./webpages/ProducePage";
 
 const routing = (
     <Router>
@@ -24,6 +23,7 @@ const routing = (
             <Route path="/accountsettings" element={<AccountSettingsPage />}/>
             <Route path="/userstable" element={<UsersTablePage />}/>
             <Route path="/order" element={<OrderPage />}/>
+            <Route path="/produce" element={<ProducePage />}/>
         </Routes>
     </Router>
 );
