@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Navbar from '../components/Navbar';
-import OrderTable from '../components/OrdersComponents/OrderTable';
+import OrderTable from '../components/tables/OrderTable';
 import '../css/DashboardPages.css';
 import axios from 'axios';
 import axiosInstance from '../axios.js';

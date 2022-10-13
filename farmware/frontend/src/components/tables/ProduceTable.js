@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/TableAndModal.css';
 import axiosInstance from '../../axios';
 
@@ -7,45 +7,59 @@ function ProduceTable() {
 
     const [produceList, setProduceList] = useState([]);
     const [displayEditModal, setDisplayEditModal] = useState(false);
+    const [displayDeleteModal, setDisplayDeleteModal] = useState(false);
+    const [displayCreateModal, setDisplayCreateModal] = useState(false);
+
     const [tempName, setTempName] = useState("");
 
     useEffect(() => {
         axiosInstance
-      .get(`produce/`, {
-      })
-      .then((res) => {
-        res.data.map((data) => {
-          setProduceList(produceList => [...produceList, data])
-          console.log(res.data)
-        })
-      })
-      .catch((err) => {
-        alert("ERROR: Getting users failed");
-      });
+            .get(`produce/`, {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setProduceList(produceList => [...produceList, data])
+                    console.log(res.data)
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting users failed");
+            });
 
     }, []);
+
+    const handleNameChange = (event) => {
+        event.preventDefault();
+    };
 
     const handleEditClick = (event, row) => {
         event.preventDefault();
         setDisplayEditModal(!displayEditModal);
-      };
+    };
 
-      const handleDeleteClick = (event, row) => {
+    const handleEditSubmit = (event) => {
         event.preventDefault();
 
-        //Confirmation modal?
-      };
-    
-      const handleNameChange = (event) => {
-        event.preventDefault();
-    
-      };
-    
-      const handleEditSubmit = (event) => {
-        event.preventDefault();
-    
-      };
+    };
 
+    const handleDeleteClick = (event, row) => {
+        event.preventDefault();
+        setDisplayDeleteModal(!displayDeleteModal);
+        //Confirmation modal
+    };
+
+    const handleDeleteSubmit = (event, row) => {
+        event.preventDefault();
+    };
+
+    const handleCreateClick = () => {
+        event.preventDefault();
+        setDisplayCreateModal(!displayCreateModal);
+    };
+
+    const handleCreateSubmit = (event) => {
+        event.preventDefault();
+    };
 
     return (
         <React.Fragment>
@@ -80,24 +94,37 @@ function ProduceTable() {
                                         >Edit</Button>
                                     </TableCell>
 
-                                        <TableCell className="tableCell">
-                                            <Button variant="outlined" size="medium"
-                                                style={{
-                                                    color: "#FF0000",
-                                                    borderColor: "#FF0000",
-                                                }}
-                                                onClick={(event) => handleDeleteClick(event, row)}
-                                            >Delete</Button>
-                                        </TableCell>
+                                    <TableCell className="tableCell">
+                                        <Button variant="outlined" size="medium"
+                                            style={{
+                                                color: "#FF0000",
+                                                borderColor: "#FF0000",
+                                            }}
+                                            onClick={(event) => handleDeleteClick(event, row)}
+                                        >Delete</Button>
+                                    </TableCell>
 
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
+
+                <Box textAlign='center'>
+                    <Button variant="outlined" size="large"
+                        style={{
+                            color: "#028357",
+                            borderColor: "#028357",
+                            marginTop: "20px",
+                        }}
+                        onClick={(event) => handleCreateClick()}
+                    >Create Produce</Button>
+                </Box>
+
             </div>
 
-            {/* The modal is currently not in MUI components, might change it to MUI later */}
+
+
             <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
                 <button
                     className="Close"
@@ -122,7 +149,7 @@ function ProduceTable() {
                         value={tempName}
                         onChange={handleNameChange}
                         style={{ width: "200px" }}
-                    />                    
+                    />
                     <br></br>
                     <Button type="submit" variant="outlined" size="large" style={{
                         color: "#028357",
@@ -133,10 +160,72 @@ function ProduceTable() {
                 </form>
             </div>
 
+            <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
+                <button
+                    className="Close"
+                    onClick={() => { setDisplayCreateModal(!displayCreateModal); setTempName(""); }}
+                >
+                    X
+                </button>
+
+                <Typography variant="h4" sx={{
+                    fontFamily: 'Lato',
+                    fontWeight: 'bold',
+                    margin: "20px",
+                }}>Create Produce</Typography>
+
+                <form onSubmit={handleCreateSubmit}>
+                    <label>Name:</label>
+                    <input
+                        type="text"
+                        name="name"
+                        required="required"
+                        placeholder="Enter a name..."
+                        value={tempName}
+                        onChange={handleNameChange}
+                        style={{ width: "200px" }}
+                    />
+                    <br></br>
+                    <Button type="submit" variant="outlined" size="large" style={{
+                        color: "#028357",
+                        borderColor: "#028357",
+                    }}
+                        onClick={() => setDisplayCreateModal(!displayCreateModal)}
+                    >Create</Button>
+                </form>
+            </div>
+
+            <div className={`Modal ${displayDeleteModal ? "Show" : ""}`}>
+                <button
+                    className="Close"
+                    onClick={() => { setDisplayDeleteModal(!displayEditModal); setTempName(""); }}
+                >X</button>
+
+                <Typography variant="h5" sx={{
+                    fontFamily: 'Lato',
+                    fontWeight: 'bold',
+                    margin: "20px",
+                }}>Are you sure you want to delete the produce?</Typography>
+                <Button type="submit" variant="outlined" size="large" style={{
+                    color: "#FF0000",
+                    borderColor: "#FF0000",
+                }}
+                    onClick={() => { setDisplayDeleteModal(!displayEditModal); handleDeleteSubmit(); }}
+                >Delete</Button>
+            </div>
+
             {/* Below snippet makes it so that if you click out of the modal it exits. */}
             <div
                 className={`Overlay ${displayEditModal ? "Show" : ""}`}
-                onClick={() => { setDisplayEditModal(!displayEditModal); clearState(); }}
+                onClick={() => { setDisplayEditModal(!displayEditModal); setTempName(""); }}
+            />
+            <div
+                className={`Overlay ${displayDeleteModal ? "Show" : ""}`}
+                onClick={() => { setDisplayDeleteModal(!displayDeleteModal); setTempName(""); }}
+            />
+            <div
+                className={`Overlay ${displayCreateModal ? "Show" : ""}`}
+                onClick={() => { setDisplayCreateModal(!displayCreateModal); setTempName(""); }}
             />
         </React.Fragment>
     )
