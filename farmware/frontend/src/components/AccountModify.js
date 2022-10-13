@@ -30,7 +30,7 @@ export default function AccountModify() {
   let navigate = useNavigate();
   const [userObj, setUserObj] = useState([]);
   const [teamList, setTeamlist] = useState([]);
-  const [currentTeam, setCurrentTeam] = useState('');
+  const [currentTeams, setCurrentTeams] = useState([]);
 
   useEffect(() => {
     axiosInstance
@@ -79,16 +79,27 @@ export default function AccountModify() {
 
   }
 
+  const handleTeamChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setCurrentTeams(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    
 
     var postObject = {
         first_name: data.get('first_name'),
         last_name: data.get('last_name'),
         email: data.get('email')
 
-       
       } 
       
       
@@ -171,9 +182,11 @@ export default function AccountModify() {
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Teams</InputLabel>
                   <Select
-                    value={"Teams"}
                     label="Teams"
-                    onChange={handleChange}
+                    multiple
+                    value={currentTeams}
+                    onChange={handleTeamChange}
+                    renderValue={(selected) => selected.join(', ')}
                   >
                    {/* <MenuItem key={1} value={1}>test</MenuItem> */}
                   {
@@ -181,7 +194,10 @@ export default function AccountModify() {
                       teamList.map((team) => {
                  
                         return(
-                        <MenuItem key={team.id} value={team.name}>{team.name}</MenuItem>
+                          <MenuItem key={team.name} value={team.name}>
+                          <Checkbox checked={currentTeams.indexOf(team.name) > -1} />
+                          <ListItemText primary={team.name} />
+                        </MenuItem>
                         )
                       })
                   }

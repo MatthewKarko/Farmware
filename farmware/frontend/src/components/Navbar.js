@@ -114,26 +114,6 @@ function Navbar() {
                         </ListItem>
                     </List>
                     <Divider />
-                    <List sx={{
-                        margin: "10px",
-                        color: "#ffffff"
-                    }}>
-                        <ListItem key="Account Settings" disablePadding>
-                            <ListItemButton component={Link} to="/accountsettings" sx={{
-                                "&:hover": {
-                                    backgroundColor: "#028357",
-                                    borderRadius: "3px",
-                                },
-                            }}>
-                                <ListItemIcon>
-                                    <SettingsIcon sx={{ color: "#ffffff" }} />
-                                </ListItemIcon>
-                                <ListItemText primary="Account Settings" />
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
-
-                    <Divider />
 
                     <List sx={{
                         margin: "10px",
