@@ -67,38 +67,52 @@ function ProduceTable() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
+                    paddingBottom: '20px',
                 }}>Produce Table</Typography>
-                <TableContainer component={Paper}>
-                    <Table aria-label="simple table">
+
+                <TableContainer component={Paper} style={{ maxWidth: 800, margin:"auto"}}>
+                    <Table aria-label="simple table" style={{ maxWidth: 800, margin:"auto" }}>
+                    <colgroup>
+                        <col style={{width:'20%'}}/>
+                        <col style={{width:'50%'}}/>
+                        <col style={{width:'30%'}}/>
+                    </colgroup>
                         <TableHead>
-                            <TableRow>
-                                <TableCell className="tableCell">ID</TableCell>
+                            <TableRow sx={{
+                                "& th": {
+                                    fontSize: "1.10rem",
+                                  }
+                            }}>
+                                <TableCell className="tableCell">Produce ID</TableCell>
                                 <TableCell className="tableCell">Produce Name</TableCell>
-                                <TableCell className="tableCell">Edit</TableCell>
-                                <TableCell className="tableCell">Delete</TableCell>
+                                <TableCell className="tableCell"></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {produceList.map((row) => (
-                                <TableRow key={row.id}>
+                                <TableRow sx={{
+                                    "& th": {
+                                        fontSize: "1.10rem",
+                                      }
+                                }} key={row.id} >
                                     <TableCell className="tableCell">{row.id}</TableCell>
                                     <TableCell className="tableCell">{row.name}</TableCell>
 
                                     <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
                                             style={{
-                                                color: "#028357",
-                                                borderColor: "#028357",
+                                                margin:"10px",
+                                                width: "80px",
                                             }}
                                             onClick={(event) => handleEditClick(event, row)}
                                         >Edit</Button>
-                                    </TableCell>
-
-                                    <TableCell className="tableCell">
+                                    
                                         <Button variant="outlined" size="medium"
                                             style={{
                                                 color: "#FF0000",
                                                 borderColor: "#FF0000",
+                                                margin:"10px",
+                                                width: "80px",
                                             }}
                                             onClick={(event) => handleDeleteClick(event, row)}
                                         >Delete</Button>

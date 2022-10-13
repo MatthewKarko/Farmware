@@ -162,10 +162,6 @@ function UsersTable() {
                   {isAdmin &&
                     <TableCell className="tableCell">
                       <Button variant="outlined" size="medium"
-                        style={{
-                          color: "#028357",
-                          borderColor: "#028357",
-                        }}
                         onClick={(event) => handleEditClick(event, row)}
                       >Edit</Button>
                     </TableCell>

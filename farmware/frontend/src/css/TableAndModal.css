@@ -50,3 +50,7 @@
   .Overlay.Show {
     display: block;
   }
+
+.tableCell {
+  font-size: 24px;
+}
