@@ -36,7 +36,7 @@ function Navbar() {
                     anchor="left"
                 >
                     <Container sx={{
-                        width: drawerWidth,
+                        width: 200,
                         justifyContent: "center",
                         paddingTop: "10px",
                         paddingLeft: "10px",
@@ -47,9 +47,6 @@ function Navbar() {
                             color: "#028357",
                             fontWeight: 'bold'
                         }}>Farmware</Typography>
-                        <Typography variant='h6' sx={{
-                            fontFamily: 'Lato',
-                        }}>Org Name</Typography>
                     </Container>
 
 
@@ -114,26 +111,6 @@ function Navbar() {
                         </ListItem>
                     </List>
                     <Divider />
-                    <List sx={{
-                        margin: "10px",
-                        color: "#ffffff"
-                    }}>
-                        <ListItem key="Account Settings" disablePadding>
-                            <ListItemButton component={Link} to="/accountsettings" sx={{
-                                "&:hover": {
-                                    backgroundColor: "#028357",
-                                    borderRadius: "3px",
-                                },
-                            }}>
-                                <ListItemIcon>
-                                    <SettingsIcon sx={{ color: "#ffffff" }} />
-                                </ListItemIcon>
-                                <ListItemText primary="Account Settings" />
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
-
-                    <Divider />
 
                     <List sx={{
                         margin: "10px",
@@ -154,7 +131,7 @@ function Navbar() {
                         </ListItem>
 
                         <ListItem key="Produce" disablePadding>
-                            <ListItemButton component={Link} to="/" sx={{
+                            <ListItemButton component={Link} to="/produce" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",
