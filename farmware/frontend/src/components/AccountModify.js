@@ -55,10 +55,8 @@ export default function AccountModify() {
           // teamList.push(data.name);
           // console.log(data);
           setTeamlist(teamList => [...teamList, data])
-          
-
-
         })
+        
         
 
         
@@ -67,6 +65,25 @@ export default function AccountModify() {
         console.log("AXIOS ERROR: ", err);
         // alert("ERROR: Incorrect call");
     });
+    axiosInstance
+		  .get(`user/teams/`, {
+			})
+			.then((res) => {
+		
+        
+        res.data.teams.map((data) => {
+          // teamList.push(data.name);
+          // console.log(data);
+          setCurrentTeams(currentTeams => [...currentTeams, data.name])
+        })        
+			})
+      .catch((err) => {
+        console.log("AXIOS ERROR: ", err);
+        // alert("ERROR: Incorrect call");
+    });
+
+
+
     
   }, []);
 
@@ -93,27 +110,27 @@ export default function AccountModify() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    
+    if(!confirm("Confirm account changes")){
+      navigate('/dashboard');
+    }else{
 
-    var postObject = {
+      var postObject = {
         first_name: data.get('first_name'),
         last_name: data.get('last_name'),
         email: data.get('email')
 
       } 
-      
-      
-      
-     
       axiosInstance
         .patch(`user/${userObj.id}/`, postObject)
         .then((res)=>{
             console.log(res);
-            alert("successfully changed account information");
+            alert("Successfully changed account information");
             navigate('/dashboard');
-            
-        
       });
+
+    }
+
+    
 
 
   };
@@ -203,21 +220,6 @@ export default function AccountModify() {
                   }
                   </Select>
               </FormControl>
-              <FormLabel
-              
-                children="Enter password to confirm"
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-              
               <Button
                 type="submit"
                 fullWidth
