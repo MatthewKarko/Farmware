@@ -24,6 +24,7 @@ from .serialisers import (
     PasswordSerialiser
 )
 from .tokens import account_activation_token
+from ..api.models.team import Team
 
 
 TRUE = 'TRUE'
@@ -132,6 +133,22 @@ class UserViewSet(
         user.save()
         return Response({'success': 'Password successfully updated.'}, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'])
+    def teams(self, request):
+        """Get all the teams a user is a member of."""
+        user: User = request.user
+
+        teams = []
+
+        team: Team
+        for team in user.teams.all():
+            fields = team.__dict__
+            fields.pop('_state')
+            fields.pop('organisation_id')
+            teams.append(fields)
+
+        return Response({'teams': teams}, status=status.HTTP_200_OK)
+
     def partial_update(self, request, *args, **kwargs):
         """Update a user's information."""
         # Data and user
@@ -159,7 +176,6 @@ class UserViewSet(
         resp = super().destroy(request, *args, **kwargs)
         print(resp)
         return Response(status=status.HTTP_200_OK)
-
 
     def create_user(self, request):
         """Create a new user."""
