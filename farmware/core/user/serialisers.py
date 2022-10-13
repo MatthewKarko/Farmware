@@ -21,18 +21,25 @@ class UserSerialiser(serializers.ModelSerializer):
         read_only_field = ['created', 'updated']
         extra_kwargs = {'password': {'write_only': True}}
 
+    def to_representation(self, data):
+        data = super(UserSerialiser, self).to_representation(data)
+        user: User = User.objects.get(id=data.get('id'))
+        data['role'] = {
+            'level': user.role, 
+            'name': dict(User.Roles.choices)[user.role]
+            }
+        return data
 
 class UserUpdateSerialiser(UserSerialiser):
     """Serialiser for the User model."""
     class Meta(UserSerialiser.Meta):
-        fields = UserSerialiser.Meta.fields
-        fields.remove('organisation')
-        fields.remove('password')
+        fields = [
+            'id', 'email',
+            'first_name', 'last_name', 'role', 'teams'
+        ]
 
     def __init__(self, instance=None, data=empty, **kwargs):
         if instance is not None:
-            print(instance.role, type(instance.role))
-            print(User.Roles.choices)
             self.role = serializers.ChoiceField(
                 choices=filter(lambda x: x[0] > instance.role, User.Roles.choices)
             )
@@ -126,7 +133,5 @@ class RegisterUserSerialiser(RegisterSerialiser):
 
 class PasswordSerialiser(serializers.Serializer):
     """Password serialiser."""
-    # model = User
-
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
