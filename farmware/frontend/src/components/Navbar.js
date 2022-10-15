@@ -9,6 +9,8 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
 import EggIcon from '@mui/icons-material/Egg';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import GroupsIcon from '@mui/icons-material/Groups';
 import SettingsIcon from '@mui/icons-material/Settings';
 import '../css/Navbar.css';
 
@@ -166,7 +168,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <GroupIcon sx={{ color: "#ffffff" }} />
+                                    <LocalShippingIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Suppliers" />
                             </ListItemButton>
@@ -180,7 +182,7 @@ function Navbar() {
                                 },
                             }}>
                                 <ListItemIcon>
-                                    <GroupIcon sx={{ color: "#ffffff" }} />
+                                    <GroupsIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Teams" />
                             </ListItemButton>
