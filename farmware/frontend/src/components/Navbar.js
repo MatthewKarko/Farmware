@@ -145,7 +145,7 @@ function Navbar() {
                         </ListItem>
 
                         <ListItem key="Customers" disablePadding>
-                            <ListItemButton component={Link} to="/" sx={{
+                            <ListItemButton component={Link} to="/customers" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",

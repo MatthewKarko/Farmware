@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
-import '../../css/TableAndModal.css';
+import '../../css/PageMargin.css';
+import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 
 function UsersTable() {
