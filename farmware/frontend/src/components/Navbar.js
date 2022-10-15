@@ -188,7 +188,7 @@ function Navbar() {
                             </ListItemButton>
                         </ListItem>
 
-                        <ListItem key="Area Code" disablePadding>
+                        <ListItem key="Area Codes" disablePadding>
                             <ListItemButton component={Link} to="/area_codes" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
@@ -198,7 +198,7 @@ function Navbar() {
                                 <ListItemIcon>
                                     <LocationOnIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
-                                <ListItemText primary="Area Code" />
+                                <ListItemText primary="Area Codes" />
                             </ListItemButton>
                         </ListItem>
 

@@ -136,7 +136,7 @@ function AreaCodesTable() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                }}> Area Code Table</Typography>
+                }}> Area Codes Table</Typography>
 
                 <Button type="submit" variant="outlined" size="large" style={{
                     color: "#028357",
