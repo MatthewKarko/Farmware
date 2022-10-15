@@ -126,7 +126,11 @@ function UsersTable() {
     setDisplayEditModal(!displayEditModal);
   };
 
-  
+  const handleUserDelete = () => {
+    axiosInstance.delete(`user/${temporaryUser.id}/`)
+    clearState();
+    window.location.reload();
+  }
 
   return (
     <React.Fragment>
@@ -236,7 +240,15 @@ function UsersTable() {
             borderColor: "#028357",
           }}
             onClick={() => {setDisplayEditModal(!displayEditModal); handleEditSubmit()}}
-          >Submit</Button>
+          >Edit User</Button>
+          <br></br>
+          <Button type="submit" variant="outlined" size="large" style={{
+                    color: "#FF0000",
+                    borderColor: "#FF0000",
+                    margin: "20px",
+                }}
+                    onClick={() => { handleUserDelete() }}
+                >Delete User</Button>
         </form>
       </div>
 
