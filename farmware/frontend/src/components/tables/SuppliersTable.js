@@ -4,9 +4,9 @@ import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 
-function CustomersTable() {
+function SuppliersPage() {
 
-    const [customersList, setCustomersList] = useState([]);
+    const [suppliersList, setSuppliersList] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [organisationCode, setOrganisationCode] = useState("");
 
@@ -15,7 +15,7 @@ function CustomersTable() {
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
 
     //Stores temporary changes
-    const [temporaryCustomer, setTemporaryCustomer] = useState({
+    const [temporarySupplier, setTemporarySupplier] = useState({
         id: -1,
         name: "",
         phone_number: "",
@@ -27,7 +27,7 @@ function CustomersTable() {
             name: "",
             phone_number: "",
         };
-        setTemporaryCustomer({ ...formValues });
+        setTemporarySupplier({ ...formValues });
     };
 
     useEffect(() => {
@@ -47,16 +47,16 @@ function CustomersTable() {
             });
 
         axiosInstance
-            .get(`customer/`, {
+            .get(`supplier/`, {
             })
             .then((res) => {
                 res.data.map((data) => {
-                    setCustomersList(customersList => [...customersList, data])
+                    setSuppliersList(suppliersList => [...suppliersList, data])
                     console.log(res.data)
                 })
             })
             .catch((err) => {
-                alert("ERROR: Getting customers failed");
+                alert("ERROR: Getting suppliers failed");
             });
     }, []);
 
@@ -67,22 +67,22 @@ function CustomersTable() {
         const fieldName = event.target.getAttribute("name");
         const fieldValue = event.target.value;
 
-        const newFormData = { ...temporaryCustomer };
+        const newFormData = { ...temporarySupplier };
         newFormData[fieldName] = fieldValue;
 
-        setTemporaryCustomer({ ...newFormData });
+        setTemporarySupplier({ ...newFormData });
     };
 
     const handleEditSubmit = () => {
 
         var putObject = {
-            name: temporaryCustomer.name,
-            phone_number: temporaryCustomer.phone_number,
+            name: temporarySupplier.name,
+            phone_number: temporarySupplier.phone_number,
             organisation: organisationCode,
         }
 
         //Send PUT request to update user
-        axiosInstance.put(`customer/${temporaryCustomer.id}/`, putObject)
+        axiosInstance.put(`supplier/${temporarySupplier.id}/`, putObject)
 
         //reset values
         clearState();
@@ -102,27 +102,27 @@ function CustomersTable() {
             name: row.name,
             phone_number: row.phone_number,
         };
-        setTemporaryCustomer({ ...formValues });
+        setTemporarySupplier({ ...formValues });
 
         //cause the modal to open.
         setDisplayEditModal(!displayEditModal);
     };
 
-    const handleCustomerDelete = () => {
-        axiosInstance.delete(`customer/${temporaryCustomer.id}/`)
+    const handleSupplierDelete = () => {
+        axiosInstance.delete(`supplier/${temporarySupplier.id}/`)
         clearState();
         window.location.reload();
     }
 
     const handleCreateSubmit = () => {
         var postObject = {
-            name: temporaryCustomer.name,
-            phone_number: temporaryCustomer.phone_number,
+            name: temporarySupplier.name,
+            phone_number: temporarySupplier.phone_number,
             organisation: organisationCode,
         }
 
         //Send PUT request to update user
-        axiosInstance.post(`customer/`, postObject)
+        axiosInstance.post(`supplier/`, postObject)
 
         //reset values
         clearState();
@@ -140,7 +140,7 @@ function CustomersTable() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                }}> Customers Table</Typography>
+                }}> Suppliers Table</Typography>
 
                 <Button type="submit" variant="outlined" size="large" style={{
                     color: "#028357",
@@ -148,7 +148,7 @@ function CustomersTable() {
                     margin: "20px",
                 }}
                     onClick={() => { setDisplayCreateModal(!displayCreateModal) }}
-                >Create Customer</Button>
+                >Create Supplier</Button>
 
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
@@ -161,7 +161,7 @@ function CustomersTable() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {customersList.map((row) => (
+                            {suppliersList.map((row) => (
                                 <TableRow key={row.id}>
                                     <TableCell className="tableCell">{row.id}</TableCell>
                                     <TableCell className="tableCell">{row.name}</TableCell>
@@ -180,7 +180,7 @@ function CustomersTable() {
                 </TableContainer>
             </div>
 
-            {/* Modal for EDIT customer */}
+            {/* Modal for EDIT supplier */}
             <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
                 <button
                     className="Close"
@@ -193,7 +193,7 @@ function CustomersTable() {
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
                     margin: "20px",
-                }}> Edit Customer</Typography>
+                }}> Edit Supplier</Typography>
 
                 <form>
                     <label>Name:</label>
@@ -202,7 +202,7 @@ function CustomersTable() {
                         name="name"
                         required="required"
                         placeholder="Enter a name..."
-                        value={temporaryCustomer.name}
+                        value={temporarySupplier.name}
                         onChange={handleFormChange}
                         style={{ width: "200px" }}
                     />
@@ -213,7 +213,7 @@ function CustomersTable() {
                         name="phone_number"
                         required="required"
                         placeholder="Enter a phone number..."
-                        value={temporaryCustomer.phone_number}
+                        value={temporarySupplier.phone_number}
                         onChange={handleFormChange}
                         style={{ width: "200px" }}
                     />
@@ -231,8 +231,8 @@ function CustomersTable() {
                         borderColor: "#FF0000",
                         margin: "8px",
                     }}
-                        onClick={() => { handleCustomerDelete() }}
-                    >Delete Customer</Button>
+                        onClick={() => { handleSupplierDelete() }}
+                    >Delete Supplier</Button>
                 </form>
             </div>
 
@@ -243,7 +243,7 @@ function CustomersTable() {
             />
 
         
-         {/* Modal for CREATE customer */}
+         {/* Modal for CREATE supplier */}
          <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
                 <button
                     className="Close"
@@ -256,7 +256,7 @@ function CustomersTable() {
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
                     margin: "20px",
-                }}> Create Customer</Typography>
+                }}> Create Supplier</Typography>
 
                 <form>
                     <label>Name:</label>
@@ -265,7 +265,7 @@ function CustomersTable() {
                         name="name"
                         required="required"
                         placeholder="Enter a name..."
-                        value={temporaryCustomer.name}
+                        value={temporarySupplier.name}
                         onChange={handleFormChange}
                         style={{ width: "200px" }}
                     />
@@ -276,7 +276,7 @@ function CustomersTable() {
                         name="phone_number"
                         required="required"
                         placeholder="Enter a phone number..."
-                        value={temporaryCustomer.phone_number}
+                        value={temporarySupplier.phone_number}
                         onChange={handleFormChange}
                         style={{ width: "200px" }}
                     />
@@ -302,4 +302,4 @@ function CustomersTable() {
     )
 }
 
-export default CustomersTable
+export default SuppliersPage
