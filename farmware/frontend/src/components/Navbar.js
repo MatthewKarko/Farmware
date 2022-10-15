@@ -172,6 +172,20 @@ function Navbar() {
                             </ListItemButton>
                         </ListItem>
 
+                        <ListItem key="Teams" disablePadding>
+                            <ListItemButton component={Link} to="/teams" sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <GroupIcon sx={{ color: "#ffffff" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Teams" />
+                            </ListItemButton>
+                        </ListItem>
+
                         <ListItem key="Packaging" disablePadding>
                             <ListItemButton component={Link} to="/" sx={{
                                 "&:hover": {

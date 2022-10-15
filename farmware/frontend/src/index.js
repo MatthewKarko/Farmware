@@ -13,6 +13,7 @@ import Logout from "./components/Logout";
 import ProducePage from "./webpages/ProducePage";
 import CustomersPage from "./webpages/CustomersPage";
 import SuppliersPage from "./webpages/SuppliersPage";
+import TeamsPage from "./webpages/TeamsPage";
 
 const routing = (
     <Router>
@@ -28,6 +29,7 @@ const routing = (
             <Route path="/produce" element={<ProducePage />}/>
             <Route path="/customers" element={<CustomersPage />}/>
             <Route path="/suppliers" element={<SuppliersPage />}/>
+            <Route path="/teams" element={<TeamsPage />}/>
 
         </Routes>
     </Router>
