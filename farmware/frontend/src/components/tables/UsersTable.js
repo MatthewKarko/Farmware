@@ -10,6 +10,31 @@ function UsersTable() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [teamsList, setTeamsList] = useState([]);
 
+  //modal state
+  const [displayEditModal, setDisplayEditModal] = useState(false);
+
+  //Stores temporary form changes
+  const [temporaryUser, setTemporaryUser] = useState({
+    id: -1,
+    first_name: "",
+    last_name: "",
+    email: "",
+    role: ""
+  });
+
+  const clearState = () => {
+    const formValues = {
+      id: -1,
+      first_name: '',
+      last_name: '',
+      email: '',
+      role: '',
+    };
+    setTemporaryUser({ ...formValues });
+
+    console.log("reset form data")
+  };
+
   useEffect(() => {
     axiosInstance
       .get(`user/me/`, {
@@ -37,8 +62,8 @@ function UsersTable() {
         alert("ERROR: Getting users failed");
       });
 
-      //get the teams and store them
-      axiosInstance
+    //get the teams and store them
+    axiosInstance
       .get(`teams/`, {
       })
       .then((res) => {
@@ -51,33 +76,6 @@ function UsersTable() {
         alert("ERROR: Getting teams failed");
       });
   }, []);
-
-
-  const [displayEditModal, setDisplayEditModal] = useState(false);
-
-  //Stores temporary changes
-  const [temporaryUser, setTemporaryUser] = useState({
-    id: -1,
-    first_name: "",
-    last_name: "",
-    email: "",
-    role: ""
-  });
-
-  const clearState = () => {
-    const formValues = {
-      id: -1,
-      first_name: '',
-      last_name: '',
-      email: '',
-      role: '',
-    };
-    setTemporaryUser({ ...formValues });
-
-    console.log("reset form data")
-  };
-
-  const [editContactId, setEditContactId] = useState(null);
 
   const handleFormChange = (event) => {
     event.preventDefault();
@@ -98,7 +96,7 @@ function UsersTable() {
       email: temporaryUser.email,
       // role: temporaryUser.role.level,
       // teams: temporaryUser.teams,
-    } 
+    }
 
     //Send PUT request to update user
     axiosInstance.put(`user/${temporaryUser.id}/`, postObject)
@@ -112,7 +110,6 @@ function UsersTable() {
 
   const handleEditClick = (event, row) => {
     event.preventDefault();
-    setEditContactId(row.id);
 
     const formValues = {
       id: row.id,
@@ -240,16 +237,16 @@ function UsersTable() {
             color: "#028357",
             borderColor: "#028357",
           }}
-            onClick={() => {setDisplayEditModal(!displayEditModal); handleEditSubmit()}}
+            onClick={() => { setDisplayEditModal(!displayEditModal); handleEditSubmit() }}
           >Edit User</Button>
           <br></br>
           <Button type="submit" variant="outlined" size="large" style={{
-                    color: "#FF0000",
-                    borderColor: "#FF0000",
-                    margin: "20px",
-                }}
-                    onClick={() => { handleUserDelete() }}
-                >Delete User</Button>
+            color: "#FF0000",
+            borderColor: "#FF0000",
+            margin: "20px",
+          }}
+            onClick={() => { handleUserDelete() }}
+          >Delete User</Button>
         </form>
       </div>
 
