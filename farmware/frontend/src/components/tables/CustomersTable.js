@@ -142,6 +142,7 @@ function CustomersTable() {
                     fontWeight: 'bold',
                 }}> Customers Table</Typography>
 
+                {isAdmin &&
                 <Button type="submit" variant="outlined" size="large" style={{
                     color: "#028357",
                     borderColor: "#028357",
@@ -149,6 +150,7 @@ function CustomersTable() {
                 }}
                     onClick={() => { setDisplayCreateModal(!displayCreateModal) }}
                 >Create Customer</Button>
+                }
 
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">

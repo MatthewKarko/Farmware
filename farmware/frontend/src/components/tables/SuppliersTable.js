@@ -142,6 +142,7 @@ function SuppliersPage() {
                     fontWeight: 'bold',
                 }}> Suppliers Table</Typography>
 
+                {isAdmin &&
                 <Button type="submit" variant="outlined" size="large" style={{
                     color: "#028357",
                     borderColor: "#028357",
@@ -149,6 +150,7 @@ function SuppliersPage() {
                 }}
                     onClick={() => { setDisplayCreateModal(!displayCreateModal) }}
                 >Create Supplier</Button>
+                }
 
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
@@ -242,9 +244,9 @@ function SuppliersPage() {
                 onClick={() => { setDisplayEditModal(!displayEditModal); clearState(); }}
             />
 
-        
-         {/* Modal for CREATE supplier */}
-         <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
+
+            {/* Modal for CREATE supplier */}
+            <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
                 <button
                     className="Close"
                     onClick={() => { setDisplayCreateModal(!displayCreateModal); clearState(); }}
