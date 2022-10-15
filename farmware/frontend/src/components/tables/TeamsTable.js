@@ -176,7 +176,7 @@ function TeamsPage() {
                 </TableContainer>
             </div>
 
-            {/* Modal for EDIT supplier */}
+            {/* Modal for EDIT team */}
             <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
                 <button
                     className="Close"
@@ -228,7 +228,7 @@ function TeamsPage() {
                         margin: "8px",
                     }}
                         onClick={() => { handleTeamDelete() }}
-                    >Delete Supplier</Button>
+                    >Delete Team</Button>
                 </form>
             </div>
 
@@ -239,7 +239,7 @@ function TeamsPage() {
             />
 
 
-            {/* Modal for CREATE supplier */}
+            {/* Modal for CREATE team */}
             <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
                 <button
                     className="Close"
