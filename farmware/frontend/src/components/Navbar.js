@@ -11,7 +11,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import EggIcon from '@mui/icons-material/Egg';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import GroupsIcon from '@mui/icons-material/Groups';
-import SettingsIcon from '@mui/icons-material/Settings';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import '../css/Navbar.css';
 
 const drawerWidth = 240;
@@ -185,6 +185,20 @@ function Navbar() {
                                     <GroupsIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Teams" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem key="Area Code" disablePadding>
+                            <ListItemButton component={Link} to="/area_codes" sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <LocationOnIcon sx={{ color: "#ffffff" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Area Code" />
                             </ListItemButton>
                         </ListItem>
 

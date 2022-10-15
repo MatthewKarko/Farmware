@@ -14,6 +14,7 @@ import ProducePage from "./webpages/ProducePage";
 import CustomersPage from "./webpages/CustomersPage";
 import SuppliersPage from "./webpages/SuppliersPage";
 import TeamsPage from "./webpages/TeamsPage";
+import AreaCodesPage from "./webpages/AreaCodesPage";
 
 const routing = (
     <Router>
@@ -30,6 +31,7 @@ const routing = (
             <Route path="/customers" element={<CustomersPage />}/>
             <Route path="/suppliers" element={<SuppliersPage />}/>
             <Route path="/teams" element={<TeamsPage />}/>
+            <Route path="/area_codes" element={<AreaCodesPage />}/>
 
         </Routes>
     </Router>
