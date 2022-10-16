@@ -55,11 +55,7 @@ export default function AccountModify() {
           // teamList.push(data.name);
           // console.log(data);
           setTeamlist(teamList => [...teamList, data])
-        })
-        
-        
-
-        
+        })                        
 			})
       .catch((err) => {
         console.log("AXIOS ERROR: ", err);
@@ -111,15 +107,28 @@ export default function AccountModify() {
     const data = new FormData(event.currentTarget);
 
     if(!confirm("Confirm account changes")){
-      navigate('/dashboard');
+      navigate('/accountsettings');
     }else{
 
       var postObject = {
         first_name: data.get('first_name'),
         last_name: data.get('last_name'),
-        email: data.get('email')
+        email: data.get('email'),
+
 
       } 
+      let updatedTeams = [];
+      teamList.map((data) => {
+        currentTeams.map((currentTeam) => {
+          if(data.name ==  currentTeam){
+            updatedTeams.push(data.id);
+          }
+        })
+       
+      });
+
+      postObject["teams"] = updatedTeams;
+
       axiosInstance
         .patch(`user/${userObj.id}/`, postObject)
         .then((res)=>{
@@ -129,14 +138,7 @@ export default function AccountModify() {
       });
 
     }
-
-    
-
-
   };
-
-  
-
   return (
     <React.Fragment>
 
