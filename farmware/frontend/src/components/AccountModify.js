@@ -55,18 +55,31 @@ export default function AccountModify() {
           // teamList.push(data.name);
           // console.log(data);
           setTeamlist(teamList => [...teamList, data])
-          
-
-
-        })
-        
-
-        
+        })                        
 			})
       .catch((err) => {
         console.log("AXIOS ERROR: ", err);
         // alert("ERROR: Incorrect call");
     });
+    axiosInstance
+		  .get(`user/teams/`, {
+			})
+			.then((res) => {
+		
+        
+        res.data.teams.map((data) => {
+          // teamList.push(data.name);
+          // console.log(data);
+          setCurrentTeams(currentTeams => [...currentTeams, data.name])
+        })        
+			})
+      .catch((err) => {
+        console.log("AXIOS ERROR: ", err);
+        // alert("ERROR: Incorrect call");
+    });
+
+
+
     
   }, []);
 
@@ -93,33 +106,39 @@ export default function AccountModify() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    
+    if(!confirm("Confirm account changes")){
+      navigate('/accountsettings');
+    }else{
 
-    var postObject = {
+      var postObject = {
         first_name: data.get('first_name'),
         last_name: data.get('last_name'),
-        email: data.get('email')
+        email: data.get('email'),
+
 
       } 
-      
-      
-      
-     
+      let updatedTeams = [];
+      teamList.map((data) => {
+        currentTeams.map((currentTeam) => {
+          if(data.name ==  currentTeam){
+            updatedTeams.push(data.id);
+          }
+        })
+       
+      });
+
+      postObject["teams"] = updatedTeams;
+
       axiosInstance
         .patch(`user/${userObj.id}/`, postObject)
         .then((res)=>{
             console.log(res);
-            alert("successfully changed account information");
+            alert("Successfully changed account information");
             navigate('/dashboard');
-            
-        
       });
 
-
+    }
   };
-
-  
-
   return (
     <React.Fragment>
 
@@ -203,21 +222,6 @@ export default function AccountModify() {
                   }
                   </Select>
               </FormControl>
-              <FormLabel
-              
-                children="Enter password to confirm"
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-              
               <Button
                 type="submit"
                 fullWidth
