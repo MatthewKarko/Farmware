@@ -12,7 +12,7 @@ class UserHierarchy(BasePermission):
     """
     Impose a hierarchy permission system.
 
-    - All ADMINS should not be able to edit anything below. 
+    - All ADMINS should be able to edit anything below. 
     - All roles below ADMIN should not be able to edit, unless it is themselves.
     """
     def has_object_permission(self, request, view, user_obj):
@@ -27,7 +27,7 @@ class UserHierarchy(BasePermission):
         if user.role > User.Roles.ADMIN: return False
 
         # Ensure hierarchy
-        return user.role < user_obj.role
+        return user.role <= user_obj.role
 
 class OnlyYou(BasePermission):
     """Only you have permissions."""
