@@ -15,6 +15,8 @@ class Produce(models.Model):
     name = models.TextField(max_length=100)
 
     class Meta:
+        verbose_name = "produce"
+        verbose_name_plural = "produce"
         constraints = [
             models.UniqueConstraint(
                 fields=['name', 'organisation'], 
@@ -35,6 +37,10 @@ class ProduceVariety(models.Model):
     produce_id = models.ForeignKey(Produce, on_delete=models.DO_NOTHING)
     variety = models.TextField(max_length=100)
 
+    class Meta:
+        verbose_name = "produce variety"
+        verbose_name_plural = "produce varieties"
+
     def __str__(self) -> str:
         return str(self.variety)
 
@@ -54,6 +60,10 @@ class ProduceQuantitySuffix(models.Model):
     produce_id = models.ForeignKey(Produce, on_delete=models.DO_NOTHING)
     suffix = models.TextField(max_length=20)
     base_equivalent = models.FloatField()
+
+    class Meta:
+        verbose_name = "produce quantity suffix"
+        verbose_name_plural = "produce quantity suffixes"
 
     def __str__(self) -> str:
         return str(self.suffix)
