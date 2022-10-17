@@ -42,7 +42,10 @@ class OrganisationTestCases(TestCase):
 
 class   AreaCodeTestCases(TestCase):
     def setUp(self):
-        AreaCode.objects.create( area_code="204",description="just another area code")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        AreaCode.objects.create(organisation=organisatio, area_code="204",description="just another area code")
     def test_AreaCode1(self):
         areacodee = AreaCode.objects.get(area_code="204")
         self.assertEqual(areacodee.description,"just another area code")
@@ -51,18 +54,27 @@ class   AreaCodeTestCases(TestCase):
         with self.assertRaises(IntegrityError):
             AreaCode.objects.create( area_code="204",description="just another area code")
     def  test_AreaCode3(self):
-        areacode = AreaCode.objects.get(area_code="204")
+        #areacode = AreaCode.objects.get(area_code="204")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmon",logo="got")
+        organisatio=Organisation.objects.get(name="Farmon")
         with self.assertRaises(ValidationError):
-            AreaCode.objects.create( area_code="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas, leo in mattis suscipit, ante arcu gravida sapien, sit amet varius quam mi vitae lectus. Nullam in aliquam odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In quis imperdiet purus. Curabitur quis laoreet tellus. Quisque gravida vitae arcu molestie interdum. Phasellus dictum urna est, ut feugiat turpis gravida sed. Pellentesque ut consectetur ante. Sed scelerisque mauris quis mi condimentum, a consectetur massa ullamcorper. Ut condimentum tellus ac lorem luctus ultrices. In nibh est, placerat ac dignissim sit amet, dapibus in libero. Quisque lobortis lacus et laoreet hendrerit. Quisque vel placerat mi. Suspendisse vitae sodales justo, sed dapibus sapien. Vestibulum bibendum fermentum fringilla. Aliquam vitae neque orci.Aenean euismod lacus id orci rutrum suscipit. In sit amet tortor vel mauris luctus lacinia. Suspendisse potenti. Mauris lorem sem, ornare in justo commodo, vulputate condimentum urna. Nam fermentum ipsum vestibulum vehicula cursus. Mauris iaculis ut risus a imperdiet. Suspendisse porttitor, sem sed laoreet luctus, est tellus bibendum felis, a dignissim justo velit a ante. Sed placerat justo eros, at viverra ex imperdiet ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec id odio nunc. Nulla tincidunt rhoncus tellus, sit amet maximus lectus blandit sit amet. Donec interdum vitae sapien sit amet varius. Proin imperdiet mauris eget cursus rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent id libero erat.Pellentesque gravida, lectus vitae porttitor dapibus, nisl nunc suscipit ante, eu varius sem dolor id ante. Pellentesque porta feugiat ipsum, eget pharetra dolor dapibus vitae. Donec gravida eleifend sem, ac dictum augue elementum eget. Ut accumsan maximus purus, sed aliquet tellus interdum vel. Praesent iaculis diam et neque rhoncus placerat. Mauris consectetur vel leo nec suscipit. Praesent placerat, felis facilisis.",description="ss")
+            AreaCode.objects.create(organisation=organisatio, area_code="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas, leo in mattis suscipit, ante arcu gravida sapien, sit amet varius quam mi vitae lectus. Nullam in aliquam odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In quis imperdiet purus. Curabitur quis laoreet tellus. Quisque gravida vitae arcu molestie interdum. Phasellus dictum urna est, ut feugiat turpis gravida sed. Pellentesque ut consectetur ante. Sed scelerisque mauris quis mi condimentum, a consectetur massa ullamcorper. Ut condimentum tellus ac lorem luctus ultrices. In nibh est, placerat ac dignissim sit amet, dapibus in libero. Quisque lobortis lacus et laoreet hendrerit. Quisque vel placerat mi. Suspendisse vitae sodales justo, sed dapibus sapien. Vestibulum bibendum fermentum fringilla. Aliquam vitae neque orci.Aenean euismod lacus id orci rutrum suscipit. In sit amet tortor vel mauris luctus lacinia. Suspendisse potenti. Mauris lorem sem, ornare in justo commodo, vulputate condimentum urna. Nam fermentum ipsum vestibulum vehicula cursus. Mauris iaculis ut risus a imperdiet. Suspendisse porttitor, sem sed laoreet luctus, est tellus bibendum felis, a dignissim justo velit a ante. Sed placerat justo eros, at viverra ex imperdiet ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec id odio nunc. Nulla tincidunt rhoncus tellus, sit amet maximus lectus blandit sit amet. Donec interdum vitae sapien sit amet varius. Proin imperdiet mauris eget cursus rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent id libero erat.Pellentesque gravida, lectus vitae porttitor dapibus, nisl nunc suscipit ante, eu varius sem dolor id ante. Pellentesque porta feugiat ipsum, eget pharetra dolor dapibus vitae. Donec gravida eleifend sem, ac dictum augue elementum eget. Ut accumsan maximus purus, sed aliquet tellus interdum vel. Praesent iaculis diam et neque rhoncus placerat. Mauris consectetur vel leo nec suscipit. Praesent placerat, felis facilisis.",description="ss")
             raise ValidationError("error")
     def  test_AreaCode4(self):
-        areacode = AreaCode.objects.get(area_code="204")
+        #areacode = AreaCode.objects.get(area_code="204")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmon",logo="go")
+        organisatio=Organisation.objects.get(name="Farmon")
         with self.assertRaises(ValidationError):
-            AreaCode.objects.create( area_code="203", description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas, leo in mattis suscipit, ante arcu gravida sapien, sit amet varius quam mi vitae lectus. Nullam in aliquam odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In quis imperdiet purus. Curabitur quis laoreet tellus. Quisque gravida vitae arcu molestie interdum. Phasellus dictum urna est, ut feugiat turpis gravida sed. Pellentesque ut consectetur ante. Sed scelerisque mauris quis mi condimentum, a consectetur massa ullamcorper. Ut condimentum tellus ac lorem luctus ultrices. In nibh est, placerat ac dignissim sit amet, dapibus in libero. Quisque lobortis lacus et laoreet hendrerit. Quisque vel placerat mi. Suspendisse vitae sodales justo, sed dapibus sapien. Vestibulum bibendum fermentum fringilla. Aliquam vitae neque orci.Aenean euismod lacus id orci rutrum suscipit. In sit amet tortor vel mauris luctus lacinia. Suspendisse potenti. Mauris lorem sem, ornare in justo commodo, vulputate condimentum urna. Nam fermentum ipsum vestibulum vehicula cursus. Mauris iaculis ut risus a imperdiet. Suspendisse porttitor, sem sed laoreet luctus, est tellus bibendum felis, a dignissim justo velit a ante. Sed placerat justo eros, at viverra ex imperdiet ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec id odio nunc. Nulla tincidunt rhoncus tellus, sit amet maximus lectus blandit sit amet. Donec interdum vitae sapien sit amet varius. Proin imperdiet mauris eget cursus rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent id libero erat.Pellentesque gravida, lectus vitae porttitor dapibus, nisl nunc suscipit ante, eu varius sem dolor id ante. Pellentesque porta feugiat ipsum, eget pharetra dolor dapibus vitae. Donec gravida eleifend sem, ac dictum augue elementum eget. Ut accumsan maximus purus, sed aliquet tellus interdum vel. Praesent iaculis diam et neque rhoncus placerat. Mauris consectetur vel leo nec suscipit. Praesent placerat, felis facilisis.")
+            AreaCode.objects.create(organisation=organisatio, area_code="203", description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas, leo in mattis suscipit, ante arcu gravida sapien, sit amet varius quam mi vitae lectus. Nullam in aliquam odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In quis imperdiet purus. Curabitur quis laoreet tellus. Quisque gravida vitae arcu molestie interdum. Phasellus dictum urna est, ut feugiat turpis gravida sed. Pellentesque ut consectetur ante. Sed scelerisque mauris quis mi condimentum, a consectetur massa ullamcorper. Ut condimentum tellus ac lorem luctus ultrices. In nibh est, placerat ac dignissim sit amet, dapibus in libero. Quisque lobortis lacus et laoreet hendrerit. Quisque vel placerat mi. Suspendisse vitae sodales justo, sed dapibus sapien. Vestibulum bibendum fermentum fringilla. Aliquam vitae neque orci.Aenean euismod lacus id orci rutrum suscipit. In sit amet tortor vel mauris luctus lacinia. Suspendisse potenti. Mauris lorem sem, ornare in justo commodo, vulputate condimentum urna. Nam fermentum ipsum vestibulum vehicula cursus. Mauris iaculis ut risus a imperdiet. Suspendisse porttitor, sem sed laoreet luctus, est tellus bibendum felis, a dignissim justo velit a ante. Sed placerat justo eros, at viverra ex imperdiet ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec id odio nunc. Nulla tincidunt rhoncus tellus, sit amet maximus lectus blandit sit amet. Donec interdum vitae sapien sit amet varius. Proin imperdiet mauris eget cursus rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent id libero erat.Pellentesque gravida, lectus vitae porttitor dapibus, nisl nunc suscipit ante, eu varius sem dolor id ante. Pellentesque porta feugiat ipsum, eget pharetra dolor dapibus vitae. Donec gravida eleifend sem, ac dictum augue elementum eget. Ut accumsan maximus purus, sed aliquet tellus interdum vel. Praesent iaculis diam et neque rhoncus placerat. Mauris consectetur vel leo nec suscipit. Praesent placerat, felis facilisis.")
             raise ValidationError("error")
 class  CustomerTestCases(TestCase):
     def setUp(self):
-        Customer.objects.create(name = "Henry",phone_number="9191223445" )
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
 
     def test_Customer1(self):
         customer = Customer.objects.get(name = "Henry")
@@ -73,47 +85,74 @@ class  CustomerTestCases(TestCase):
             Customer.objects.create(name = "Henr",phone_number="91912234452" )
             raise IntegrityError("error")
     def test_Customer3(self):
-        customer = Customer.objects.get(name = "Henry")
+        #customer = Customer.objects.get(name = "Henry")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmon",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmon")
         with self.assertRaises(ValidationError):
-            Customer.objects.create(name = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo cursus condimentum. Donec pulvinar odio sed enim tristique, sit amet tristique dolor volutpat. Proin nec mauris gravida libero scelerisque consectetur non at sapien. Nam et felis nibh. Morbi eget augue sit amet nisl elementum congue. Nulla vel laoreet velit. Nullam est neque, efficitur sodales suscipit ac, vulputate eget velit. Donec.",phone_number="9191223445")
+            Customer.objects.create(organisation=organisatio,name = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo cursus condimentum. Donec pulvinar odio sed enim tristique, sit amet tristique dolor volutpat. Proin nec mauris gravida libero scelerisque consectetur non at sapien. Nam et felis nibh. Morbi eget augue sit amet nisl elementum congue. Nulla vel laoreet velit. Nullam est neque, efficitur sodales suscipit ac, vulputate eget velit. Donec.",phone_number="9191223445")
             raise ValidationError("error")
 class  SupplierTestCases(TestCase):
     def setUp(self):
-        Supplier.objects.create(name = "john",phone_number = "1234567891")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmon",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmon")
+        Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
     def test_Supplier1(self):
         supplier = Supplier.objects.get(name = "john")
         self.assertEqual(supplier.phone_number,"1234567891")
     def test_Supplier2(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmo")
         with self.assertRaises(ValidationError):
-            Supplier.objects.create(name = "john",phone_number = "12345678911")
+            Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "12345678911")
             raise ValidationError("error")
 
     def test_Supplier3(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmo")
         with self.assertRaises(ValidationError):
-            Supplier.objects.create(name ="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et justo ut turpis suscipit mattis ac ac lorem. Aenean molestie nisi et ullamcorper condimentum. Integer at congue nulla, quis elementum mauris. Mauris luctus nisl elementum massa vehicula, ut maximus purus pellentesque. Curabitur consectetur tincidunt malesuada. Sed dignissim ipsum nec urna tincidunt lobortis. Vestibulum porta finibus tincidunt. Nunc a odio porta, aliquam odio ut, commodo risus. Duis quis risus in nulla accumsan tempus dapibus et elit. Integer sed est at ligula commodo tristique.Sed et pulvinar mauris. Vivamus fringilla odio a ex porttitor, nec dapibus nisi vestibulum. Phasellus sed nisi velit. Vestibulum tempus justo dolor, et pellentesque urna molestie ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur viverra tincidunt hendrerit. Maecenas accumsan est vitae est faucibus facilisis. Sed nec quam in orci vehicula varius in ut urna. Proin lacus nibh, suscipit a elementum nec.",phone_number = "1234567891")
+            Supplier.objects.create(organisation=organisatio,name ="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et justo ut turpis suscipit mattis ac ac lorem. Aenean molestie nisi et ullamcorper condimentum. Integer at congue nulla, quis elementum mauris. Mauris luctus nisl elementum massa vehicula, ut maximus purus pellentesque. Curabitur consectetur tincidunt malesuada. Sed dignissim ipsum nec urna tincidunt lobortis. Vestibulum porta finibus tincidunt. Nunc a odio porta, aliquam odio ut, commodo risus. Duis quis risus in nulla accumsan tempus dapibus et elit. Integer sed est at ligula commodo tristique.Sed et pulvinar mauris. Vivamus fringilla odio a ex porttitor, nec dapibus nisi vestibulum. Phasellus sed nisi velit. Vestibulum tempus justo dolor, et pellentesque urna molestie ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur viverra tincidunt hendrerit. Maecenas accumsan est vitae est faucibus facilisis. Sed nec quam in orci vehicula varius in ut urna. Proin lacus nibh, suscipit a elementum nec.",phone_number = "1234567891")
             raise ValidationError("error")
     def test_Supplier4(self):
-         with self.assertRaises(ValidationError):
-             Supplier.objects.create(name = 2,phone_number = "1234567891")
-             raise ValidationError("error")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmo")
+        with self.assertRaises(ValidationError):
+            Supplier.objects.create(organisation=organisatio,name = 2,phone_number = "1234567891")
+            raise ValidationError("error")
     def test_Supplier5(self):
-         with self.assertRaises(ValidationError):
-             Supplier.objects.create(name = "name2",phone_number = 1234567891)
-             raise ValidationError("error")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmo")
+        with self.assertRaises(ValidationError):
+            Supplier.objects.create(organisation=organisatio,name = "name2",phone_number = 1234567891)
+            raise ValidationError("error")
     def test_Supplier6(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmo")
         try:
-             supplier = Supplier.objects.create(name = 2,phone_number = 12345678919)
+             supplier = Supplier.objects.create(organisation=organisatio,name = 2,phone_number = 12345678919)
              supplier.clean_fields()
         except ValidationError:
              raise ValidationError("error")
 
 class ProduceVarietyTestCases(TestCase):
     def setUp(self):
-        produce=Produce.objects.create(name="eggs")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmo")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
         ProduceVariety.objects.create(produce_id=produce,variety="brown")
     def test_ProduceVariety(self):
         producevariety=ProduceVariety.objects.get(variety="brown")
-        produce2=Produce.objects.create(name="chicken")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Faro",logo="oat")
+        organisatio=Organisation.objects.get(name="Faro")
+        produce2=Produce.objects.create(organisation=organisatio,name="chicken")
         self.assertEqual(producevariety.variety,"brown")
         with self.assertRaises(ValidationError):
             ProduceVariety.objects.create(produce_id=produce2,variety="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et justo ut turpis suscipit mattis ac ac lorem. Aenean molestie nisi et ullamcorper condimentum. Integer at congue nulla, quis elementum mauris. Mauris luctus nisl elementum massa vehicula, ut maximus purus pellentesque. Curabitur consectetur tincidunt malesuada. Sed dignissim ipsum nec urna tincidunt lobortis. Vestibulum porta finibus tincidunt. Nunc a odio porta, aliquam odio ut, commodo risus. Duis quis risus in nulla accumsan tempus dapibus et elit. Integer sed est at ligula commodo tristique.Sed et pulvinar mauris. Vivamus fringilla odio a ex porttitor, nec dapibus nisi vestibulum. Phasellus sed nisi velit. Vestibulum tempus justo dolor, et pellentesque urna molestie ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur viverra tincidunt hendrerit. Maecenas accumsan est vitae est faucibus facilisis. Sed nec quam in orci vehicula varius in ut urna. Proin lacus nibh, suscipit a elementum nec")
@@ -121,23 +160,32 @@ class ProduceVarietyTestCases(TestCase):
 
 class ProduceQuantitySuffixTestCases(TestCase):
     def setUp(self):
-        produce=Produce.objects.create(name="eggs")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmon",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmon")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
         ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
     def test_ProduceQuantitySuffix(self):
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
         self.assertEqual(producequantitysuffix.base_equivalent,5.0)
-        produce2=Produce.objects.create(name="eggs")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmo")
+        produce2=Produce.objects.create(organisation=organisatio,name="eggs")
         with self.assertRaises(ValidationError):
             ProduceQuantitySuffix.objects.create(produce_id=produce2,suffix="ipsumLorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur cursus lectus id est dignissim dapibus. Integer mollis sodales urna, quis consectetur enim aliquam nec. Fusce nec velit nec lacus sollicitudin bibendum a ut augue. Fusce commodo lacus vel enim vulputate finibus. Integer aliquam quam at lorem imperdiet dignissim. Suspendisse volutpat.",base_equivalent=5.0)
             raise ValidationError("error")
 class StockTestCases(TestCase):
     def setUp(self):
-        produce=Produce.objects.create(name="eggs")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmon",logo="oat")
+        organisatio=Organisation.objects.get(name="Farmon")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
         producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
         producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
-        supplier=Supplier.objects.create(name = "john",phone_number = "1234567891")
-        areacode=AreaCode.objects.create( area_code=204,description="just another area code")
-        Stock.objects.create(produce_id =produce,
+        supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code=204,description="just another area code")
+        Stock.objects.create(organisation=organisatio,produce_id =produce,
     variety_id =producevariety,
     quantity = 6.0,
     quantity_suffix_id =producequantitysuffix,
@@ -147,19 +195,22 @@ class StockTestCases(TestCase):
     date_picked = "2022-10-27",
     ehd = "2022-10-28" ,
     date_completed ="2022-10-29",
-    area_code =areacode )
+    area_code_id =areacode )
     def test_Stock1(self):
         stock=Stock.objects.get(quantity=6.0)
         #d=new Date("2022-10-28")
         #self.assertEqual(stock.ehd,d)
 class  OrderStockTestCases(TestCase):
     def setUp(self):
-        produce=Produce.objects.create(name="eggs")
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
         producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
         producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
-        supplier=Supplier.objects.create(name = "john",phone_number = "1234567891")
-        areacode=AreaCode.objects.create( area_code=204,description="just another area code")
-        stock=Stock.objects.create(produce_id =produce,
+        supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code=204,description="just another area code")
+        stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
     variety_id =producevariety,
     quantity = 6.0,
     quantity_suffix_id =producequantitysuffix,
@@ -169,14 +220,16 @@ class  OrderStockTestCases(TestCase):
     date_picked = "2022-10-27",
     ehd = "2022-10-28" ,
     date_completed ="2022-10-29",
-    area_code =areacode )
-        customer=Customer.objects.create(name = "Henry",phone_number="9191223445" )
-        order=Order.objects.create(customer_id= customer)
-        OrderStock.objects.create( order_id =order,
-    stock_id =stock ,quantity = 10.0,quantity_suffix_id =producequantitysuffix,invoice_number="7584")
+    area_code_id=areacode)
+        customer=Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
+        order=Order.objects.create(organisation=organisatio,customer_id= customer)
+        OrderStock.objects.create(order_id =order,
+    stock_id =stock ,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
     def test_OrderStock(self):
-        orderstock = OrderStock.objects.get(invoice_number="7584")
-        self.assertEqual(orderstock.invoice_number,"7584")
+        customer=Customer.objects.get(name="Henry")
+        order=Order.objects.get(customer_id= customer)
+        orderstock = OrderStock.objects.get(order_id =order)
+        self.assertEqual(orderstock.quantity,10.0)
 class TeamTestCases(TestCase):
     def setUp(self):
         organisation=Organisation.objects.create(name="Farmone",logo="goat")
