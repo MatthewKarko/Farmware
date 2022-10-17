@@ -12,7 +12,7 @@ from rest_framework import status, mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from .models import User
 from .permissions import IsInOrganisation, UserHierarchy, OnlyYou
@@ -101,7 +101,7 @@ class UserViewSet(
             data=request.data
             )
 
-        if str(user.id) != str(pk):
+        if str(user.id) != str(pk):  # type: ignore
             return Response(
                 {'error': 'You do not have permission to do this.'}, 
                 status=status.HTTP_400_BAD_REQUEST
@@ -111,14 +111,14 @@ class UserViewSet(
             return Response(serialiser.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Check old password
-        if not user.check_password(serialiser.data.get("old_password")):
+        if not user.check_password(serialiser.data.get("old_password")):  # type: ignore
             return Response(
                 {"old_password": ["Wrong password."]}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         try:
-            validate_password(serialiser.data.get("new_password"), user)
+            validate_password(serialiser.data.get("new_password"), user)  # type: ignore
         except exceptions.ValidationError as e:
             errors = []
             for error in e.error_list:
