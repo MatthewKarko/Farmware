@@ -5,10 +5,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
+from ..models.customer import Customer
+from ..serialisers.customer import CustomerSerialiser
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
-from ..models import Customer
-from ..serialisers import CustomerSerialiser
 
 class CustomerViewSet(ModelViewSet):
     serializer_class = CustomerSerialiser

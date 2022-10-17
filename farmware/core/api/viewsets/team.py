@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 from ..models.team import Team
-from ..serialisers import TeamCreationSerialiser, TeamSerialiser
+from ..serialisers.team import TeamCreationSerialiser, TeamSerialiser
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
 

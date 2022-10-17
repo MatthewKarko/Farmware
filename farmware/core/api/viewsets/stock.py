@@ -7,12 +7,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
+from ..models.stock import Stock, StockPickers
+from ..serialisers.stock import StockSerialiser, StockPickersSerialiser
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
-from ..models import Stock
-from ..models import StockPickers
-from ..serialisers import StockSerialiser
-from ..serialisers import StockPickersSerialiser
 
 class StockViewSet(ModelViewSet):
     serializer_class = StockSerialiser

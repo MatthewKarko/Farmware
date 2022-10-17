@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
 from ..models.customer import Customer
-from ..models.order import Order
-from ..models.order import OrderStock
+from ..models.order import Order, OrderItem, OrderItemStockLink
 
 ### ORDER #####################################################################
 class OrderSerialiser(serializers.ModelSerializer):
@@ -25,7 +24,8 @@ class OrderFullSerialiser(serializers.ModelSerializer):
     def to_representation(self, data):
         data = super(OrderFullSerialiser, self).to_representation(data)
 
-        data['customer_name'] = Customer.objects.get(id=data['customer_id']).name
+        data['customer_name'] = Customer.objects.get(
+            id=data['customer_id']).name
 
         data['order_items'] = []
         # ProduceVarietyInOrganisationSerialiser(
@@ -36,9 +36,17 @@ class OrderFullSerialiser(serializers.ModelSerializer):
 ###############################################################################
 
 
-### ORDER STOCK ###############################################################
-class OrderStockSerialiser(serializers.ModelSerializer):
+### ORDER ITEM ################################################################
+class OrderItemSerialiser(serializers.ModelSerializer):
     class Meta:
-        model = OrderStock
+        model = OrderItem
+        fields = '__all__'
+###############################################################################
+
+
+### ORDER ITEM STOCK LINK #####################################################
+class OrderItemStockLinkSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItemStockLink
         fields = '__all__'
 ###############################################################################

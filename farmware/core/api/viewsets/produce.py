@@ -1,17 +1,11 @@
 from django.db import IntegrityError
 from django.http import QueryDict
-from django.db import models
 
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
 
-from ..responses import DefaultResponses
-from ...permissions.IsOfficeOrHigherHierarchy import IsHigherThanWorkerHierarchy
-from ...user.models import User
-from ...user.permissions import IsInOrganisation
 from ..models.produce import Produce, ProduceVariety, ProduceQuantitySuffix
+from ..responses import DefaultResponses
 from ..serialisers.produce import (
     ProduceSerialiser, 
     ProduceCreationSerialiser,
@@ -19,6 +13,9 @@ from ..serialisers.produce import (
     ProduceVarietySerialiser,
     ProduceQuantitySuffixSerialiser
 )
+from ...permissions.IsOfficeOrHigherHierarchy import IsHigherThanWorkerHierarchy
+from ...user.models import User
+from ...user.permissions import IsInOrganisation
 
 
 class ProduceViewSet(ModelViewSet):
