@@ -30,7 +30,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_active', True)
 
         email = self.normalize_email(email)
-        user = self.model(
+        user: User = self.model(
             email=email, 
             first_name=first_name, 
             last_name=last_name, 

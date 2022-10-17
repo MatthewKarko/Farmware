@@ -103,7 +103,7 @@ class UserViewSet(
 
         if str(user.id) != str(pk):
             return Response(
-                {'error': 'You do not have permission to do that'}, 
+                {'error': 'You do not have permission to do this.'}, 
                 status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -185,6 +185,7 @@ class UserViewSet(
 
         if serliaser.is_valid():
             user: User = serliaser.save()
+            # TODO: validate_password(serliaser.validated_data['password'], user)
             if user:
                 # TODO: activate send confirmation email
                 # self.send_email_verification(request, user)

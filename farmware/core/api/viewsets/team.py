@@ -17,7 +17,7 @@ class TeamViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, IsInOrganisation]
 
     def get_queryset(self, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         return Team.objects.all().filter(
             organisation=user.organisation,
             **kwargs
