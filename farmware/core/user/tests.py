@@ -1,9 +1,14 @@
 from django.test import TestCase
 from .models import *
+from .views import ActivateAccount,BlacklistTokenUpdateView,CurrentUserView
 from ..api.models.organisation import Organisation
 from rest_framework import serializers, exceptions
 from rest_framework import status
 from rest_framework.test import APITestCase
+#from .urls import *
+#from rest_framework.routers import DefaultRouter
+from django.test import Client
+
 # Create your tests here.
 class UserManagerTestCases(TestCase):
     def set_up(self):
@@ -108,3 +113,138 @@ class RegisterUserSerialiserTests(self):
          'organisation':org
        }
        self.assertNotNull(rus.create(serializer_data))
+class UserViewSetTest(self):
+    def set_up(self):
+        Organisation.objects.create(name="nameoforg", logo="logoofog")
+        c = Client()
+    def testRegisteringUser(self):
+        org= Organisation.objects.get(name="nameoforg")
+        serializer_data = {
+         'email': 'example@gmail.com',
+         'first_name':'firstn',
+         'last_name':'lastn',
+         'password':'passwd',
+         'organisation':org
+       }
+        response=c.post(reverse('register/user'),serializer_data)
+        self.assertEquals(response.status_code,status.HTTP_201_CREATED)
+    def testRegisteringUserError(self):
+        response=c.post(reverse(register/user),{
+        })
+        self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
+    def testRegisteringAdmin(self):
+        org= Organisation.objects.get(name="nameoforg")
+        serializer_data = {
+         'email': 'example@gmail.com',
+         'first_name':'firstn',
+         'last_name':'lastn',
+         'password':'passwd',
+         'organisation':org,
+         'role':000
+       }
+        response=c.post(reverse('register/admin'),serializer_data)
+        self.assertEquals(response.status_code,status.HTTP_201_CREATED)
+    def  testRegisteringAdminError(self):
+        serializer_data={}
+        response=c.post(reverse('register/admin'),serializer_data)
+        self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
+    def testingSettingPasswordsError(self):
+        org= Organisation.objects.get(name="nameoforg")
+        serializer_data = {
+         'email': 'example@gmail.com',
+         'first_name':'firstn',
+         'last_name':'lastn',
+         'password':'passwd',
+         'organisation':org
+       }
+       response=c.post(reverse(''),serializer_data)
+      self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
+    def testingSettingPasswordsError2(self):
+        org= Organisation.objects.get(name="nameoforg")
+        serializer_data = {
+         'email': 'example@gmail.com',
+         'first_name':'firstn',
+         'last_name':'lastn',
+         'password':'passwd',
+         'organisation':org,
+         'old_password':'',
+         'new_password':''
+       }
+       response=c.post(reverse('register/user'),serializer_data)
+       self.assertEquals(response.status_code,status.HTTP_201_CREATED)
+       user=User.objects.get(first_name="firstn")
+       response=c.post(reverse(''),serializer_data,user.id)
+      self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
+    def testingSettingPasswords(self):
+        org= Organisation.objects.get(name="nameoforg")
+        serializer_data = {
+         'email': 'example@gmail.com',
+         'first_name':'firstn',
+         'last_name':'lastn',
+         'password':'passwd',
+         'organisation':org,
+         'old_password':'pass',
+         'new_password':'passwpr'
+       }
+       response=c.post(reverse('register/user'),serializer_data)
+       self.assertEquals(response.status_code,status.HTTP_201_CREATED)
+       user=User.objects.get(first_name="firstn")
+       response=c.post(reverse(''),serializer_data,user.id)
+      self.assertEquals(response.status_code,status.HTTP_200_OK)
+    def testingDestroy(self):
+        org= Organisation.objects.get(name="nameoforg")
+        serializer_data = {
+         'email': 'example@gmail.com',
+         'first_name':'firstn',
+         'last_name':'lastn',
+         'password':'passwd',
+         'organisation':org
+       }
+       response=c.post(reverse('register/user'),serializer_data)
+       self.assertEquals(response.status_code,status.HTTP_201_CREATED)
+
+        response=c.post(reverse("destroy"),serializer_data)
+        self.assertEquals(response.status_code,status.HTTP_200_OK)
+    def testingList(self):
+        org= Organisation.objects.get(name="nameoforg")
+        serializer_data = {
+         'email': 'example@gmail.com',
+         'first_name':'firstn',
+         'last_name':'lastn',
+         'password':'passwd',
+         'organisation':org
+       }
+       response=c.post(reverse('register/user'),serializer_data)
+       self.assertEquals(response.status_code,status.HTTP_201_CREATED)
+
+       repsonse=c.get(reverse('list'),serializer_data)
+       self.assertNotEquals(response,Null)
+
+    def testingpermissionsInvalid(self):
+        response= c.get(reverse(),{})
+        self.assertEquals(response,[])
+    def testingPermissionValid(self):
+        rg= Organisation.objects.get(name="nameoforg")
+        serializer_data = {
+         'email': 'example@gmail.com',
+         'first_name':'firstn',
+         'last_name':'lastn',
+         'password':'passwd',
+         'organisation':org,
+         'role':000
+       }
+        response=c.post(reverse('register/admin'),serializer_data)
+        self.assertEquals(response.status_code,status.HTTP_201_CREATED)
+        response= c.get(reverse(get_permissions))
+        self.assertEquals(response,[AllowAny()])
+
+class ActivateAccountTests(self):
+    def set_up(self):
+        c =Client()
+        TokenGenerator tg=TokenGenerator()
+        Organisation.objects.create(name="nameoforg", logo="logoofog")
+    def testingGet(self):
+        Org=Orgaisation.objects.get(name="nameoforg")
+        user=UserManager.create_user("email@gmail.com", "first_name", "last_name", Org, 3,"password123")
+        tg._make_hash_value(user, timestamp)
+        response = c.get('activate/<uidb64>/<token>',request, uidb64, token')
