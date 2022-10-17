@@ -12,7 +12,7 @@ function UsersTable() {
 
   //modal state
   const [displayEditModal, setDisplayEditModal] = useState(false);
-
+  let role_dict = {400: 'WORKER', 0: 'ORGANISATION_ADMIN'};
   //Stores temporary form changes
   const [temporaryUser, setTemporaryUser] = useState({
     id: -1,
@@ -146,7 +146,6 @@ function UsersTable() {
                 <TableCell className="tableCell">Last Name</TableCell>
                 <TableCell className="tableCell">Email</TableCell>
                 <TableCell className="tableCell">Role</TableCell>
-                <TableCell className="tableCell">Teams</TableCell>
                 {isAdmin && < TableCell className="tableCell">Edit</TableCell>}
               </TableRow>
             </TableHead>
@@ -157,8 +156,7 @@ function UsersTable() {
                   <TableCell className="tableCell">{row.first_name}</TableCell>
                   <TableCell className="tableCell">{row.last_name}</TableCell>
                   <TableCell className="tableCell">{row.email}</TableCell>
-                  <TableCell className="tableCell">{row.role.level}</TableCell>
-                  <TableCell className="tableCell">convert {row.teams} to string format</TableCell>
+                  <TableCell className="tableCell">{role_dict[row.role.level]}</TableCell>
                   {isAdmin &&
                     <TableCell className="tableCell">
                       <Button variant="outlined" size="medium"
