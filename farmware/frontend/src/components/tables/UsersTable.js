@@ -12,7 +12,7 @@ function UsersTable() {
 
   //modal state
   const [displayEditModal, setDisplayEditModal] = useState(false);
-  let role_dict = {400: 'WORKER', 0: 'ORGANISATION_ADMIN'};
+  let role_dict = {400: 'WORKER', 0: 'ORGANISATION_ADMIN', 100: 'ADMIN', 200: 'TEAM_LEADER', 300: 'OFFICE'};
   //Stores temporary form changes
   const [temporaryUser, setTemporaryUser] = useState({
     id: -1,
