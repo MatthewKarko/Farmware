@@ -153,16 +153,21 @@ class UserViewSet(
         """Update a user's information."""
         # Data and user
         data: QueryDict = request.data
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
 
         # Serialiser
         serialiser = self.get_serializer_class()(
             instance=user, 
-            data=data, 
+            data=data,   # type: ignore
             partial=True)
         serialiser.is_valid(raise_exception=True)
 
         return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """Remove a user."""
+        super().destroy(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
         """List all users in one's organisation."""
@@ -170,12 +175,6 @@ class UserViewSet(
             instance=self.get_queryset(), many=True
             )
         return Response(serialiser.data)
-
-    def destroy(self, request, *args, **kwargs):
-        """Remove a user."""
-        resp = super().destroy(request, *args, **kwargs)
-        print(resp)
-        return Response(status=status.HTTP_200_OK)
 
     def create_user(self, request):
         """Create a new user."""
@@ -213,6 +212,3 @@ class UserViewSet(
             html_message=html_message
         )
         # TODO: add verification / error checking
-
-    def change_password():
-        pass

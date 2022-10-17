@@ -1,6 +1,6 @@
 from django.db import IntegrityError
 from django.http import QueryDict
-from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -62,8 +62,9 @@ class ProduceViewSet(ModelViewSet):
         try:
             serialiser.save()
         except IntegrityError as e:
-            print(e)
-            return Response({'error': e}, status=status.HTTP_403_FORBIDDEN)
+            if 'UNIQUE constraint' in e.args[0]:
+                return self.responses.RESPONSE_ITEM_ALREADY_EXISTS
+            return self.responses.RESPONSE_FORBIDDEN
         return self.responses.RESPONSE_CREATION_SUCCESS
 
     def retrieve(self, request, *args, **kwargs):
@@ -99,7 +100,7 @@ class ProduceVarietyViewSet(ModelViewSet):
         try:
             serialiser.save()
         except IntegrityError as e:
-            print(e)
+            print('e (ProduceVarietyViewSet create):', e)
             return self.responses.RESPONSE_FORBIDDEN
         return self.responses.RESPONSE_CREATION_SUCCESS
 
@@ -139,7 +140,7 @@ class ProduceQuantitySuffixViewSet(ModelViewSet):
         try:
             serialiser.save()
         except IntegrityError as e:
-            print(e)
+            print('e (ProduceQuantitySuffixViewSet create):', e)
             return self.responses.RESPONSE_FORBIDDEN
         return self.responses.RESPONSE_CREATION_SUCCESS
 

@@ -14,6 +14,14 @@ class Produce(models.Model):
     )
     name = models.TextField(max_length=100)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'organisation'], 
+                name='unique_name_organisation_combination'
+            )
+        ]
+
     def __str__(self) -> str:
         return str(self.name)
 

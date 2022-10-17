@@ -4,8 +4,7 @@ from ..user.models import User
 
 
 class IsHigherThanWorkerHierarchy(BasePermission):
-    # for object level permissions
-    def has_object_permission(self, request, view, user_obj):
+    def has_permission(self, request, view):
         user: User = request.user
 
         # No user signed in
