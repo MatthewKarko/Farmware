@@ -3,16 +3,29 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemText from '@mui/material/ListItemText';
+
+
+
 
 function UsersTable() {
 
   const [usersList, setUsersList] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [teamsList, setTeamsList] = useState([]);
+  const [teamList, setTeamlist] = useState([]);
+  const [currentTeams, setCurrentTeams] = useState([]);
+  const [currentRole, setCurrentRole] = useState(-1);
 
   //modal state
   const [displayEditModal, setDisplayEditModal] = useState(false);
-  let role_dict = {400: 'WORKER', 0: 'ORGANISATION_ADMIN', 100: 'ADMIN', 200: 'TEAM_LEADER', 300: 'OFFICE'};
+  let role_dict = {400: 'Worker', 111: 'Organisation Admin', 100: 'Admin', 200: 'Team Leader', 300: 'Office'};
   //Stores temporary form changes
   const [temporaryUser, setTemporaryUser] = useState({
     id: -1,
@@ -40,7 +53,7 @@ function UsersTable() {
       .get(`user/me/`, {
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         if (res.data.role.level < 200) {
           setIsAdmin(true)
         }
@@ -55,7 +68,7 @@ function UsersTable() {
       .then((res) => {
         res.data.map((data) => {
           setUsersList(usersList => [...usersList, data])
-          console.log(res.data)
+          // console.log(res.data)
         })
       })
       .catch((err) => {
@@ -68,14 +81,47 @@ function UsersTable() {
       })
       .then((res) => {
         res.data.map((data) => {
-          setTeamsList(teamsList => [...teamsList, data])
-          console.log(res.data)
+          setTeamlist(teamList => [...teamList, data])
+          // console.log(res.data)
         })
       })
       .catch((err) => {
         alert("ERROR: Getting teams failed");
       });
+
+    axiosInstance
+		  .get(`user/teams/`, {
+			})
+			.then((res) => {
+		
+        
+        res.data.teams.map((data) => {
+          // teamList.push(data.name);
+          // console.log(data);
+          setCurrentTeams(currentTeams => [...currentTeams, data.name])
+        })        
+			})
+      .catch((err) => {
+        console.log("AXIOS ERROR: ", err);
+        // alert("ERROR: Incorrect call");
+    });
   }, []);
+
+  const handleTeamChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setCurrentTeams(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
+
+  const handleRoleChange = (event) => {
+    event.preventDefault();
+    console.log(event.target.value);
+    setCurrentRole(event.target.value);
+  };
 
   const handleFormChange = (event) => {
     event.preventDefault();
@@ -89,7 +135,8 @@ function UsersTable() {
     setTemporaryUser({ ...newFormData });
   };
 
-  const handleEditSubmit = () => {
+  const handleEditSubmit = (event) => {
+    event.preventDefault();
     var postObject = {
       first_name: temporaryUser.first_name,
       last_name: temporaryUser.last_name,
@@ -98,14 +145,27 @@ function UsersTable() {
       // teams: temporaryUser.teams,
     }
 
+    let updatedTeams = [];
+      teamList.map((data) => {
+        currentTeams.map((currentTeam) => {
+          if(data.name ==  currentTeam){
+            updatedTeams.push(data.id);
+          }
+        })
+       
+      });
+
+    postObject["teams"] = updatedTeams;
+    postObject["role"] = currentRole;
+    console.log(postObject)
     //Send PUT request to update user
     axiosInstance.put(`user/${temporaryUser.id}/`, postObject)
 
     //reset values
-    clearState();
+    // clearState();
 
     //reload page
-    window.location.reload();
+    // window.location.reload();
   };
 
   const handleEditClick = (event, row) => {
@@ -116,10 +176,10 @@ function UsersTable() {
       first_name: row.first_name,
       last_name: row.last_name,
       email: row.email,
-      role: row.role.level,
+      role: row.role.name,
     };
     setTemporaryUser({ ...formValues });
-
+    setCurrentRole(row.role.level);
     //cause the modal to open.
     setDisplayEditModal(!displayEditModal);
   };
@@ -129,6 +189,7 @@ function UsersTable() {
     clearState();
     window.location.reload();
   }
+
 
   return (
     <React.Fragment>
@@ -156,7 +217,7 @@ function UsersTable() {
                   <TableCell className="tableCell">{row.first_name}</TableCell>
                   <TableCell className="tableCell">{row.last_name}</TableCell>
                   <TableCell className="tableCell">{row.email}</TableCell>
-                  <TableCell className="tableCell">{role_dict[row.role.level]}</TableCell>
+                  <TableCell className="tableCell">{row.role.name}</TableCell>
                   {isAdmin &&
                     <TableCell className="tableCell">
                       <Button variant="outlined" size="medium"
@@ -187,9 +248,110 @@ function UsersTable() {
         }}> Edit User</Typography>
 
 
-        
+        <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box noValidate>
+              <TextField
+                required
+                margin="normal"
+                id="first_name"
+                label="Firstname"
+                name="first_name"
+                autoComplete="first_name"
+                autoFocus
+                size="small"
+                value={temporaryUser.first_name}
+                onChange={handleFormChange}
+                sx={{width: "200px"}}
+                variant="filled"
+               
+              />
+              <TextField
+                required
+                margin="dense"
+                name="last_name"
+                label="Lastname"
+                type="last_name"
+                id="last_name"
+                autoComplete="last_name"
+                size="small"
+                value={temporaryUser.last_name}
+                onChange={handleFormChange}
+                sx={{width: "200px", mt: 2, ml: 2}}
+                variant="filled"
+              />
+            </Box>
+            <TextField
+                required
+                margin="dense"
+                name="email"
+                label="Email Address"
+                type="email"
+                id="email"
+                autoComplete="email"
+                size="small"
+                value={temporaryUser.email}
+                onChange={handleFormChange}
+                sx={{width: "420px", mt: 1}}
+                variant="filled"
+              />
 
-        <form>
+            <FormControl sx={{width: "420px", mt: 1}} >
+                <InputLabel id="demo-simple-select-label">Teams</InputLabel>
+                  <Select
+                    label="Teams"
+                    multiple
+                    value={currentTeams}
+                    onChange={handleTeamChange}
+                    renderValue={(selected) => selected.join(', ')}
+                  >
+                   {/* <MenuItem key={1} value={1}>test</MenuItem> */}
+                  {
+                      // names = ['t1', 't2', 'TestTeam'];
+                      teamList.map((team) => {
+                 
+                        return(
+                          <MenuItem key={team.name} value={team.name}>
+                          <Checkbox checked={currentTeams.indexOf(team.name) > -1} />
+                          <ListItemText primary={team.name} />
+                        </MenuItem>
+                        )
+                      })
+                  }
+                </Select>
+            </FormControl>
+            <FormControl sx={{width: "420px", mt: 1}} >
+                <InputLabel id="select-label">Role</InputLabel>
+                  <Select
+                    label="Role"
+                    value={currentRole}
+                    onChange={handleRoleChange}
+                  >
+                   {/* <MenuItem key={1} value={1}>test</MenuItem> */}
+                  {
+                  
+                      Object.entries(role_dict).map(([key, value]) => {
+                        return(
+                          <MenuItem key={value} value={key}>
+                          {value}
+                          </MenuItem>
+                        )
+                        
+                      })
+                  }
+                </Select>
+            </FormControl>
+
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+          </Box>
+         
+
+        {/* <form>
           <label>First Name:</label>
           <input
             type="text"
@@ -248,7 +410,7 @@ function UsersTable() {
           }}
             onClick={() => { handleUserDelete() }}
           >Delete User</Button>
-        </form>
+        </form> */}
       </div>
 
       {/* Below snippet makes it so that if you click out of the modal it exits. */}

@@ -256,7 +256,7 @@ export default function AccountModify() {
                 autoFocus
               />
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Teams</InputLabel>
+                <InputLabel id="select-label">Teams</InputLabel>
                   <Select
                     label="Teams"
                     multiple

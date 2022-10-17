@@ -2,7 +2,7 @@
   .Modal {
     position: fixed;
     bottom: -150vh;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(178, 245, 217);
     width: calc(100% - 240px); /* The 240 is the width of the navbar. */
     height: 60%;
     box-shadow: 0 0 6px 0px rgba(0, 0, 0, 0.15);
