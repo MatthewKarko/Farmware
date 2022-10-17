@@ -1,4 +1,3 @@
-from typing import Union
 from rest_framework.permissions import BasePermission
 
 from .models import User

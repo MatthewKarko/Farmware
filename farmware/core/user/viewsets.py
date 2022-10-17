@@ -67,7 +67,7 @@ class UserViewSet(
 
     def get_queryset(self, **kwargs):
         """Get the query set."""
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         return User.objects.all().filter(
             organisation=user.organisation,
             **kwargs
@@ -181,7 +181,7 @@ class UserViewSet(
         """Create a new user."""
         data: QueryDict = request.data
 
-        serliaser = self.get_serializer_class()(data=data)
+        serliaser = self.get_serializer_class()(data=data)  # type: ignore
 
         if serliaser.is_valid():
             user: User = serliaser.save()
