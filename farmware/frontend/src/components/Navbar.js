@@ -9,7 +9,9 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
 import EggIcon from '@mui/icons-material/Egg';
-import SettingsIcon from '@mui/icons-material/Settings';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import GroupsIcon from '@mui/icons-material/Groups';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import '../css/Navbar.css';
 
 const drawerWidth = 240;
@@ -36,7 +38,7 @@ function Navbar() {
                     anchor="left"
                 >
                     <Container sx={{
-                        width: drawerWidth,
+                        width: 200,
                         justifyContent: "center",
                         paddingTop: "10px",
                         paddingLeft: "10px",
@@ -47,9 +49,6 @@ function Navbar() {
                             color: "#028357",
                             fontWeight: 'bold'
                         }}>Farmware</Typography>
-                        <Typography variant='h6' sx={{
-                            fontFamily: 'Lato',
-                        }}>Org Name</Typography>
                     </Container>
 
 
@@ -114,26 +113,6 @@ function Navbar() {
                         </ListItem>
                     </List>
                     <Divider />
-                    <List sx={{
-                        margin: "10px",
-                        color: "#ffffff"
-                    }}>
-                        <ListItem key="Account Settings" disablePadding>
-                            <ListItemButton component={Link} to="/accountsettings" sx={{
-                                "&:hover": {
-                                    backgroundColor: "#028357",
-                                    borderRadius: "3px",
-                                },
-                            }}>
-                                <ListItemIcon>
-                                    <SettingsIcon sx={{ color: "#ffffff" }} />
-                                </ListItemIcon>
-                                <ListItemText primary="Account Settings" />
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
-
-                    <Divider />
 
                     <List sx={{
                         margin: "10px",
@@ -154,7 +133,7 @@ function Navbar() {
                         </ListItem>
 
                         <ListItem key="Produce" disablePadding>
-                            <ListItemButton component={Link} to="/" sx={{
+                            <ListItemButton component={Link} to="/produce" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",
@@ -168,7 +147,7 @@ function Navbar() {
                         </ListItem>
 
                         <ListItem key="Customers" disablePadding>
-                            <ListItemButton component={Link} to="/" sx={{
+                            <ListItemButton component={Link} to="/customers" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
                                     borderRadius: "3px",
@@ -178,6 +157,48 @@ function Navbar() {
                                     <GroupIcon sx={{ color: "#ffffff" }} />
                                 </ListItemIcon>
                                 <ListItemText primary="Customers" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem key="Suppliers" disablePadding>
+                            <ListItemButton component={Link} to="/suppliers" sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <LocalShippingIcon sx={{ color: "#ffffff" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Suppliers" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem key="Teams" disablePadding>
+                            <ListItemButton component={Link} to="/teams" sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <GroupsIcon sx={{ color: "#ffffff" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Teams" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem key="Area Codes" disablePadding>
+                            <ListItemButton component={Link} to="/area_codes" sx={{
+                                "&:hover": {
+                                    backgroundColor: "#028357",
+                                    borderRadius: "3px",
+                                },
+                            }}>
+                                <ListItemIcon>
+                                    <LocationOnIcon sx={{ color: "#ffffff" }} />
+                                </ListItemIcon>
+                                <ListItemText primary="Area Codes" />
                             </ListItemButton>
                         </ListItem>
 

@@ -9,12 +9,9 @@ from rest_framework import status
 
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
-from ...user.permissions import IsInProduceForeignKeyOrganisation
-
 from ..models import Produce
 from ..models import ProduceVariety
 from ..models import ProduceQuantitySuffix
-
 from ..serialisers import ProduceSerialiser
 from ..serialisers import ProduceVarietySerialiser
 from ..serialisers import ProduceQuantitySuffixSerialiser
@@ -22,37 +19,34 @@ from ..serialisers import ProduceQuantitySuffixSerialiser
 class ProduceViewSet(ModelViewSet):
     serializer_class = ProduceSerialiser
     permission_classes = [IsAuthenticated, IsInOrganisation]
+    http_method_names = ['get', 'post', 'head', 'put', 'delete']
+    RESPONSE_FORBIDDEN = Response({'error': 'You are not an admin of the specified organisation.'}, status=status.HTTP_403_FORBIDDEN)
+    RESPONSE_CREATION_SUCCESS = Response({'success': 'Produce created.'}, status=status.HTTP_200_OK)
+    RESPONSE_DELETION_SUCCESS = Response({'success': 'Produce deleted.'}, status=status.HTTP_200_OK)
 
     def get_queryset(self, **kwargs):
         user: User = self.request.user
-        return Produce.objects.all().filter(
-            organisation=user.organisation,
-            **kwargs
-        )
+        return Produce.objects.all().filter(organisation=user.organisation, **kwargs)
+
+    def valid_organisation(self, request, data):
+        return request.user.organisation.code == data['organisation']
 
     def create(self, request, *args, **kwargs):
-        user: User = self.request.user
         data: QueryDict = request.data
-        if (user.organisation != data['organisation']):
-            return Response({'error': 'You are not an admin of the specific organisation.'}, status=status.HTTP_403_FORBIDDEN)
-
+        if not self.valid_organisation(request, data):
+            return self.RESPONSE_FORBIDDEN
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
-
         try:
             serialiser.save()
         except IntegrityError:
-            return Response({'error': 
-            'A produce with the given name already exists in your organisation.'}, 
-            status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({'success': 'Produce created.'}, status=status.HTTP_200_OK)
+            return self.RESPONSE_FORBIDDEN
+        return self.RESPONSE_CREATION_SUCCESS
 
     def update(self, request, *args, **kwargs):
-        user: User = self.request.user
         data: QueryDict = request.data
-        if user.organisation.code != data['organisation']:
-            return Response({'error': 'You do not have access to the provided organisation.'}, status=status.HTTP_403_FORBIDDEN)
+        if not self.valid_organisation(request, data):
+            return self.RESPONSE_FORBIDDEN
         return super().update(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
@@ -61,50 +55,45 @@ class ProduceViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return Response({'success': 'Produce deleted.'}, status=status.HTTP_200_OK)
+        return self.RESPONSE_DELETION_SUCCESS
 
 class ProduceVarietyViewSet(ModelViewSet):
     serializer_class = ProduceVarietySerialiser
-    permission_classes = [IsAuthenticated, IsInProduceForeignKeyOrganisation]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post', 'head', 'put', 'delete']
+    RESPONSE_DOES_NOT_EXIST = Response({'error': 'Produce with the given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+    RESPONSE_CREATION_SUCCESS = Response({'success': 'Produce Variety created.'}, status=status.HTTP_200_OK)
+    RESPONSE_DELETION_SUCCESS = Response({'success': 'Produce Variety deleted.'}, status=status.HTTP_200_OK)
 
     def get_queryset(self, **kwargs):
         user: User = self.request.user
-        return ProduceVariety.objects.all().filter(
-            produce_id__organisation=user.organisation,
-            **kwargs
-        )
+        return ProduceVariety.objects.all().filter(produce_id__organisation=user.organisation, **kwargs)
+
+    def valid_organisation(self, request, data):
+        return request.user.organisation == Produce.objects.get(id=data['produce_id']).organisation
 
     def create(self, request, *args, **kwargs):
-        user: User = self.request.user
         data: QueryDict = request.data
-
         try:
-            if user.organisation != Produce.objects.get(id=data['produce_id']).organisation:
-                return Response({'error': 'Produce with given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+            if not self.valid_organisation(request, data):
+                return self.RESPONSE_DOES_NOT_EXIST
         except ObjectDoesNotExist:
-            return Response({'error': 'Produce with given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-
+            return self.RESPONSE_DOES_NOT_EXIST
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
-
         try:
             serialiser.save()
         except IntegrityError:
-            return Response({'error': 
-            'A produce variety with the given name already exists in your organisation.'}, 
-            status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({'success': 'Produce variety created.'}, status=status.HTTP_200_OK)
+            return self.RESPONSE_DOES_NOT_EXIST
+        return self.RESPONSE_CREATION_SUCCESS
 
     def update(self, request, *args, **kwargs):
-        user: User = self.request.user
         data: QueryDict = request.data
-
         try:
-            if user.organisation != Produce.objects.get(id=data['produce_id']).organisation:
-                return Response({'error': 'Produce with given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+            if not self.valid_organisation(request, data):
+                return self.RESPONSE_DOES_NOT_EXIST
         except ObjectDoesNotExist:
-            return Response({'error': 'Produce with given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+            return self.RESPONSE_DOES_NOT_EXIST
 
         return super().update(request, *args, **kwargs)
 
@@ -114,51 +103,45 @@ class ProduceVarietyViewSet(ModelViewSet):
     
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return Response({'success': 'Produce variety deleted.'}, status=status.HTTP_200_OK)
+        return self.RESPONSE_DELETION_SUCCESS
 
 class ProduceQuantitySuffixViewSet(ModelViewSet):
     serializer_class = ProduceQuantitySuffixSerialiser
-    permission_classes = [IsAuthenticated, IsInProduceForeignKeyOrganisation]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post', 'head', 'put', 'delete']
+    RESPONSE_DOES_NOT_EXIST = Response({'error': 'Produce with the given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+    RESPONSE_CREATION_SUCCESS = Response({'success': 'Produce Quantity Suffix created.'}, status=status.HTTP_200_OK)
+    RESPONSE_DELETION_SUCCESS = Response({'success': 'Produce Quantity Suffix deleted.'}, status=status.HTTP_200_OK)
 
     def get_queryset(self, **kwargs):
         user: User = self.request.user
-        return ProduceQuantitySuffix.objects.all().filter(
-            produce_id__organisation=user.organisation,
-            **kwargs
-        )
+        return ProduceQuantitySuffix.objects.all().filter(produce_id__organisation=user.organisation, **kwargs)
+
+    def valid_organisation(self, request, data):
+        return request.user.organisation == Produce.objects.get(id=data['produce_id']).organisation
 
     def create(self, request, *args, **kwargs):
-        user: User = self.request.user
         data: QueryDict = request.data
-
         try:
-            if user.organisation != Produce.objects.get(id=data['produce_id']).organisation:
-                return Response({'error': 'Produce with given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+            if not self.valid_organisation(request, data):
+                return self.RESPONSE_DOES_NOT_EXIST
         except ObjectDoesNotExist:
-            return Response({'error': 'Produce with given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-
+            return self.RESPONSE_DOES_NOT_EXIST
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
-
         try:
             serialiser.save()
         except IntegrityError:
-            return Response({'error': 
-            'A produce quantity suffix with the given name already exists in your organisation.'}, 
-            status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({'success': 'Produce quantity suffix created.'}, status=status.HTTP_200_OK)
+            return self.RESPONSE_DOES_NOT_EXIST
+        return self.RESPONSE_CREATION_SUCCESS
     
     def update(self, request, *args, **kwargs):
-        user: User = self.request.user
         data: QueryDict = request.data
-
         try:
-            if user.organisation != Produce.objects.get(id=data['produce_id']).organisation:
-                return Response({'error': 'Produce with given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+            if not self.valid_organisation(request, data):
+                return self.RESPONSE_DOES_NOT_EXIST
         except ObjectDoesNotExist:
-            return Response({'error': 'Produce with given id does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-
+            return self.RESPONSE_DOES_NOT_EXIST
         return super().update(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
@@ -167,4 +150,4 @@ class ProduceQuantitySuffixViewSet(ModelViewSet):
     
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return Response({'success': 'Produce quantity suffix deleted.'}, status=status.HTTP_200_OK)
+        return self.RESPONSE_DELETION_SUCCESS
