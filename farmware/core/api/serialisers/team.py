@@ -8,7 +8,7 @@ class TeamSerialiser(serializers.ModelSerializer):
         fields = '__all__'
         
 class TeamCreationSerialiser(serializers.ModelSerializer):
-    name = serializers.CharField(allow_blank=True)
+    name = serializers.CharField(allow_blank=True, required=False)
 
     class Meta:
         model = Team

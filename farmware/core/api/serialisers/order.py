@@ -15,6 +15,19 @@ class OrderCreationSerialiser(serializers.ModelSerializer):
         model = Order
         fields = ['customer_id', 'invoice_number']
 
+    def create(self, validated_data):        
+        # Add organisational data
+        validated_data['organisation'] = self.\
+            context['request'].user.organisation
+        
+        return Order.objects.create(**validated_data)
+
+
+class OrderUpdateSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['customer_id', 'invoice_number']
+
 
 class OrderFullSerialiser(serializers.ModelSerializer):
     class Meta:

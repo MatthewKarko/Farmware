@@ -60,9 +60,9 @@ class ProduceViewSet(ModelViewSet):
             serialiser.save()
         except IntegrityError as e:
             if 'UNIQUE constraint' in e.args[0]:
-                return self.responses.RESPONSE_ITEM_ALREADY_EXISTS
+                return self.responses.ITEM_ALREADY_EXISTS
             return self.responses.RESPONSE_FORBIDDEN
-        return self.responses.RESPONSE_CREATION_SUCCESS
+        return self.responses.CREATION_SUCCESS
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -75,7 +75,7 @@ class ProduceViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return self.responses.RESPONSE_DELETION_SUCCESS
+        return self.responses.DELETION_SUCCESS
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -99,7 +99,7 @@ class ProduceVarietyViewSet(ModelViewSet):
         except IntegrityError as e:
             print('e (ProduceVarietyViewSet create):', e)
             return self.responses.RESPONSE_FORBIDDEN
-        return self.responses.RESPONSE_CREATION_SUCCESS
+        return self.responses.CREATION_SUCCESS
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -112,7 +112,7 @@ class ProduceVarietyViewSet(ModelViewSet):
     
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return self.responses.RESPONSE_DELETION_SUCCESS
+        return self.responses.DELETION_SUCCESS
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -139,7 +139,7 @@ class ProduceQuantitySuffixViewSet(ModelViewSet):
         except IntegrityError as e:
             print('e (ProduceQuantitySuffixViewSet create):', e)
             return self.responses.RESPONSE_FORBIDDEN
-        return self.responses.RESPONSE_CREATION_SUCCESS
+        return self.responses.CREATION_SUCCESS
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -152,7 +152,7 @@ class ProduceQuantitySuffixViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return self.responses.RESPONSE_DELETION_SUCCESS
+        return self.responses.DELETION_SUCCESS
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)

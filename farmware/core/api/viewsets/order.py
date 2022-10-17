@@ -1,9 +1,11 @@
 from django.db import IntegrityError
 from django.http import QueryDict
 
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
 
 from ..models.order import (
     Order,
@@ -16,7 +18,8 @@ from ..serialisers.order import (
     OrderCreationSerialiser,
     OrderFullSerialiser,
     OrderItemSerialiser,
-    OrderItemStockLinkSerialiser
+    OrderItemStockLinkSerialiser,
+    OrderUpdateSerialiser
     )
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
@@ -35,6 +38,15 @@ class OrderViewSet(ModelViewSet):
         return Order.objects.all().filter(
             organisation=user.organisation, **kwargs)
 
+    def get_serializer_class(self):
+        """Get the serialiser class for the appropriate action."""
+        if self.action == 'create': return OrderCreationSerialiser
+        if self.action == 'retrieve': return OrderFullSerialiser
+
+        if 'update' in self.action: return OrderUpdateSerialiser
+
+        return super().get_serializer_class()
+
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
 
@@ -46,7 +58,7 @@ class OrderViewSet(ModelViewSet):
         except IntegrityError as e:
             print('OrderViewSet (create):', e)
             return self.responses.RESPONSE_FORBIDDEN
-        return self.responses.RESPONSE_CREATION_SUCCESS
+        return self.responses.CREATION_SUCCESS
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -63,7 +75,23 @@ class OrderViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return self.responses.RESPONSE_DELETION_SUCCESS
+        return self.responses.DELETION_SUCCESS
+
+    @action(detail=True, methods=['get'])
+    def get_order_items(self, request, pk=None):
+        order = self.get_object()
+
+        data: QueryDict = request.data
+
+        serialiser = self.get_serializer(data=data)
+        serialiser.is_valid(raise_exception=True)
+
+        order_items = OrderItemSerialiser(
+            OrderItem.objects.all().filter(order_id=order.id),
+            many=True
+            ).data
+
+        return Response({'order_items': order_items}, status=status.HTTP_200_OK)
 ###############################################################################
 
 
@@ -92,7 +120,7 @@ class OrderItemViewSet(ModelViewSet):
             print('e (OrderItemViewSet create):', e)
             return self.responses.RESPONSE_FORBIDDEN
 
-        return self.responses.RESPONSE_CREATION_SUCCESS
+        return self.responses.CREATION_SUCCESS
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -105,7 +133,7 @@ class OrderItemViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return self.responses.RESPONSE_DELETION_SUCCESS
+        return self.responses.DELETION_SUCCESS
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -137,7 +165,7 @@ class OrderItemStockLinkViewSet(ModelViewSet):
             print('e (OrderItemStockLinkViewSet create):', e)
             return self.responses.RESPONSE_FORBIDDEN
 
-        return self.responses.RESPONSE_CREATION_SUCCESS
+        return self.responses.CREATION_SUCCESS
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -150,7 +178,7 @@ class OrderItemStockLinkViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return self.responses.RESPONSE_DELETION_SUCCESS
+        return self.responses.DELETION_SUCCESS
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)

@@ -26,7 +26,6 @@ class TeamViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
 
-        self.serializer_class = TeamCreationSerialiser
         serialiser = self.get_serializer(data=data)
 
         # Ensure data is valid
@@ -35,6 +34,7 @@ class TeamViewSet(ModelViewSet):
         try:
             serialiser.save()
         except IntegrityError:
+            # TODO: add UNIQUE contraint reponse
             return Response({'error': 
             'A team of that category already exists in your organisation.'}, 
             status=status.HTTP_400_BAD_REQUEST)
