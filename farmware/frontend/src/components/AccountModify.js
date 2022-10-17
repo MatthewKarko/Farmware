@@ -37,6 +37,9 @@ export default function AccountModify() {
   const [userObj, setUserObj] = useState([]);
   const [teamList, setTeamlist] = useState([]);
   const [currentTeams, setCurrentTeams] = useState([]);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+
 
 
   
@@ -110,6 +113,41 @@ export default function AccountModify() {
     });
 
   }
+  const handleOldPasswordChange = (evt) => {
+    evt.preventDefault();
+    const value = evt.target.value;
+    setOldPassword(value);
+
+  };
+  const handleNewPasswordChange = (evt) => {
+    evt.preventDefault();
+    const value = evt.target.value;
+    setNewPassword(value);
+
+  }
+
+
+  const handlePasswordSubmit = (event) => {
+    event.preventDefault();
+    // const data = new FormData(event.currentTarget);
+    var postObject = {
+      old_password: oldPassword,
+      new_password: newPassword
+    } 
+
+    axiosInstance
+        .post(`user/${userObj.id}/set_password/`, postObject)
+        .then((res)=>{
+            console.log(res);
+            alert("Successfully changed account password");
+            navigate('/dashboard');
+        })
+        .catch((err) => {
+          
+          alert(err.response.data.new_password);
+        });
+    
+  };
 
   const handleTeamChange = (event) => {
     const {
@@ -275,7 +313,7 @@ export default function AccountModify() {
         </Container>
 
 
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={handleClose} >
         <DialogTitle>Change Password</DialogTitle>
         <DialogContent sx={{display: 'flex', flexDirection: 'column'}}>
           <DialogContentText>
@@ -289,6 +327,7 @@ export default function AccountModify() {
             type="password"
             xs
             variant="standard"
+            onChange={handleOldPasswordChange}
           />
           <TextField
             autoFocus
@@ -298,11 +337,13 @@ export default function AccountModify() {
             type="password"
             xs
             variant="standard"
+            onChange={handleNewPasswordChange}
+            sx={{mt: 5}}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Change</Button>
+          <Button onClick={handlePasswordSubmit}>Change</Button>
         </DialogActions>
       </Dialog>
 
