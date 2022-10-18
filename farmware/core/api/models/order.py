@@ -12,7 +12,7 @@ class Order(models.Model):
         )
     invoice_number = models.TextField(max_length=20, blank=True)
     order_date = models.DateTimeField()
-    completion_date = models.DateTimeField()
+    completion_date = models.DateTimeField(blank=True)
 
     class Meta:
         verbose_name = "order"

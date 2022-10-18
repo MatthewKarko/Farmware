@@ -13,7 +13,8 @@ class OrderSerialiser(serializers.ModelSerializer):
 class OrderCreationSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['customer_id', 'invoice_number']
+        fields = ['customer_id', 'invoice_number', 'order_date', 
+        'completion_date']
 
     def create(self, validated_data):        
         # Add organisational data
@@ -32,7 +33,7 @@ class OrderUpdateSerialiser(serializers.ModelSerializer):
 class OrderFullSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['customer_id', 'invoice_number']
+        fields = ['id', 'customer_id', 'invoice_number']
 
     def to_representation(self, data):
         data = super(OrderFullSerialiser, self).to_representation(data)
@@ -40,11 +41,11 @@ class OrderFullSerialiser(serializers.ModelSerializer):
         data['customer_name'] = Customer.objects.get(
             id=data['customer_id']).name
 
-        data['order_items'] = []
-        # ProduceVarietyInOrganisationSerialiser(
-        #     ProduceVariety.objects.all().filter(produce_id=data.get('id')), 
-        #     many=True
-        #     ).data
+        # TODO: fix
+        data['order_items'] = OrderItemListSerialiser(
+            OrderItem.objects.all().filter(order_id=data.get('id')), 
+            many=True
+            ).data
         return data
 ###############################################################################
 
@@ -54,6 +55,12 @@ class OrderItemSerialiser(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = '__all__'
+
+
+class OrderItemListSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'#['quantity', 'quantity_suffix_id']
 ###############################################################################
 
 

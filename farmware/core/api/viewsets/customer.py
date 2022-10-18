@@ -1,9 +1,7 @@
 from django.http import QueryDict
 
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
 
 from ..responses import DefaultResponses
 from ..models.customer import Customer
@@ -28,6 +26,7 @@ class CustomerViewSet(ModelViewSet):
     def get_serializer_class(self):
         """Get the serialiser class for the appropriate action."""
         if self.action == 'create': return CustomerCreationSerialiser
+        # TODO:
         # if self.action == 'retrieve': return OrderFullSerialiser
 
         # if 'update' in self.action: return OrderUpdateSerialiser
