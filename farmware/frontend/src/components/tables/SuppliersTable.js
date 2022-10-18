@@ -253,46 +253,6 @@ function SuppliersPage() {
 
 
                 </Box>
-{/* 
-                <form>
-                    <label>Name:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        required="required"
-                        placeholder="Enter a name..."
-                        value={temporarySupplier.name}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <label>Phone Number:</label>
-                    <input
-                        type="text"
-                        name="phone_number"
-                        required="required"
-                        placeholder="Enter a phone number..."
-                        value={temporarySupplier.phone_number}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleEditSubmit() }}
-                    >Submit</Button>
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#FF0000",
-                        borderColor: "#FF0000",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleSupplierDelete() }}
-                    >Delete Supplier</Button>
-                </form> */}
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}

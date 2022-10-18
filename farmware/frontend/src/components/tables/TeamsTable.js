@@ -250,45 +250,7 @@ function TeamsPage() {
                     
                 </Box>
 
-                {/* <form>
-                    <label>Category:</label>
-                    <input
-                        type="text"
-                        name="category"
-                        required="required"
-                        placeholder="Enter a category..."
-                        value={temporaryTeam.category}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <label>Name:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        required="required"
-                        placeholder="Enter a name..."
-                        value={temporaryTeam.name}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleEditSubmit() }}
-                    >Submit</Button>
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#FF0000",
-                        borderColor: "#FF0000",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleTeamDelete() }}
-                    >Delete Team</Button>
-                </form> */}
+               
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}
@@ -354,44 +316,8 @@ function TeamsPage() {
                         sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                     >
                     Create
-                    </Button>
-                            
-                        
-                        
+                    </Button>            
                 </Box>
-
-                {/* <form>
-                <label>Category:</label>
-                    <input
-                        type="text"
-                        name="category"
-                        required="required"
-                        placeholder="Enter a category..."
-                        value={temporaryTeam.category}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <label>Name:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        required="required"
-                        placeholder="Enter a name..."
-                        value={temporaryTeam.name}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleCreateSubmit() }}
-                    >Create</Button>
-                    <br></br>
-                </form> */}
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}
