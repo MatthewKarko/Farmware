@@ -6,15 +6,21 @@ class Order(models.Model):
     organisation = models.ForeignKey(
         'core_api.Organisation',
         on_delete=models.CASCADE
-    )
+        )
     customer_id = models.ForeignKey(
         'core_api.Customer', on_delete=models.DO_NOTHING
         )
     invoice_number = models.TextField(max_length=20, blank=True)
+    order_date = models.DateTimeField()
+    completion_date = models.DateTimeField()
 
     class Meta:
         verbose_name = "order"
         verbose_name_plural = "orders"
+
+    def __str__(self) -> str:
+        return (f'[{self.invoice_number}] {self.customer_id.name}{self.order_date}'
+        )
 ###############################################################################
 
 
@@ -33,6 +39,9 @@ class OrderItem(models.Model):
     class Meta:
         verbose_name = "order item"
         verbose_name_plural = "order items"
+
+    def __str__(self) -> str:
+        return f'{self.quantity:,} {self.quantity_suffix_id.suffix} {self.produce_id.name}'
 ###############################################################################
 
 
