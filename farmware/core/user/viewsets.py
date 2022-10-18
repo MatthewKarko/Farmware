@@ -133,10 +133,26 @@ class UserViewSet(
         user.save()
         return Response({'success': 'Password successfully updated.'}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'])
-    def teams(self, request):
+    @action(detail=False, methods=['get'], url_path='teams')
+    def my_teams(self, request):
         """Get all the teams a user is a member of."""
         user: User = request.user
+
+        teams = []
+
+        team: Team
+        for team in user.teams.all():
+            fields = team.__dict__
+            fields.pop('_state')
+            fields.pop('organisation_id')
+            teams.append(fields)
+
+        return Response({'teams': teams}, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'], url_path='teams')
+    def users_teams(self, request, pk=None):
+        """Get all the teams a user is a member of."""
+        user: User = self.get_object()
 
         teams = []
 
