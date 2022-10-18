@@ -16,8 +16,13 @@ function OrdersTable() {
 
     function markAsComplete() {
         alert("Mark order as complete. Order id: " + location.state.id);
-        // navigate("/orders/view-order",{state:order});
+        navigate("/orders");
     }
+
+    function addProduce() {
+        
+    }
+    
     return (
         <>
             <div className="main-content">
@@ -35,6 +40,12 @@ function OrdersTable() {
                         </Grid>
 
                         <Grid item xs={6} sx={{ textAlign: "right" }}>
+                        <Button type="submit" variant="outlined" size="large" style={{
+                                marginRight: "30px"
+                            }}
+                                onClick={() => { addProduce() }}
+                            >Add Produce</Button>
+
                             <Button type="submit" variant="outlined" size="large" style={{
                                 color: "#028357",
                                 borderColor: "#028357",
