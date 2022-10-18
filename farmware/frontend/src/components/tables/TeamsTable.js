@@ -4,7 +4,7 @@ import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField'
+import TextField from '@mui/material/TextField';
 
 function TeamsPage() {
 
@@ -71,8 +71,8 @@ function TeamsPage() {
         setTemporaryTeam({ ...newFormData });
     };
 
-    const handleEditSubmit = () => {
-
+    const handleEditSubmit = (event) => {
+        event.preventDefault();
         var putObject = {
             category: temporaryTeam.category,
             name: temporaryTeam.name,
@@ -106,7 +106,8 @@ function TeamsPage() {
         setDisplayEditModal(!displayEditModal);
     };
 
-    const handleTeamDelete = () => {
+    const handleTeamDelete = (event) => {
+        event.preventDefault();
         axiosInstance.delete(`teams/${temporaryTeam.id}/`)
         clearState();
         window.location.reload();
@@ -193,7 +194,63 @@ function TeamsPage() {
                     margin: "20px",
                 }}> Edit Team</Typography>
 
-                <form>
+                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                    <TextField
+                    xs
+                        required
+                        margin="dense"
+                        id="category"
+                        label="Category"
+                        name="category"
+                        autoComplete="category"
+                        autoFocus
+                        size="small"
+                        value={temporaryTeam.category}
+                        onChange={handleFormChange}
+                        // sx={{width: "250px"}}
+                        variant="filled"
+                        
+                    />
+                    <TextField
+                        xs
+                        required
+                        name="name"
+                        margin="dense"
+                        label="Team Name"
+                        type="name"
+                        id="name"
+                        size="small"
+                        autoComplete="name"
+                        value={temporaryTeam.name}
+                        onChange={handleFormChange}
+                        sx={{ mt: 2}}
+                        variant="filled"
+                    />
+
+                    <Box noValidate>
+                        
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                    >
+                    Submit
+                    </Button>
+                    <Button
+                        type="delete"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, ml: 2,  bgcolor: 'red' }}
+                        onClick={handleTeamDelete}
+                    >
+                    Delete
+                    </Button>
+                    </Box>     
+                    
+                    
+                </Box>
+
+                {/* <form>
                     <label>Category:</label>
                     <input
                         type="text"
@@ -231,7 +288,7 @@ function TeamsPage() {
                     }}
                         onClick={() => { handleTeamDelete() }}
                     >Delete Team</Button>
-                </form>
+                </form> */}
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}

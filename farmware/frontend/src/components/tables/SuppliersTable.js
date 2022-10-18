@@ -3,6 +3,8 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 function SuppliersPage() {
 
@@ -108,7 +110,8 @@ function SuppliersPage() {
         setDisplayEditModal(!displayEditModal);
     };
 
-    const handleSupplierDelete = () => {
+    const handleSupplierDelete = (event) => {
+        event.preventDefault();
         axiosInstance.delete(`supplier/${temporarySupplier.id}/`)
         clearState();
         window.location.reload();
@@ -121,9 +124,8 @@ function SuppliersPage() {
             organisation: organisationCode,
         }
 
-        //Send PUT request to update user
-        axiosInstance.post(`supplier/`, postObject)
-
+     
+        axiosInstance.post(`supplier/`, postObject);
         //reset values
         clearState();
 
@@ -197,6 +199,61 @@ function SuppliersPage() {
                     margin: "20px",
                 }}> Edit Supplier</Typography>
 
+                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <TextField
+                        xs
+                        required
+                        name="name"
+                        margin="dense"
+                        label="Supplier Name"
+                        type="name"
+                        id="name"
+                        size="small"
+                        autoComplete="name"
+                        value={temporarySupplier.name}
+                        onChange={handleFormChange}
+                        sx={{ mt: 2}}
+                        variant="filled"
+                    />
+                    <TextField
+                    xs
+                        required
+                        margin="dense"
+                        id="phone_number"
+                        label="Phone Number"
+                        name="phone_number"
+                        autoComplete="phone_number"
+                        autoFocus
+                        size="small"
+                        value={temporarySupplier.phone_number}
+                        onChange={handleFormChange}
+                        // sx={{width: "250px"}}
+                        variant="filled"
+                        
+                    />
+                    
+
+                    <Box noValidate>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                        >
+                        Submit
+                        </Button>
+                        <Button
+                            type="delete"
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2, ml: 2,  bgcolor: 'red' }}
+                            onClick={handleSupplierDelete}
+                        >
+                        Delete
+                        </Button>
+                    </Box>     
+
+
+                </Box>
+{/* 
                 <form>
                     <label>Name:</label>
                     <input
@@ -235,7 +292,7 @@ function SuppliersPage() {
                     }}
                         onClick={() => { handleSupplierDelete() }}
                     >Delete Supplier</Button>
-                </form>
+                </form> */}
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}
@@ -259,8 +316,55 @@ function SuppliersPage() {
                     fontWeight: 'bold',
                     margin: "20px",
                 }}> Create Supplier</Typography>
+                <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <TextField
+                        xs
+                        required
+                        name="name"
+                        margin="dense"
+                        label="Supplier name"
+                        type="name"
+                        id="name"
+                        size="small"
+                        autoComplete="name"
+                        value={temporarySupplier.name}
+                        onChange={handleFormChange}
+                        sx={{ mt: 2}}
+                        variant="filled"
+                    />
 
-                <form>
+                    <TextField
+                    xs
+                        required
+                        margin="dense"
+                        id="phone_number"
+                        label="Phone Number"
+                        name="phone_number"
+                        autoComplete="phone_number"
+                        autoFocus
+                        size="small"
+                        value={temporarySupplier.phone_number}
+                        onChange={handleFormChange}
+                        // sx={{width: "250px"}}
+                        variant="filled"
+                        
+                    />
+                    
+
+                        
+                    <Button
+                        type="create"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                    >
+                    Create
+                    </Button>
+                            
+                    
+                    
+                </Box>
+
+                {/* <form>
                     <label>Name:</label>
                     <input
                         type="text"
@@ -291,7 +395,7 @@ function SuppliersPage() {
                         onClick={() => { handleCreateSubmit() }}
                     >Create</Button>
                     <br></br>
-                </form>
+                </form> */}
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}
