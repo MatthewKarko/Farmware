@@ -1,0 +1,30 @@
+[
+    {
+      "stock_id": 0,
+      "item_name": "apple",
+      "qty": 10,
+      "SUFFIX": "kg",
+      "supplier_id": 1
+    },
+    {
+        "stock_id": 1,
+        "item_name": "banana",
+        "qty": 11,
+        "SUFFIX": "kg",
+        "supplier_id": 3
+      },
+      {
+        "stock_id": 2,
+        "item_name": "pear",
+        "qty": 50,
+        "SUFFIX": "kg",
+        "supplier_id": 5
+      },
+      {
+        "stock_id": 3,
+        "item_name": "hay",
+        "qty": 1000,
+        "SUFFIX": "kg",
+        "supplier_id": 10
+      }
+  ]
