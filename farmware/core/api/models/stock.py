@@ -18,6 +18,10 @@ class Stock(models.Model):
     date_completed = models.DateTimeField(null=True, blank=True)
     area_code_id = models.ForeignKey('core_api.AreaCode', on_delete=models.DO_NOTHING)
 
+    class Meta:
+        verbose_name = "stock"
+        verbose_name_plural = "stock"
+
 class StockPickers(models.Model):
     stock_id = models.ManyToManyField(Stock)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)

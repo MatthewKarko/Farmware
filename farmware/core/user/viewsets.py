@@ -12,7 +12,7 @@ from rest_framework import status, mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from .models import User
 from .permissions import IsInOrganisation, UserHierarchy, OnlyYou
@@ -67,7 +67,7 @@ class UserViewSet(
 
     def get_queryset(self, **kwargs):
         """Get the query set."""
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         return User.objects.all().filter(
             organisation=user.organisation,
             **kwargs
@@ -101,9 +101,9 @@ class UserViewSet(
             data=request.data
             )
 
-        if str(user.id) != str(pk):
+        if str(user.id) != str(pk):  # type: ignore
             return Response(
-                {'error': 'You do not have permission to do that'}, 
+                {'error': 'You do not have permission to do this.'}, 
                 status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -111,14 +111,14 @@ class UserViewSet(
             return Response(serialiser.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Check old password
-        if not user.check_password(serialiser.data.get("old_password")):
+        if not user.check_password(serialiser.data.get("old_password")):  # type: ignore
             return Response(
                 {"old_password": ["Wrong password."]}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         try:
-            validate_password(serialiser.data.get("new_password"), user)
+            validate_password(serialiser.data.get("new_password"), user)  # type: ignore
         except exceptions.ValidationError as e:
             errors = []
             for error in e.error_list:
@@ -133,10 +133,26 @@ class UserViewSet(
         user.save()
         return Response({'success': 'Password successfully updated.'}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'])
-    def teams(self, request):
+    @action(detail=False, methods=['get'], url_path='teams')
+    def my_teams(self, request):
         """Get all the teams a user is a member of."""
         user: User = request.user
+
+        teams = []
+
+        team: Team
+        for team in user.teams.all():
+            fields = team.__dict__
+            fields.pop('_state')
+            fields.pop('organisation_id')
+            teams.append(fields)
+
+        return Response({'teams': teams}, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'], url_path='teams')
+    def users_teams(self, request, pk=None):
+        """Get all the teams a user is a member of."""
+        user: User = self.get_object()
 
         teams = []
 
@@ -153,16 +169,21 @@ class UserViewSet(
         """Update a user's information."""
         # Data and user
         data: QueryDict = request.data
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
 
         # Serialiser
         serialiser = self.get_serializer_class()(
             instance=user, 
-            data=data, 
+            data=data,   # type: ignore
             partial=True)
         serialiser.is_valid(raise_exception=True)
 
         return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """Remove a user."""
+        super().destroy(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
         """List all users in one's organisation."""
@@ -171,20 +192,15 @@ class UserViewSet(
             )
         return Response(serialiser.data)
 
-    def destroy(self, request, *args, **kwargs):
-        """Remove a user."""
-        resp = super().destroy(request, *args, **kwargs)
-        print(resp)
-        return Response(status=status.HTTP_200_OK)
-
     def create_user(self, request):
         """Create a new user."""
         data: QueryDict = request.data
 
-        serliaser = self.get_serializer_class()(data=data)
+        serliaser = self.get_serializer_class()(data=data)  # type: ignore
 
         if serliaser.is_valid():
             user: User = serliaser.save()
+            # TODO: validate_password(serliaser.validated_data['password'], user)
             if user:
                 # TODO: activate send confirmation email
                 # self.send_email_verification(request, user)
@@ -212,6 +228,3 @@ class UserViewSet(
             html_message=html_message
         )
         # TODO: add verification / error checking
-
-    def change_password():
-        pass
