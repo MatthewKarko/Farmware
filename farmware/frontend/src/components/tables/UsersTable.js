@@ -25,7 +25,7 @@ function UsersTable() {
 
   //modal state
   const [displayEditModal, setDisplayEditModal] = useState(false);
-  let role_dict = {400: 'Worker', 111: 'Organisation Admin', 100: 'Admin', 200: 'Team Leader', 300: 'Office'};
+  let role_dict = {400: 'Worker', 0: 'Organisation Admin', 100: 'Admin', 200: 'Team Leader', 300: 'Office'};
   //Stores temporary form changes
   const [temporaryUser, setTemporaryUser] = useState({
     id: -1,
@@ -45,7 +45,7 @@ function UsersTable() {
     };
     setTemporaryUser({ ...formValues });
 
-    console.log("reset form data")
+    // console.log("reset form data")
   };
 
   useEffect(() => {
@@ -119,8 +119,10 @@ function UsersTable() {
 
   const handleRoleChange = (event) => {
     event.preventDefault();
-    console.log(event.target.value);
+    
     setCurrentRole(event.target.value);
+    console.log(event.target.value);
+
   };
 
   const handleFormChange = (event) => {
@@ -141,8 +143,6 @@ function UsersTable() {
       first_name: temporaryUser.first_name,
       last_name: temporaryUser.last_name,
       email: temporaryUser.email,
-      // role: temporaryUser.role.level,
-      // teams: temporaryUser.teams,
     }
 
     let updatedTeams = [];
@@ -157,15 +157,15 @@ function UsersTable() {
 
     postObject["teams"] = updatedTeams;
     postObject["role"] = currentRole;
-    console.log(postObject)
+    // console.log(postObject)
     //Send PUT request to update user
     axiosInstance.put(`user/${temporaryUser.id}/`, postObject)
 
     //reset values
-    // clearState();
+    clearState();
 
     //reload page
-    // window.location.reload();
+    window.location.reload();
   };
 
   const handleEditClick = (event, row) => {
@@ -184,7 +184,8 @@ function UsersTable() {
     setDisplayEditModal(!displayEditModal);
   };
 
-  const handleUserDelete = () => {
+  const handleUserDelete = (event) => {
+    event.preventDefault();
     axiosInstance.delete(`user/${temporaryUser.id}/`)
     clearState();
     window.location.reload();
@@ -294,60 +295,71 @@ function UsersTable() {
                 sx={{width: "420px", mt: 1}}
                 variant="filled"
               />
-
-            <FormControl sx={{width: "420px", mt: 1}} >
-                <InputLabel id="demo-simple-select-label">Teams</InputLabel>
-                  <Select
-                    label="Teams"
-                    multiple
-                    value={currentTeams}
-                    onChange={handleTeamChange}
-                    renderValue={(selected) => selected.join(', ')}
-                  >
-                   {/* <MenuItem key={1} value={1}>test</MenuItem> */}
-                  {
-                      // names = ['t1', 't2', 'TestTeam'];
-                      teamList.map((team) => {
-                 
-                        return(
-                          <MenuItem key={team.name} value={team.name}>
-                          <Checkbox checked={currentTeams.indexOf(team.name) > -1} />
-                          <ListItemText primary={team.name} />
-                        </MenuItem>
-                        )
-                      })
-                  }
-                </Select>
-            </FormControl>
-            <FormControl sx={{width: "420px", mt: 1}} >
-                <InputLabel id="select-label">Role</InputLabel>
-                  <Select
-                    label="Role"
-                    value={currentRole}
-                    onChange={handleRoleChange}
-                  >
-                   {/* <MenuItem key={1} value={1}>test</MenuItem> */}
-                  {
+            <Box noValidate>
+              <FormControl sx={{width: "200px", mt: 1}} >
+                  <InputLabel id="demo-simple-select-label">Teams</InputLabel>
+                    <Select
+                      label="Teams"
+                      multiple
+                      value={currentTeams}
+                      onChange={handleTeamChange}
+                      renderValue={(selected) => selected.join(', ')}
+                    >
+                    {/* <MenuItem key={1} value={1}>test</MenuItem> */}
+                    {
+                        // names = ['t1', 't2', 'TestTeam'];
+                        teamList.map((team) => {
                   
-                      Object.entries(role_dict).map(([key, value]) => {
-                        return(
-                          <MenuItem key={value} value={key}>
-                          {value}
+                          return(
+                            <MenuItem key={team.name} value={team.name}>
+                            <Checkbox checked={currentTeams.indexOf(team.name) > -1} />
+                            <ListItemText primary={team.name} />
                           </MenuItem>
-                        )
-                        
-                      })
-                  }
-                </Select>
-            </FormControl>
-
+                          )
+                        })
+                    }
+                  </Select>
+              </FormControl>
+              <FormControl sx={{width: "200px", mt: 1, ml: 2}} >
+                  <InputLabel id="select-label">Role</InputLabel>
+                    <Select
+                      label="Role"
+                      value={currentRole}
+                      onChange={handleRoleChange}
+                    >
+                    {
+                    
+                        Object.entries(role_dict).map(([key, value]) => {
+                          return(
+                            <MenuItem key={key} value={key}>
+                            {value}
+                            </MenuItem>
+                          )
+                          
+                        })
+                    }
+                  </Select>
+              </FormControl>
+            </Box>
+            <Box noValidate>
             <Button
               type="submit"
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Submit
             </Button>
+            <Button
+              type="delete"
+              variant="contained"
+              sx={{ mt: 3, mb: 2, ml: 2, bgcolor: 'red' }}
+              onClick={handleUserDelete}
+            >
+              Delete
+            </Button>
+
+            </Box>
+            
           </Box>
          
 

@@ -3,6 +3,8 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField'
 
 function TeamsPage() {
 
@@ -254,7 +256,54 @@ function TeamsPage() {
                     margin: "20px",
                 }}> Create Team</Typography>
 
-                <form>
+                <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                    <TextField
+                    xs
+                        required
+                        margin="dense"
+                        id="category"
+                        label="Category"
+                        name="category"
+                        autoComplete="category"
+                        autoFocus
+                        size="small"
+                        value={temporaryTeam.category}
+                        onChange={handleFormChange}
+                        // sx={{width: "250px"}}
+                        variant="filled"
+                        
+                    />
+                    <TextField
+                        xs
+                        required
+                        name="name"
+                        margin="dense"
+                        label="Team Name"
+                        type="name"
+                        id="name"
+                        size="small"
+                        autoComplete="name"
+                        value={temporaryTeam.name}
+                        onChange={handleFormChange}
+                        sx={{ mt: 2}}
+                        variant="filled"
+                    />
+            
+                        
+                    <Button
+                        type="create"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                    >
+                    Create
+                    </Button>
+                            
+                        
+                        
+                </Box>
+
+                {/* <form>
                 <label>Category:</label>
                     <input
                         type="text"
@@ -285,7 +334,7 @@ function TeamsPage() {
                         onClick={() => { handleCreateSubmit() }}
                     >Create</Button>
                     <br></br>
-                </form>
+                </form> */}
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}
