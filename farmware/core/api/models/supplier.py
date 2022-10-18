@@ -8,5 +8,9 @@ class Supplier(models.Model):
     name = models.TextField(max_length=100)
     phone_number = models.TextField(max_length=10)
 
+    class Meta:
+        verbose_name = "supplier"
+        verbose_name_plural = "suppliers"
+
     def __str__(self) -> str:
         return self.name

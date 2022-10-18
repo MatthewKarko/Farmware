@@ -9,5 +9,9 @@ class AreaCode(models.Model):
     area_code = models.TextField(max_length=50)
     description = models.TextField(max_length=200)
 
+    class Meta:
+        verbose_name = "area code"
+        verbose_name_plural = "area codes"
+
     def __str__(self) -> str:
         return self.area_code

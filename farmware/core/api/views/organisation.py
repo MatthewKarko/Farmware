@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response 
 
 from ..models.organisation import Organisation
-from ..serialisers import OrganisationSerialiser
+from ..serialisers.organisation import OrganisationSerialiser
 
 class OrganisationsView(generics.CreateAPIView):
     queryset = Organisation.objects.all()

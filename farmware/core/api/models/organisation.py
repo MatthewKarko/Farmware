@@ -23,5 +23,9 @@ class Organisation(models.Model):
     name = models.CharField(max_length=50)
     logo = models.CharField(max_length=50, blank=True)
 
+    class Meta:
+        verbose_name = "organisation"
+        verbose_name_plural = "organisations"
+
     def __str__(self) -> str:
         return self.name

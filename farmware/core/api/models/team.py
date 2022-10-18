@@ -9,6 +9,8 @@ class Team(models.Model):
     )
 
     class Meta:
+        verbose_name = "team"
+        verbose_name_plural = "teams"
         constraints = [
             models.UniqueConstraint(
                 fields=['category', 'organisation'], 
