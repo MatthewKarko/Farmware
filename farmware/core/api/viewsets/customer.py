@@ -5,45 +5,61 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
+from ..responses import DefaultResponses
 from ..models.customer import Customer
-from ..serialisers.customer import CustomerSerialiser
+from ..serialisers.customer import (
+    CustomerSerialiser,
+    CustomerCreationSerialiser
+)
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
 
 class CustomerViewSet(ModelViewSet):
     serializer_class = CustomerSerialiser
     permission_classes = [IsAuthenticated, IsInOrganisation]
-    http_method_names = ['get', 'post', 'head', 'put', 'delete']
-    RESPONSE_FORBIDDEN = Response({'error': 'You are not an admin of the specified organisation.'}, status=status.HTTP_403_FORBIDDEN)
-    RESPONSE_CREATION_SUCCESS = Response({'success': 'Customer created.'}, status=status.HTTP_200_OK)
-    RESPONSE_DELETION_SUCCESS = Response({'success': 'Customer deleted.'}, status=status.HTTP_200_OK)
-
+    responses = DefaultResponses('Customer')
+    
     def get_queryset(self, **kwargs):
-        user: User = self.request.user
-        return Customer.objects.all().filter(organisation=user.organisation, **kwargs)
+        """Get all customers in the user's organisation."""
+        user: User = self.request.user  # type: ignore
+        return Customer.objects.all().filter(
+            organisation=user.organisation, **kwargs)
 
-    def valid_organisation(self, request, data):
-        return request.user.organisation.code == data['organisation']
+    def get_serializer_class(self):
+        """Get the serialiser class for the appropriate action."""
+        if self.action == 'create': return CustomerCreationSerialiser
+        # if self.action == 'retrieve': return OrderFullSerialiser
+
+        # if 'update' in self.action: return OrderUpdateSerialiser
+
+        return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
+        print('create')
         data: QueryDict = request.data
-        if not self.valid_organisation(request, data):
-            return self.RESPONSE_FORBIDDEN
+        print('data:', data)
+
         serialiser = self.get_serializer(data=data)
+        print('serialiser:', serialiser)
         serialiser.is_valid(raise_exception=True)
+
         serialiser.save()
-        return self.RESPONSE_CREATION_SUCCESS
+        print('serialiser save:', serialiser)
+
+        return self.responses.CREATION_SUCCESS
+
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        data: QueryDict = request.data
-        if not self.valid_organisation(request, data):
-            return self.RESPONSE_FORBIDDEN
         return super().update(request, *args, **kwargs)
 
-    def list(self, request, *args, **kwargs):
-        serialiser = CustomerSerialiser(self.get_queryset(), many=True)
-        return Response(serialiser.data)
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return self.RESPONSE_DELETION_SUCCESS
+        return self.responses.DELETION_SUCCESS
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
