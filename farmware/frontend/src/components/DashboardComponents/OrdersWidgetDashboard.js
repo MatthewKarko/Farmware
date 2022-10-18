@@ -14,7 +14,8 @@ function OrdersWidgetDashboard() {
     const navigate = useNavigate();
 
     function handleClick(data) {
-        navigate("/order",{state:data});
+        // navigate("/order",{state:data});
+        navigate("/order");
       }
 
     return (
