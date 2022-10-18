@@ -19,7 +19,7 @@ function OrdersTable() {
         navigate("/orders");
     }
 
-    function addProduce() {
+    function addStock() {
         
     }
     
@@ -43,8 +43,8 @@ function OrdersTable() {
                         <Button type="submit" variant="outlined" size="large" style={{
                                 marginRight: "30px"
                             }}
-                                onClick={() => { addProduce() }}
-                            >Add Produce</Button>
+                                onClick={() => { addStock() }}
+                            >Add Stock</Button>
 
                             <Button type="submit" variant="outlined" size="large" style={{
                                 color: "#028357",
