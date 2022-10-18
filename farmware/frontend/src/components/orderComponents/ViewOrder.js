@@ -4,10 +4,13 @@ import { Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, Tabl
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import orderData from "./mock-order-items.json";
+import axiosInstance from '../../axios';
 
 function OrdersTable() {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const [customerName, setCustomerName] = useState("");
 
     function handleViewProduceClick(order_item) {
         alert("View produce clicked: " + order_item.stock_id);
@@ -22,6 +25,20 @@ function OrdersTable() {
     function addStock() {
         
     }
+
+    useEffect(() => {
+        axiosInstance
+          .get(`customer/`+location.state.customer_id+"/", {
+          })
+          .then((res) => {
+            setCustomerName(res.data.name);
+            console.log(res.data.name);
+          })
+          .catch((err) => {
+            alert("ERROR: customer/{id}/ failed");
+          });
+      }, []);
+
     
     return (
         <>
@@ -34,9 +51,12 @@ function OrdersTable() {
                             <Typography variant="h4" sx={{
                                 fontFamily: 'Lato',
                                 fontWeight: 'bold',
-                                paddingBottom: '20px',
-                            }}>Customer ID: {location.state.customer_id}, Order ID: {location.state.id}</Typography>
+                            }}>{customerName}'s Order</Typography>
 
+                            <Typography variant="h7" sx={{
+                                fontFamily: 'Lato',
+                                fontStyle:'italic',
+                            }}>Invoice: #{location.state.invoice_number}</Typography>
                         </Grid>
 
                         <Grid item xs={6} sx={{ textAlign: "right" }}>

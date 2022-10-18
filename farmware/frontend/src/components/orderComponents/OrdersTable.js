@@ -11,10 +11,6 @@ import axiosInstance from '../../axios';
 function OrdersTable() {
   const navigate = useNavigate();
 
-  function handleViewOrderClick(order) {
-    navigate("/view-order", { state: order });
-  }
-
   const [temporaryOrder, setTemporaryOrder] = useState({
     id: -1,
     customer_id: -1,
@@ -37,6 +33,12 @@ function OrdersTable() {
   const [displayCreateModal, setDisplayCreateModal] = useState(false);
   const [meState, setMeState] = useState([]);
   const [customersList, setCustomersList] = useState([]);
+  const [custName,setCustName] = useState("");
+
+  function handleViewOrderClick(order) {
+    //get customer name based on id
+    navigate("/view-order", { state: order});
+  }
 
   const handleFormChange = (event) => {
     event.preventDefault();
