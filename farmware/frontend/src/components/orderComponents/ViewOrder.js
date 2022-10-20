@@ -1,19 +1,25 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
+import { ListItemText, Checkbox, MenuItem, Select, InputLabel, FormControl, TextField, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
-import orderData from "./mock-order-items.json";
+import orderItemsData from "./mock-order-items.json";
 import axiosInstance from '../../axios';
+import produceData from "./mock-produce.json";
 
-function OrdersTable() {
+function ViewOrder() {
     const navigate = useNavigate();
     const location = useLocation();
 
     const [customerName, setCustomerName] = useState("");
 
-    function handleViewProduceClick(order_item) {
-        alert("View produce clicked: " + order_item.stock_id);
+    function handleViewAssignedStock(order_item) {
+        alert("View stock clicked for produce id: " + order_item.produce_id);
+        // navigate("/orders/view-order",{state:order});
+    }
+
+    function handleAddStock(order_item) {
+        alert("Add stock clicked for produce_id: " + order_item.produce_id);
         // navigate("/orders/view-order",{state:order});
     }
 
@@ -22,24 +28,49 @@ function OrdersTable() {
         navigate("/orders");
     }
 
-    function addStock() {
-        
+    function addProduce() {
+        // Bring up modal to add produce
+        setDisplayAddProduceModal(true);
     }
+
+    const [produceSelected, setProduceSelected] = useState("");
+    const [produceQuantityInput, setProduceQuantityInput] = useState(0);
+
+    const handleProduceChange = (event) => {
+        setProduceSelected(event.target.value);
+    };
+
+    const handleFormChange = (event) => {
+        event.preventDefault();
+        if (!isNaN(+event.target.value)) {
+            //is number
+            setProduceQuantityInput(event.target.value)
+        } else {
+            alert("Invalid quantity input.");
+        }
+    };
+
+    const [displayAddProduceModal, setDisplayAddProduceModal] = useState(false);
+
+    const handleAddProduceSubmit = (event) => {
+        event.preventDefault();
+        console.log("Submitted a produce add to order. Produce id:" + produceSelected + ", Quantity: " + produceQuantityInput)
+        setDisplayAddProduceModal(false);
+    };
 
     useEffect(() => {
         axiosInstance
-          .get(`customer/`+location.state.customer_id+"/", {
-          })
-          .then((res) => {
-            setCustomerName(res.data.name);
-            console.log(res.data.name);
-          })
-          .catch((err) => {
-            alert("ERROR: customer/{id}/ failed");
-          });
-      }, []);
+            .get(`customer/` + location.state.customer_id + "/", {
+            })
+            .then((res) => {
+                setCustomerName(res.data.name);
+                console.log(res.data.name);
+            })
+            .catch((err) => {
+                alert("ERROR: customer/{id}/ failed");
+            });
+    }, []);
 
-    
     return (
         <>
             <div className="main-content">
@@ -55,16 +86,16 @@ function OrdersTable() {
 
                             <Typography variant="h7" sx={{
                                 fontFamily: 'Lato',
-                                fontStyle:'italic',
+                                fontStyle: 'italic',
                             }}>Invoice: #{location.state.invoice_number}</Typography>
                         </Grid>
 
                         <Grid item xs={6} sx={{ textAlign: "right" }}>
-                        <Button type="submit" variant="outlined" size="large" style={{
+                            <Button type="submit" variant="outlined" size="large" style={{
                                 marginRight: "30px"
                             }}
-                                onClick={() => { addStock() }}
-                            >Add Stock</Button>
+                                onClick={() => { addProduce() }}
+                            >Add Produce</Button>
 
                             <Button type="submit" variant="outlined" size="large" style={{
                                 color: "#028357",
@@ -79,35 +110,40 @@ function OrdersTable() {
 
                 <TableContainer component={Paper} className="table" style={{ margin: "auto" }}>
                     <Table aria-label="simple table" style={{ margin: "auto" }}>
-                        <colgroup>
+                        {/* <colgroup>
                             <col style={{ width: '17%' }} />
                             <col style={{ width: '17%' }} />
                             <col style={{ width: '17%' }} />
                             <col style={{ width: '17%' }} />
                             <col style={{ width: '17%' }} />
                             <col style={{ width: '15%' }} />
-                        </colgroup>
+                        </colgroup> */}
                         <TableHead>
                             <TableRow>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Stock ID</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Item</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Quantity</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Suffix</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Supplier</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}></TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce ID</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce Name</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>QTY SUFFIX</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Order QTY</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Stock QTY Added</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>View Assigned Stock</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Add Stock</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orderData.map((order_item) => (
+                            {orderItemsData.map((order_item) => (
                                 <TableRow key={order_item.stock_id} >
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_id}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.item_name}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.qty}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.SUFFIX}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.supplier_id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.order_qty}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_qty_added}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
-                                        <Button variant="outlined" size="medium" onClick={() => handleViewProduceClick(order_item)}
-                                        >View Produce</Button>
+                                        <Button variant="outlined" size="medium" onClick={() => handleViewAssignedStock(order_item)}
+                                        >View Assigned Stock</Button>
+                                    </TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>
+                                        <Button variant="outlined" size="medium" onClick={() => handleAddStock(order_item)}
+                                        >Add Stock</Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -117,8 +153,82 @@ function OrdersTable() {
 
 
             </div>
+
+            <div className={`Modal ${displayAddProduceModal ? "Show" : ""}`}>
+                <button
+                    className="Close"
+                    onClick={() => { setDisplayAddProduceModal(false); }}
+                >
+                    X
+                </button>
+
+                <Typography variant="h4" sx={{
+                    fontFamily: 'Lato',
+                    fontWeight: 'bold',
+                    marginTop: "20px",
+                }}>Add Produce</Typography>
+
+                {/* Contains a table for produce options and its suffix. Can select one, and input a quantity */}
+
+                <Box component="form" onSubmit={handleAddProduceSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Box noValidate>
+                        <FormControl sx={{ width: "300px", mt: 1 }}>
+                            <InputLabel id="demo-simple-select-label">Produce</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                // value={temporaryOrder.produce_id}
+                                label="Select a Produce"
+                                onChange={handleProduceChange}
+                            >
+                                {
+                                    produceData.map((produce) => {
+                                        return (
+                                            <MenuItem key={produce.id} value={produce.id}>
+                                                {/* <ListItemText primary={produce.name} /> */}
+                                                <ListItemText>{produce.name} ({produce.suffix})</ListItemText>
+                                            </MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <TextField
+                        required
+                        margin="normal"
+                        name="produce_qty"
+                        label="Produce Quantity"
+                        type="produce_qty"
+                        id="produce_qty"
+                        autoComplete="produce_qty"
+                        size="small"
+                        onChange={handleFormChange}
+                        sx={{ width: "300px" }}
+                        variant="filled"
+                    />
+
+                    <Box noValidate>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Add To Order
+                        </Button>
+                    </Box>
+                </Box>
+
+            </div>
+
+            {/* Below snippet makes it so that if you click out of the modal it exits. */}
+            <div
+                className={`Overlay ${displayAddProduceModal ? "Show" : ""}`}
+                onClick={() => { setDisplayAddProduceModal(false); }}
+            />
         </>
     )
 }
 
-export default OrdersTable
+export default ViewOrder
