@@ -10,7 +10,7 @@ from rest_framework import status
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
 from ..models import AreaCode
-from ..serialisers import AreaCodeSerialiser
+from ..serialisers.areacode import AreaCodeSerialiser
 
 class AreaCodeViewSet(ModelViewSet):
     # todo: check for area code uniqueness (note: using id for PK because multiple orgs might use the same area code)

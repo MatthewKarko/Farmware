@@ -3,6 +3,8 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 function TeamsPage() {
 
@@ -69,8 +71,8 @@ function TeamsPage() {
         setTemporaryTeam({ ...newFormData });
     };
 
-    const handleEditSubmit = () => {
-
+    const handleEditSubmit = (event) => {
+        event.preventDefault();
         var putObject = {
             category: temporaryTeam.category,
             name: temporaryTeam.name,
@@ -104,7 +106,8 @@ function TeamsPage() {
         setDisplayEditModal(!displayEditModal);
     };
 
-    const handleTeamDelete = () => {
+    const handleTeamDelete = (event) => {
+        event.preventDefault();
         axiosInstance.delete(`teams/${temporaryTeam.id}/`)
         clearState();
         window.location.reload();
@@ -191,45 +194,63 @@ function TeamsPage() {
                     margin: "20px",
                 }}> Edit Team</Typography>
 
-                <form>
-                    <label>Category:</label>
-                    <input
-                        type="text"
+                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                    <TextField
+                    xs
+                        required
+                        margin="dense"
+                        id="category"
+                        label="Category"
                         name="category"
-                        required="required"
-                        placeholder="Enter a category..."
+                        autoComplete="category"
+                        autoFocus
+                        size="small"
                         value={temporaryTeam.category}
                         onChange={handleFormChange}
-                        style={{ width: "200px" }}
+                        // sx={{width: "250px"}}
+                        variant="filled"
+                        
                     />
-                    <br></br>
-                    <label>Name:</label>
-                    <input
-                        type="text"
+                    <TextField
+                        xs
+                        required
                         name="name"
-                        required="required"
-                        placeholder="Enter a name..."
+                        margin="dense"
+                        label="Team Name"
+                        type="name"
+                        id="name"
+                        size="small"
+                        autoComplete="name"
                         value={temporaryTeam.name}
                         onChange={handleFormChange}
-                        style={{ width: "200px" }}
+                        sx={{ mt: 2}}
+                        variant="filled"
                     />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleEditSubmit() }}
-                    >Submit</Button>
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#FF0000",
-                        borderColor: "#FF0000",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleTeamDelete() }}
-                    >Delete Team</Button>
-                </form>
+
+                    <Box noValidate>
+                        
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                    >
+                    Submit
+                    </Button>
+                    <Button
+                        type="delete"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, ml: 2,  bgcolor: 'red' }}
+                        onClick={handleTeamDelete}
+                    >
+                    Delete
+                    </Button>
+                    </Box>     
+                    
+                    
+                </Box>
+
+               
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}
@@ -254,38 +275,49 @@ function TeamsPage() {
                     margin: "20px",
                 }}> Create Team</Typography>
 
-                <form>
-                <label>Category:</label>
-                    <input
-                        type="text"
+                <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                    <TextField
+                    xs
+                        required
+                        margin="dense"
+                        id="category"
+                        label="Category"
                         name="category"
-                        required="required"
-                        placeholder="Enter a category..."
+                        autoComplete="category"
+                        autoFocus
+                        size="small"
                         value={temporaryTeam.category}
                         onChange={handleFormChange}
-                        style={{ width: "200px" }}
+                        // sx={{width: "250px"}}
+                        variant="filled"
+                        
                     />
-                    <br></br>
-                    <label>Name:</label>
-                    <input
-                        type="text"
+                    <TextField
+                        xs
+                        required
                         name="name"
-                        required="required"
-                        placeholder="Enter a name..."
+                        margin="dense"
+                        label="Team Name"
+                        type="name"
+                        id="name"
+                        size="small"
+                        autoComplete="name"
                         value={temporaryTeam.name}
                         onChange={handleFormChange}
-                        style={{ width: "200px" }}
+                        sx={{ mt: 2}}
+                        variant="filled"
                     />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleCreateSubmit() }}
-                    >Create</Button>
-                    <br></br>
-                </form>
+            
+                        
+                    <Button
+                        type="create"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                    >
+                    Create
+                    </Button>            
+                </Box>
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}

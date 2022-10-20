@@ -61,7 +61,7 @@ const Header = () => {
                         <Button sx={{marginLeft: 'auto'}} variant='contained' href='/login'>  
                             Login
                         </Button>
-                        <Button sx={{marginLeft: 'auto'}} variant='contained' href='/signup'>  
+                        <Button sx={{marginLeft: 1}} variant='contained' href='/signup'>  
                             Signup
                         </Button>
                     </>

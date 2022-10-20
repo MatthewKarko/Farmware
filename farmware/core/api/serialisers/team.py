@@ -1,10 +1,14 @@
-from django.conf import settings
 from rest_framework import serializers
 from ..models.team import Team
 
+
+class TeamSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = '__all__'
+        
 class TeamCreationSerialiser(serializers.ModelSerializer):
-    name = serializers.CharField(allow_blank=True)
-    # join_team = serliazers.
+    name = serializers.CharField(allow_blank=True, required=False)
 
     class Meta:
         model = Team
@@ -20,8 +24,3 @@ class TeamCreationSerialiser(serializers.ModelSerializer):
             context['request'].user.organisation
         
         return Team.objects.create(**validated_data)
-
-class TeamSerialiser(serializers.ModelSerializer):
-    class Meta:
-        model = Team
-        fields = '__all__'

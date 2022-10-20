@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 from ..models.team import Team
-from ..serialisers import TeamCreationSerialiser, TeamSerialiser
+from ..serialisers.team import TeamCreationSerialiser, TeamSerialiser
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
 
@@ -17,7 +17,7 @@ class TeamViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, IsInOrganisation]
 
     def get_queryset(self, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         return Team.objects.all().filter(
             organisation=user.organisation,
             **kwargs
@@ -26,7 +26,6 @@ class TeamViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
 
-        self.serializer_class = TeamCreationSerialiser
         serialiser = self.get_serializer(data=data)
 
         # Ensure data is valid
@@ -35,6 +34,7 @@ class TeamViewSet(ModelViewSet):
         try:
             serialiser.save()
         except IntegrityError:
+            # TODO: add UNIQUE contraint reponse
             return Response({'error': 
             'A team of that category already exists in your organisation.'}, 
             status=status.HTTP_400_BAD_REQUEST)

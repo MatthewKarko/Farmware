@@ -15,7 +15,6 @@ import CustomersPage from "./webpages/CustomersPage";
 import SuppliersPage from "./webpages/SuppliersPage";
 import TeamsPage from "./webpages/TeamsPage";
 import AreaCodesPage from "./webpages/AreaCodesPage";
-import ChangePassword from "./components/ChangePassword";
 import ViewOrderPage from "./webpages/ViewOrderPage";
 
 const routing = (
@@ -33,7 +32,6 @@ const routing = (
             <Route path="/suppliers" element={<SuppliersPage />}/>
             <Route path="/teams" element={<TeamsPage />}/>
             <Route path="/area_codes" element={<AreaCodesPage />}/>
-            <Route path="/changepassword" element={<ChangePassword />} />
             <Route path="/orders" element={<OrdersPage />}/>
             <Route path="/view-order" element={<ViewOrderPage />} />
 
