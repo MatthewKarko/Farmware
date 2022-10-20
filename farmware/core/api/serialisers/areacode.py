@@ -5,5 +5,3 @@ class AreaCodeSerialiser(serializers.ModelSerializer):
     class Meta:
         model = AreaCode
         fields = '__all__'
-        verbose_name = "Area Code"
-        verbose_name_plural = "Area Codes"
