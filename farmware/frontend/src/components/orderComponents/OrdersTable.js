@@ -62,7 +62,7 @@ function OrdersTable() {
   const handleDateChange = (newValue) => {
     setDateValue(newValue); //set value for the date input field
     const newFormData = { ...temporaryOrder };
-    newFormData["order_date"] = dayjs(newValue).format('DD-MM-YYYY'); //set value for temporaryOrder
+    newFormData["order_date"] = dayjs(newValue).format('DD/MM/YYYY'); //set value for temporaryOrder
     setTemporaryOrder({ ...newFormData });
   };
 
@@ -201,7 +201,7 @@ function OrdersTable() {
         <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <TextField
             required
-            margin="normal"
+            margin="dense"
             id="invoice_number"
             label="Invoice Number"
             name="invoice_number"

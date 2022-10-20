@@ -197,11 +197,6 @@ function ViewOrder() {
                         </FormControl>
                     </Box>
 
-                    {/* <Typography> Here u select a produce, and based on the produce u select, u will get a list of suffix options.
-                        You choose a suffix option, and input a quantity. 
-                    </Typography>
-                    <Typography>Does this mean the variety of the produce is only chosen when stock is selected?</Typography>
-                     */}
                     <TextField
                         required
                         margin="normal"
