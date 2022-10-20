@@ -14,12 +14,14 @@ function ViewOrder() {
     const [customerName, setCustomerName] = useState("");
 
     function handleViewAssignedStock(order_item) {
-        alert("View stock clicked for produce id: " + order_item.produce_id);
+        // alert("View stock clicked for produce id: " + order_item.produce_id);
+        alert("This will show all the stock that has been added to the order with the produce id of the entry selected.")
         // navigate("/orders/view-order",{state:order});
     }
 
     function handleAddStock(order_item) {
-        alert("Add stock clicked for produce_id: " + order_item.produce_id);
+        alert("This will show a list of stock with the produce id of the order item selected. From the stock list, the user can select a stock, input a quantity, and add it to the order. This is where the produce variety is chosen.")
+        // alert("Add stock clicked for produce_id: " + order_item.produce_id);
         // navigate("/orders/view-order",{state:order});
     }
 
@@ -95,7 +97,7 @@ function ViewOrder() {
                                 marginRight: "30px"
                             }}
                                 onClick={() => { addProduce() }}
-                            >Add Produce</Button>
+                            >Add Produce To Order</Button>
 
                             <Button type="submit" variant="outlined" size="large" style={{
                                 color: "#028357",
@@ -103,7 +105,7 @@ function ViewOrder() {
                                 marginRight: "10px"
                             }}
                                 onClick={() => { markAsComplete() }}
-                            >Mark As Complete</Button>
+                            >Mark Order As Complete</Button>
                         </Grid>
                     </Grid>
                 </Box>
@@ -195,6 +197,11 @@ function ViewOrder() {
                         </FormControl>
                     </Box>
 
+                    {/* <Typography> Here u select a produce, and based on the produce u select, u will get a list of suffix options.
+                        You choose a suffix option, and input a quantity. 
+                    </Typography>
+                    <Typography>Does this mean the variety of the produce is only chosen when stock is selected?</Typography>
+                     */}
                     <TextField
                         required
                         margin="normal"
@@ -227,6 +234,9 @@ function ViewOrder() {
                 className={`Overlay ${displayAddProduceModal ? "Show" : ""}`}
                 onClick={() => { setDisplayAddProduceModal(false); }}
             />
+
+
+
         </>
     )
 }

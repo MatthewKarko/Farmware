@@ -7,6 +7,10 @@ import ordersData from "./mock-orders.json";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import axiosInstance from '../../axios';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 function OrdersTable() {
   const navigate = useNavigate();
@@ -33,11 +37,11 @@ function OrdersTable() {
   const [displayCreateModal, setDisplayCreateModal] = useState(false);
   const [meState, setMeState] = useState([]);
   const [customersList, setCustomersList] = useState([]);
-  const [custName,setCustName] = useState("");
+  const [custName, setCustName] = useState("");
 
   function handleViewOrderClick(order) {
     //get customer name based on id
-    navigate("/view-order", { state: order});
+    navigate("/view-order", { state: order });
   }
 
   const handleFormChange = (event) => {
@@ -52,8 +56,18 @@ function OrdersTable() {
     setTemporaryOrder({ ...newFormData });
   };
 
+  // This state stores what is seen in the date selector, as it requires a different format to the temporaryOrder vlaue
+  const [dateValue, setDateValue] = useState("");
+
+  const handleDateChange = (newValue) => {
+    setDateValue(newValue); //set value for the date input field
+    const newFormData = { ...temporaryOrder };
+    newFormData["order_date"] = dayjs(newValue).format('DD-MM-YYYY'); //set value for temporaryOrder
+    setTemporaryOrder({ ...newFormData });
+  };
+
   const handleCustomerChange = (event) => {
-    console.log('val:'+event.target.value)
+    console.log('val:' + event.target.value)
     const newFormData = { ...temporaryOrder };
     newFormData["customer_id"] = event.target.value;
     setTemporaryOrder({ ...newFormData });
@@ -78,7 +92,7 @@ function OrdersTable() {
         alert("ERROR: user/me failed");
       });
 
-      axiosInstance
+    axiosInstance
       .get(`customer/`, {
       })
       .then((res) => {
@@ -132,7 +146,7 @@ function OrdersTable() {
             <TableHead>
               <TableRow>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Order ID</TableCell>
-                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Customer ID</TableCell>
+                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Customer Name (is id atm)</TableCell>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Invoice Number</TableCell>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Date Created</TableCell>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Completion Date</TableCell>
@@ -173,7 +187,7 @@ function OrdersTable() {
       <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
         <button
           className="Close"
-          onClick={() => { setDisplayCreateModal(!displayCreateModal);}}
+          onClick={() => { setDisplayCreateModal(!displayCreateModal); }}
         >
           X
         </button>
@@ -181,47 +195,46 @@ function OrdersTable() {
         <Typography variant="h4" sx={{
           fontFamily: 'Lato',
           fontWeight: 'bold',
-          marginTop:"20px",
+          marginTop: "20px",
         }}>Create Order</Typography>
 
         <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <TextField
-              required
-              margin="normal"
-              id="invoice_number"
-              label="Invoice Number"
-              name="invoice_number"
-              autoComplete="invoice_number"
-              autoFocus
-              size="small"
-              onChange={handleFormChange}
-              sx={{ width: "300px" }}
-              variant="filled"
-            />
-            <TextField
-              required
-              margin="normal"
+          <TextField
+            required
+            margin="normal"
+            id="invoice_number"
+            label="Invoice Number"
+            name="invoice_number"
+            autoComplete="invoice_number"
+            autoFocus
+            size="small"
+            onChange={handleFormChange}
+            sx={{ width: "300px" }}
+            variant="filled"
+          />
+
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+              label="Date"
               name="order_date"
-              label="Order Date"
-              type="order_date"
-              id="order_date"
-              autoComplete="order_date"
-              size="small"
-              onChange={handleFormChange}
-              sx={{ width: "300px"}}
-              variant="filled"
+              inputFormat="DD/MM/YYYY"
+              value={dateValue}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} />}
             />
+          </LocalizationProvider>
+
           <Box noValidate>
-          <FormControl sx={{ width: "300px", mt: 1 }}>
-            <InputLabel id="demo-simple-select-label">Customers</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={temporaryOrder.customer_id}
-              label="Customer"
-              onChange={handleCustomerChange}
-            >
-              {
+            <FormControl sx={{ width: "300px", mt: 1 }}>
+              <InputLabel id="demo-simple-select-label">Customers</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={temporaryOrder.customer_id}
+                label="Customer"
+                onChange={handleCustomerChange}
+              >
+                {
                   customersList.map((customer) => {
                     return (
                       <MenuItem key={customer.id} value={customer.id}>
@@ -230,8 +243,8 @@ function OrdersTable() {
                     )
                   })
                 }
-            </Select>
-          </FormControl>
+              </Select>
+            </FormControl>
           </Box>
 
           <Box noValidate>
