@@ -3,6 +3,8 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 function AreaCodesTable() {
 
@@ -104,7 +106,8 @@ function AreaCodesTable() {
         setDisplayEditModal(!displayEditModal);
     };
 
-    const handleAreaCodeDelete = () => {
+    const handleAreaCodeDelete = (event) => {
+        event.preventDefault();
         axiosInstance.delete(`area_code/${temporaryAreaCode.id}/`)
         clearState();
         window.location.reload();
@@ -191,45 +194,61 @@ function AreaCodesTable() {
                     margin: "20px",
                 }}> Edit Area Code</Typography>
 
-                <form>
-                    <label>Area Code:</label>
-                    <input
-                        type="text"
+                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+ 
+                    <TextField
+                    xs
+                        required
+                        margin="dense"
+                        id="area_code"
+                        label="Area Code"
                         name="area_code"
-                        required="required"
-                        placeholder="Enter an area code..."
+                        autoComplete="area_code"
+                        autoFocus
+                        size="small"
                         value={temporaryAreaCode.area_code}
                         onChange={handleFormChange}
-                        style={{ width: "200px" }}
+                        // sx={{width: "250px"}}
+                        variant="filled"
+                        
                     />
-                    <br></br>
-                    <label>Description:</label>
-                    <input
-                        type="text"
+                    <TextField
+                        xs
+                        required
                         name="description"
-                        required="required"
-                        placeholder="Enter a description..."
+                        margin="dense"
+                        label="Description"
+                        type="description"
+                        id="description"
+                        size="small"
+                        autoComplete="name"
                         value={temporaryAreaCode.description}
                         onChange={handleFormChange}
-                        style={{ width: "200px" }}
+                        sx={{ mt: 2}}
+                        variant="filled"
                     />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleEditSubmit() }}
-                    >Submit</Button>
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#FF0000",
-                        borderColor: "#FF0000",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleAreaCodeDelete() }}
-                    >Delete Area Code</Button>
-                </form>
+                    
+
+                    <Box noValidate>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                        >
+                        Submit
+                        </Button>
+                        <Button
+                            type="delete"
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2, ml: 2,  bgcolor: 'red' }}
+                            onClick={handleAreaCodeDelete}
+                        >
+                        Delete
+                        </Button>
+                    </Box>     
+
+
+                </Box>
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}
@@ -254,38 +273,53 @@ function AreaCodesTable() {
                     margin: "20px",
                 }}> Create Area Code</Typography>
 
-                <form>
-                <label>Area Code:</label>
-                    <input
-                        type="text"
+<Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <TextField
+                        xs
+                        required
                         name="area_code"
-                        required="required"
-                        placeholder="Enter an area code..."
+                        margin="dense"
+                        label="Area code"
+                        type="area_code"
+                        id="area_code"
+                        size="small"
+                        autoComplete="area_code"
                         value={temporaryAreaCode.area_code}
                         onChange={handleFormChange}
-                        style={{ width: "200px" }}
+                        sx={{ mt: 2}}
+                        variant="filled"
                     />
-                    <br></br>
-                    <label>Description:</label>
-                    <input
-                        type="text"
+
+                    <TextField
+                    xs
+                        required
+                        margin="dense"
+                        id="description"
+                        label="Description"
                         name="description"
-                        required="required"
-                        placeholder="Enter a description..."
+                        autoComplete="description"
+                        autoFocus
+                        size="small"
                         value={temporaryAreaCode.description}
                         onChange={handleFormChange}
-                        style={{ width: "200px" }}
+                        // sx={{width: "250px"}}
+                        variant="filled"
+                        
                     />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleCreateSubmit() }}
-                    >Create</Button>
-                    <br></br>
-                </form>
+                    
+
+                        
+                    <Button
+                        type="create"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                    >
+                    Create
+                    </Button>
+                            
+                    
+                    
+                </Box>
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}

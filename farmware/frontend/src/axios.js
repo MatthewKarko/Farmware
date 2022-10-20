@@ -28,6 +28,7 @@ axiosInstance.interceptors.response.use(
 					'Looks like CORS might be the problem. ' +
 					'Sorry about this - we will get it fixed shortly.'
 			);
+			window.location.reload();
 			return Promise.reject(error);
 		}
 
