@@ -77,7 +77,7 @@ function UsersTable() {
 
     //get the teams and store them
     axiosInstance
-      .get(`teams/`, {
+      .get(`team/`, {
       })
       .then((res) => {
         res.data.map((data) => {
@@ -86,6 +86,7 @@ function UsersTable() {
         })
       })
       .catch((err) => {
+        console.log(err)
         alert("ERROR: Getting teams failed");
       });
 
@@ -166,11 +167,9 @@ function UsersTable() {
       role: row.role.name,
     };
     axiosInstance
-		  .get(`/teams/${row.id}`, {
+		  .get(`user/${row.id}/teams/`, {
 			})
 			.then((res) => {
-		
-        
         res.data.teams.map((data) => {
           // teamList.push(data.name);
           // console.log(data);
