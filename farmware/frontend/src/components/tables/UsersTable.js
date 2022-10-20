@@ -89,22 +89,9 @@ function UsersTable() {
         alert("ERROR: Getting teams failed");
       });
 
-    axiosInstance
-		  .get(`user/teams/`, {
-			})
-			.then((res) => {
-		
-        
-        res.data.teams.map((data) => {
-          // teamList.push(data.name);
-          // console.log(data);
-          setCurrentTeams(currentTeams => [...currentTeams, data.name])
-        })        
-			})
-      .catch((err) => {
-        console.log("AXIOS ERROR: ", err);
-        // alert("ERROR: Incorrect call");
-    });
+    
+
+    
   }, []);
 
   const handleTeamChange = (event) => {
@@ -178,6 +165,22 @@ function UsersTable() {
       email: row.email,
       role: row.role.name,
     };
+    axiosInstance
+		  .get(`/teams/${row.id}`, {
+			})
+			.then((res) => {
+		
+        
+        res.data.teams.map((data) => {
+          // teamList.push(data.name);
+          // console.log(data);
+          setCurrentTeams(currentTeams => [...currentTeams, data.name])
+        })        
+			})
+      .catch((err) => {
+        console.log("AXIOS ERROR: ", err);
+        // alert("ERROR: Incorrect call");
+    });
     setTemporaryUser({ ...formValues });
     setCurrentRole(row.role.level);
     //cause the modal to open.
