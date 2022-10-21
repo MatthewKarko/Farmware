@@ -10,9 +10,13 @@ class Order(models.Model):
     customer_id = models.ForeignKey(
         'core_api.Customer', on_delete=models.DO_NOTHING
         )
-    invoice_number = models.TextField(max_length=20, blank=True)
+    invoice_number = models.TextField(max_length=20, blank=True, null=True)
+
+    # The date of the order
     order_date = models.DateField()
-    completion_date = models.DateField(blank=True)
+
+    # The date the order was completed
+    completion_date = models.DateField(blank=True, null=True)
 
     class Meta:
         verbose_name = "order"
@@ -38,6 +42,8 @@ class OrderItem(models.Model):
         'core_api.ProduceQuantitySuffix', on_delete=models.DO_NOTHING
         )
     quantity = models.FloatField()
+
+    last_updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "order item"
