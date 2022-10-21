@@ -52,6 +52,7 @@ class StockViewSet(ModelViewSet):
         super().destroy(request, *args, **kwargs)
         return self.RESPONSE_DELETION_SUCCESS
 
+
 class StockPickersViewSet(ModelViewSet):
     serializer_class = StockPickersSerialiser
     permission_classes = [IsAuthenticated, IsInOrganisation]
