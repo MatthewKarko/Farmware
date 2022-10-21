@@ -49,6 +49,7 @@ class OrderItem(models.Model):
 class OrderItemStockLink(models.Model):
     """The stock belonging to an produce item within an order."""
     order_item_id = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
+    stock_id = models.ForeignKey('core_api.Stock', on_delete=models.CASCADE)
     quantity = models.FloatField()
     quantity_suffix_id = models.ForeignKey(
         'core_api.ProduceQuantitySuffix', on_delete=models.DO_NOTHING)
