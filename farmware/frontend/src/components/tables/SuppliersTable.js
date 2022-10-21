@@ -208,7 +208,8 @@ function SuppliersPage() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                    margin: "20px",
+                    mt: 2,
+                    textAlign: 'center'
                 }}> Edit Supplier</Typography>
 
                 <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -239,7 +240,7 @@ function SuppliersPage() {
                         size="small"
                         value={temporarySupplier.phone_number}
                         onChange={handleFormChange}
-                        // sx={{width: "250px"}}
+                        sx={{ mt: 2 }}
                         variant="filled"
 
                     />
@@ -286,7 +287,8 @@ function SuppliersPage() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                    margin: "20px",
+                    mt: 2,
+                    textAlign: 'center'
                 }}> Create Supplier</Typography>
                 <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField
@@ -317,7 +319,7 @@ function SuppliersPage() {
                         size="small"
                         value={temporarySupplier.phone_number}
                         onChange={handleFormChange}
-                        // sx={{width: "250px"}}
+                        sx={{ mt: 2 }}
                         variant="filled"
 
                     />

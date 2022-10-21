@@ -208,10 +208,11 @@ function CustomersTable() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                    margin: "20px",
+                    mt: 2,
+                    textAlign:"center"
                 }}> Edit Customer</Typography>
 
-                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField
                         xs
                         required
@@ -239,7 +240,7 @@ function CustomersTable() {
                         size="small"
                         value={temporaryCustomer.phone_number}
                         onChange={handleFormChange}
-                        // sx={{width: "250px"}}
+                        sx={{ mt: 2 }}
                         variant="filled"
 
                     />
@@ -326,7 +327,8 @@ function CustomersTable() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                    margin: "20px",
+                    mt: 2,
+                    textAlign: 'center'
                 }}> Create Customer</Typography>
 
                 <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -358,7 +360,7 @@ function CustomersTable() {
                         size="small"
                         value={temporaryCustomer.phone_number}
                         onChange={handleFormChange}
-                        // sx={{width: "250px"}}
+                        sx={{ mt: 2 }}
                         variant="filled"
 
                     />

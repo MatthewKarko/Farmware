@@ -196,6 +196,7 @@ function OrdersTable() {
           fontFamily: 'Lato',
           fontWeight: 'bold',
           marginTop: "20px",
+          textAlign:"center"
         }}>Create Order</Typography>
 
         <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -209,7 +210,7 @@ function OrdersTable() {
             autoFocus
             size="small"
             onChange={handleFormChange}
-            sx={{ width: "300px" }}
+            sx={{ width: "300px", mt:3, mb:3 }}
             variant="filled"
           />
 
@@ -221,11 +222,12 @@ function OrdersTable() {
               value={dateValue}
               onChange={handleDateChange}
               renderInput={(params) => <TextField {...params} />}
+              sx={{ width: "300px", mt:3 }}
             />
           </LocalizationProvider>
 
           <Box noValidate>
-            <FormControl sx={{ width: "300px", mt: 1 }}>
+            <FormControl sx={{ width: "300px", mt: 3 }}>
               <InputLabel id="demo-simple-select-label">Customers</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
