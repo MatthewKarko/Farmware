@@ -31,10 +31,13 @@ class OrderItem(models.Model):
     produce_id = models.ForeignKey(
         'core_api.Produce', on_delete=models.DO_NOTHING
         )
-    quantity = models.FloatField()
+    produce_variety_id = models.ForeignKey(
+        'core_api.ProduceVariety', on_delete=models.DO_NOTHING
+    )
     quantity_suffix_id = models.ForeignKey(
         'core_api.ProduceQuantitySuffix', on_delete=models.DO_NOTHING
         )
+    quantity = models.FloatField()
 
     class Meta:
         verbose_name = "order item"
