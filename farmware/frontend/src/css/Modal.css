@@ -10,7 +10,7 @@
     padding: 0 12px 12px;
     transition: all 0.3s ease-out;
     z-index: 10;
-    text-align: center;
+    /* text-align: center; */
   }
   
   .Modal.Show {
@@ -27,11 +27,11 @@
     font-size: 18px;
   }
   
-  .Modal input {
+  /* .Modal input {
     margin-bottom: 20px;
     margin-left: 20px;
     align-self: center;
-  }
+  } */
 
   .Overlay {
     background-color: rgba(0, 0, 0, 0.55);

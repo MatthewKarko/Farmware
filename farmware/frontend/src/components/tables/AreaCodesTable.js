@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
@@ -25,8 +25,8 @@ function AreaCodesTable() {
     const clearState = () => {
         const formValues = {
             id: -1,
-        area_code: "",
-        description: "",
+            area_code: "",
+            description: "",
         };
         setTemporaryAreaCode({ ...formValues });
     };
@@ -136,19 +136,30 @@ function AreaCodesTable() {
     return (
         <React.Fragment>
             <div className="main-content">
-                <Typography variant="h4" sx={{
-                    fontFamily: 'Lato',
-                    fontWeight: 'bold',
-                }}> Area Codes Table</Typography>
 
-                <Button type="submit" variant="outlined" size="large" style={{
-                    color: "#028357",
-                    borderColor: "#028357",
-                    margin: "20px",
-                }}
-                    onClick={() => { setDisplayCreateModal(!displayCreateModal) }}
-                >Create Area Code</Button>
-                
+                <Box sx={{ width: '100%', height: '10%' }}>
+                    <Grid container rowSpacing={0} columnSpacing={{ xs: 6, sm: 2, md: 4 }}
+                        style={{ minHeight: '10vh' }}>
+
+                        <Grid item xs={6}>
+                            <Typography variant="h4" sx={{
+                                fontFamily: 'Lato',
+                                fontWeight: 'bold',
+                            }}> Area Codes Table</Typography>
+                        </Grid>
+
+                        <Grid item xs={6} sx={{ textAlign: "right" }}>
+                            <Button type="submit" variant="outlined" size="large" style={{
+                                color: "#028357",
+                                borderColor: "#028357",
+                                margin: "20px",
+                            }}
+                                onClick={() => { setDisplayCreateModal(!displayCreateModal) }}
+                            >Create Area Code</Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+
 
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
@@ -166,12 +177,12 @@ function AreaCodesTable() {
                                     <TableCell className="tableCell">{row.id}</TableCell>
                                     <TableCell className="tableCell">{row.area_code}</TableCell>
                                     <TableCell className="tableCell">{row.description}</TableCell>
-                                        <TableCell className="tableCell">
-                                            <Button variant="outlined" size="medium"
-                                                onClick={(event) => handleEditClick(event, row)}
-                                            >Edit</Button>
-                                        </TableCell>
-                                    
+                                    <TableCell className="tableCell">
+                                        <Button variant="outlined" size="medium"
+                                            onClick={(event) => handleEditClick(event, row)}
+                                        >Edit</Button>
+                                    </TableCell>
+
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -195,9 +206,9 @@ function AreaCodesTable() {
                 }}> Edit Area Code</Typography>
 
                 <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
- 
+
                     <TextField
-                    xs
+                        xs
                         required
                         margin="dense"
                         id="area_code"
@@ -210,7 +221,7 @@ function AreaCodesTable() {
                         onChange={handleFormChange}
                         // sx={{width: "250px"}}
                         variant="filled"
-                        
+
                     />
                     <TextField
                         xs
@@ -224,10 +235,10 @@ function AreaCodesTable() {
                         autoComplete="name"
                         value={temporaryAreaCode.description}
                         onChange={handleFormChange}
-                        sx={{ mt: 2}}
+                        sx={{ mt: 2 }}
                         variant="filled"
                     />
-                    
+
 
                     <Box noValidate>
                         <Button
@@ -235,17 +246,17 @@ function AreaCodesTable() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                         >
-                        Submit
+                            Submit
                         </Button>
                         <Button
                             type="delete"
                             variant="contained"
-                            sx={{ mt: 3, mb: 2, ml: 2,  bgcolor: 'red' }}
+                            sx={{ mt: 3, mb: 2, ml: 2, bgcolor: 'red' }}
                             onClick={handleAreaCodeDelete}
                         >
-                        Delete
+                            Delete
                         </Button>
-                    </Box>     
+                    </Box>
 
 
                 </Box>
@@ -273,7 +284,7 @@ function AreaCodesTable() {
                     margin: "20px",
                 }}> Create Area Code</Typography>
 
-<Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField
                         xs
                         required
@@ -286,12 +297,12 @@ function AreaCodesTable() {
                         autoComplete="area_code"
                         value={temporaryAreaCode.area_code}
                         onChange={handleFormChange}
-                        sx={{ mt: 2}}
+                        sx={{ mt: 2 }}
                         variant="filled"
                     />
 
                     <TextField
-                    xs
+                        xs
                         required
                         margin="dense"
                         id="description"
@@ -304,21 +315,21 @@ function AreaCodesTable() {
                         onChange={handleFormChange}
                         // sx={{width: "250px"}}
                         variant="filled"
-                        
-                    />
-                    
 
-                        
+                    />
+
+
+
                     <Button
                         type="create"
                         variant="contained"
                         sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                     >
-                    Create
+                        Create
                     </Button>
-                            
-                    
-                    
+
+
+
                 </Box>
             </div>
 
