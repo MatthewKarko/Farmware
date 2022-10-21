@@ -6,6 +6,8 @@ import '../../css/Modal.css';
 import orderItemsData from "./mock-order-items.json";
 import axiosInstance from '../../axios';
 import produceData from "./mock-produce.json";
+import produceSuffixData from "./mock-produce-suffix.json";
+import produceVarietyData from "./mock-produce-variety.json";
 
 function ViewOrder() {
     const navigate = useNavigate();
@@ -38,8 +40,70 @@ function ViewOrder() {
     const [produceSelected, setProduceSelected] = useState("");
     const [produceQuantityInput, setProduceQuantityInput] = useState(0);
 
+    const [produceSuffixes, setProduceSuffixes] = useState([]);
+    const [suffixSelected, setSuffixSelected] = useState(-1);
+
     const handleProduceChange = (event) => {
         setProduceSelected(event.target.value);
+
+        // Correct the displayed suffix and variety options, and clear any prior stored state.
+
+        //for each value in produceSuffixData, push it to the array
+        // produceSuffixes.push("a");
+        // console.log(produceSuffixes);
+        // setProduceSuffixes([]);
+        // produceSuffixes.pop();
+        // produceSuffixes.pop();
+
+        //remove all from the suffix state
+        console.log(produceSuffixes.length);
+        let len = produceSuffixes.length
+        for (let i = 0; i < len; i++) {
+            produceSuffixes.pop();
+            console.log("popped");
+        }
+
+        for (let i = 0; i < produceSuffixData.length; i++) {
+            console.log("added" + produceSuffixData[i]);
+            produceSuffixes.push(produceSuffixData[i]);
+        }
+
+        console.log(produceSuffixes);
+
+        // createSuffixOptions();
+
+        setSuffixSelected(-1);
+    };
+
+    // function createSuffixOptions() {
+    //     {
+    //         console.log("This ran");
+    //         produceSuffixes.forEach( val => {console.log(val);
+    //         <MenuItem key={val.id} value={val.id}>
+    //              <ListItemText primary={val.suffix} />
+    //         </MenuItem>
+    //     });
+    //     //     Object.entries({produceSuffixes}).forEach( (produce_suffix) => {
+    //     //     console.log(produce_suffix); 
+    //     //     <MenuItem key={produce_suffix.id} value={produce_suffix.id}>
+    //     //         <ListItemText primary={produce_suffix.suffix} />
+    //     //     </MenuItem>
+    //     // });
+
+    //         // produceSuffixData.map((produce_suffix) => {
+    //         // // Object.entries({produceSuffixes}).map((produce_suffix) => {
+    //         // // {produceSuffixes}.map((produce_suffix) => {
+    //         //     return (
+    //         //         <MenuItem key={produce_suffix.id} value={produce_suffix.id}>
+    //         //             <ListItemText primary={produce_suffix.suffix} />
+    //         //         </MenuItem>
+    //         //     )
+    //         // })
+    //     }
+    // }
+
+    const handleSuffixChange = (event) => {
+        setSuffixSelected(event.target.value);
     };
 
     const handleFormChange = (event) => {
@@ -56,7 +120,7 @@ function ViewOrder() {
 
     const handleAddProduceSubmit = (event) => {
         event.preventDefault();
-        console.log("Submitted a produce add to order. Produce id:" + produceSelected + ", Quantity: " + produceQuantityInput)
+        console.log("Submitted a produce add to order. Produce id:" + produceSelected + "suffix: " + suffixSelected + ", Quantity: " + produceQuantityInput)
         setDisplayAddProduceModal(false);
     };
 
@@ -72,6 +136,14 @@ function ViewOrder() {
                 alert("ERROR: customer/{id}/ failed");
             });
     }, []);
+
+    let produceSuffixOptions = null;
+
+    if(produceSuffixes.length != 0){
+        produceSuffixOptions = produceSuffixes.map((suf) => <MenuItem key={suf.id} value={suf.id}>
+        <ListItemText primary={suf.suffix} />
+   </MenuItem>);
+    }
 
     return (
         <>
@@ -167,14 +239,15 @@ function ViewOrder() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                    marginTop: "20px",
+                    mt: 2,
+                    textAlign: 'center'
                 }}>Add Produce</Typography>
 
                 {/* Contains a table for produce options and its suffix. Can select one, and input a quantity */}
 
                 <Box component="form" onSubmit={handleAddProduceSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Box noValidate>
-                        <FormControl sx={{ width: "300px", mt: 1 }}>
+                        <FormControl sx={{ width: "300px", mt: 2 }}>
                             <InputLabel id="demo-simple-select-label">Produce</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -187,8 +260,7 @@ function ViewOrder() {
                                     produceData.map((produce) => {
                                         return (
                                             <MenuItem key={produce.id} value={produce.id}>
-                                                {/* <ListItemText primary={produce.name} /> */}
-                                                <ListItemText>{produce.name} ({produce.suffix})</ListItemText>
+                                                <ListItemText primary={produce.name} />
                                             </MenuItem>
                                         )
                                     })
@@ -196,6 +268,33 @@ function ViewOrder() {
                             </Select>
                         </FormControl>
                     </Box>
+
+                    <Box noValidate>
+                        <FormControl sx={{ width: "300px", mt: 2 }}>
+                            <InputLabel id="demo-simple-select-label">Suffix</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                // value={temporaryOrder.produce_id}
+                                label="Select a Suffix"
+                                onChange={handleSuffixChange}
+                            >
+                                {produceSuffixOptions}
+                                {/* {createSuffixOptions} */}
+                                {/* {
+                                    Object.entries({produceSuffixes}).map((produce_suffix) => {
+                                    // {produceSuffixes}.map((produce_suffix) => {
+                                        return (
+                                            <MenuItem key={produce_suffix.id} value={produce_suffix.id}>
+                                                <ListItemText primary={produce_suffix.suffix} />
+                                            </MenuItem>
+                                        )
+                                    })
+                                } */}
+                            </Select>
+                        </FormControl>
+                    </Box>
+
 
                     <TextField
                         required

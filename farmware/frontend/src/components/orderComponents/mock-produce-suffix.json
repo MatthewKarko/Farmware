@@ -1,0 +1,11 @@
+[ {
+    "id": 0,
+    "suffix": "kg",
+    "base_equivalent": 0   
+},
+{
+    "id": 1,
+    "suffix": "tonne",
+    "base_equivalent": 1000   
+}
+]

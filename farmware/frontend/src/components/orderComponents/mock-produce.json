@@ -1,19 +1,13 @@
 [ {
     "id": 0,
-    "name": "Apple",
-    "suffix": "kg",
-    "base_conversion": 0     
+    "name": "Apple"   
 },
 {
     "id": 1,
-    "name": "Orange",
-    "suffix": "tonne",
-    "base_conversion": 1000      
+    "name": "Orange"     
 },
 {
     "id": 2,
-    "name": "Hay",
-    "suffix": "bale",
-    "base_conversion": 500 
+    "name": "Hay"
 }
 ]
