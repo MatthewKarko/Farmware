@@ -1,10 +1,15 @@
 from django.db import IntegrityError
 from django.http import QueryDict
 
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
 
 from ..models.produce import Produce, ProduceVariety, ProduceQuantitySuffix
+from ..models.stock import Stock
 from ..responses import DefaultResponses
 from ..serialisers.produce import (
     ProduceSerialiser, 
@@ -12,6 +17,9 @@ from ..serialisers.produce import (
     ProduceFullSerialiser,
     ProduceVarietySerialiser,
     ProduceQuantitySuffixSerialiser
+)
+from ..serialisers.stock import (
+    StockSerialiser
 )
 from ...permissions.IsOfficeOrHigherHierarchy import IsHigherThanWorkerHierarchy
 from ...user.models import User
@@ -79,6 +87,27 @@ class ProduceViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @action(detail=True, methods=['get'])
+    def get_available_stock(self, request, pk=None):
+        produce: Produce = self.get_object()
+
+        print(produce.pk)
+        for i in Stock.objects.all():
+            print(i)
+
+        data = StockSerialiser(Stock.objects.all().filter(
+            produce_id=produce.pk, 
+            date_completed__isnull=True
+            ), many=True
+        ).data
+
+        response = {'stock':data}
+
+        return Response(response, status=status.HTTP_200_OK)
+
+
+
 
 
 class ProduceVarietyViewSet(ModelViewSet):

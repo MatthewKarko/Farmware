@@ -13,14 +13,15 @@ class Stock(models.Model):
     supplier_id = models.ForeignKey('core_api.Supplier', on_delete=models.DO_NOTHING)
     date_seeded = models.DateField(null=True, blank=True)
     date_planted = models.DateField(null=True, blank=True)
-    date_picked = models.DateTimeField(null=True, blank=True, auto_now_add=True)
+    date_picked = models.DateTimeField(null=True, blank=True)
     ehd = models.DateField(null=True, blank=True) # Earliest Harvest Date
-    date_completed = models.DateField(null=True, blank=True, auto_now_add=True)
+    date_completed = models.DateField(null=True, blank=True)
     area_code_id = models.ForeignKey('core_api.AreaCode', on_delete=models.DO_NOTHING)
 
     class Meta:
         verbose_name = "stock"
         verbose_name_plural = "stock"
+        ordering = ['-date_picked']
 
 class StockPickers(models.Model):
     stock_id = models.ManyToManyField(Stock)

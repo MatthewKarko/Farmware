@@ -11,8 +11,8 @@ class Order(models.Model):
         'core_api.Customer', on_delete=models.DO_NOTHING
         )
     invoice_number = models.TextField(max_length=20, blank=True)
-    order_date = models.DateField(auto_now_add=True)
-    completion_date = models.DateField(blank=True, auto_now_add=True)
+    order_date = models.DateField()
+    completion_date = models.DateField(blank=True)
 
     class Meta:
         verbose_name = "order"
