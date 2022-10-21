@@ -49,13 +49,6 @@ function ViewOrder() {
 
         // Correct the displayed suffix and variety options, and clear any prior stored state.
 
-        //for each value in produceSuffixData, push it to the array
-        // produceSuffixes.push("a");
-        // console.log(produceSuffixes);
-        // setProduceSuffixes([]);
-        // produceSuffixes.pop();
-        // produceSuffixes.pop();
-
         //remove all from the suffix state
         console.log(produceSuffixes.length);
         let len = produceSuffixes.length
@@ -64,6 +57,7 @@ function ViewOrder() {
             console.log("popped");
         }
 
+        //Temporarily, it will switch between two suffix lists to demonstrate functionality
         if(len == 2){
             for (let i = 0; i < produceSuffixData2.length; i++) {
                 console.log("added" + produceSuffixData2[i]);
@@ -78,37 +72,8 @@ function ViewOrder() {
 
         console.log(produceSuffixes);
 
-        // createSuffixOptions();
-
         setSuffixSelected(-1);
     };
-
-    // function createSuffixOptions() {
-    //     {
-    //         console.log("This ran");
-    //         produceSuffixes.forEach( val => {console.log(val);
-    //         <MenuItem key={val.id} value={val.id}>
-    //              <ListItemText primary={val.suffix} />
-    //         </MenuItem>
-    //     });
-    //     //     Object.entries({produceSuffixes}).forEach( (produce_suffix) => {
-    //     //     console.log(produce_suffix); 
-    //     //     <MenuItem key={produce_suffix.id} value={produce_suffix.id}>
-    //     //         <ListItemText primary={produce_suffix.suffix} />
-    //     //     </MenuItem>
-    //     // });
-
-    //         // produceSuffixData.map((produce_suffix) => {
-    //         // // Object.entries({produceSuffixes}).map((produce_suffix) => {
-    //         // // {produceSuffixes}.map((produce_suffix) => {
-    //         //     return (
-    //         //         <MenuItem key={produce_suffix.id} value={produce_suffix.id}>
-    //         //             <ListItemText primary={produce_suffix.suffix} />
-    //         //         </MenuItem>
-    //         //     )
-    //         // })
-    //     }
-    // }
 
     const handleSuffixChange = (event) => {
         setSuffixSelected(event.target.value);
@@ -128,7 +93,7 @@ function ViewOrder() {
 
     const handleAddProduceSubmit = (event) => {
         event.preventDefault();
-        console.log("Submitted a produce add to order. Produce id:" + produceSelected + "suffix: " + suffixSelected + ", Quantity: " + produceQuantityInput)
+        alert("Submitted a produce add to order. Produce ID:" + produceSelected + ", suffix ID: " + suffixSelected + ", Quantity: " + produceQuantityInput)
         setDisplayAddProduceModal(false);
     };
 
@@ -141,12 +106,13 @@ function ViewOrder() {
                 console.log(res.data.name);
             })
             .catch((err) => {
-                alert("ERROR: customer/{id}/ failed");
+                alert("ERROR: customer/{id}/ failed. NOTE: THIS IS ONLY FAILING BECAUSE OF MOCK ORDER DATA.");
             });
     }, []);
 
-    let produceSuffixOptions = null;
 
+    //This is required to transfer the changes to produce suffix list to the Select menu
+    let produceSuffixOptions = null;
     if(produceSuffixes.length != 0){
         console.log("this ran");
         produceSuffixOptions = produceSuffixes.map((suf) => <MenuItem key={suf.id} value={suf.id}>
@@ -289,17 +255,6 @@ function ViewOrder() {
                                 onChange={handleSuffixChange}
                             >
                                 {produceSuffixOptions}
-                                {/* {createSuffixOptions} */}
-                                {/* {
-                                    Object.entries({produceSuffixes}).map((produce_suffix) => {
-                                    // {produceSuffixes}.map((produce_suffix) => {
-                                        return (
-                                            <MenuItem key={produce_suffix.id} value={produce_suffix.id}>
-                                                <ListItemText primary={produce_suffix.suffix} />
-                                            </MenuItem>
-                                        )
-                                    })
-                                } */}
                             </Select>
                         </FormControl>
                     </Box>
