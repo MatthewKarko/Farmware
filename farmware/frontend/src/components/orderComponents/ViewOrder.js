@@ -7,6 +7,7 @@ import orderItemsData from "./mock-order-items.json";
 import axiosInstance from '../../axios';
 import produceData from "./mock-produce.json";
 import produceSuffixData from "./mock-produce-suffix.json";
+import produceSuffixData2 from "./mock-produce-suffix-2.json";
 import produceVarietyData from "./mock-produce-variety.json";
 
 function ViewOrder() {
@@ -63,9 +64,16 @@ function ViewOrder() {
             console.log("popped");
         }
 
-        for (let i = 0; i < produceSuffixData.length; i++) {
-            console.log("added" + produceSuffixData[i]);
-            produceSuffixes.push(produceSuffixData[i]);
+        if(len == 2){
+            for (let i = 0; i < produceSuffixData2.length; i++) {
+                console.log("added" + produceSuffixData2[i]);
+                produceSuffixes.push(produceSuffixData2[i]);
+            }
+        } else {
+            for (let i = 0; i < produceSuffixData.length; i++) {
+                console.log("added" + produceSuffixData[i]);
+                produceSuffixes.push(produceSuffixData[i]);
+            }
         }
 
         console.log(produceSuffixes);
@@ -140,6 +148,7 @@ function ViewOrder() {
     let produceSuffixOptions = null;
 
     if(produceSuffixes.length != 0){
+        console.log("this ran");
         produceSuffixOptions = produceSuffixes.map((suf) => <MenuItem key={suf.id} value={suf.id}>
         <ListItemText primary={suf.suffix} />
    </MenuItem>);
