@@ -8,9 +8,12 @@ from .models.stock import *
 from .models.supplier import *
 from .models.customer import *
 from .models.order import *
-from django_test_migrations.migrator import Migrator
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
+from django_test_migrations.migrator import Migrator
+from django.db import migrations, models
+from core.api.migrations import * #0001_initial,0002_initial,0003_auto_20221018_0824,0004_auto_20221018_1055,0005_auto_20221018_1132
+from django_test_migrations.contrib.unittest_case import MigratorTestCase
 
 # Create your tests here.
 class OrganisationTestCases(TestCase):
@@ -222,14 +225,13 @@ class  OrderStockTestCases(TestCase):
     date_completed ="2022-10-29",
     area_code_id=areacode)
         customer=Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
-        order=Order.objects.create(organisation=organisatio,customer_id= customer)
-        OrderStock.objects.create(order_id =order,
-    stock_id =stock ,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
-    def test_OrderStock(self):
+        order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
+        OrderItem.objects.create(order_id =order,produce_id=produce,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
+    def test_OrderItem(self):
         customer=Customer.objects.get(name="Henry")
         order=Order.objects.get(customer_id= customer)
-        orderstock = OrderStock.objects.get(order_id =order)
-        self.assertEqual(orderstock.quantity,10.0)
+        orderItem = OrderItem.objects.get(order_id =order)
+        self.assertEqual(orderItem.quantity,10.0)
 class TeamTestCases(TestCase):
     def setUp(self):
         organisation=Organisation.objects.create(name="Farmone",logo="goat")
@@ -246,6 +248,99 @@ class TeamTestCases(TestCase):
         with self.assertRaises(ValidationError):
             Team.objects.create(category ="Jack",name = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis euismod gravida. Vestibulum quam lacus, faucibus ac dui nec, hendrerit lobortis arcu. Ut vel lorem at enim dignissim porttitor in nec neque. Mauris lobortis justo lorem, id venenatis dui laoreet vel. Quisque egestas neque quis erat porttitor fermentum. Proin cursus, lorem non auctor aliquam, turpis neque tincidunt sem, vitae maximus massa dolor ut diam. Nam euismod urna sed leo vestibulum ultrices. Donec tempus fringilla feugiat. Nullam faucibus mattis diam, in sagittis lacus aliquam eget. Mauris eu ligula fermentum, bibendum enim id, sodales turpis. Praesent sed risus felis. Vivamus ut ultrices nisl.Ut luctus purus neque, eget blandit augue consectetur at. Etiam eleifend cursus tortor, ut venenatis lectus laoreet sollicitudin. Nunc at elementum magna. Integer ut scelerisque arcu, ac pellentesque lorem. Donec rutrum porttitor consectetur. Nunc nunc enim, sollicitudin mollis maximus non, lacinia at neque. Curabitur ultrices tincidunt pharetra. Vestibulum vitae.",organisation = organisation2)
             raise ValidationError("error")
+class TestDirectMigration(MigratorTestCase):
+    """This class is used to test direct migrations."""
+    def prepare(self):
+        """Prepare some data before the migration."""
+        #migrator=Migrator()
+        #old_state = migrator.before(('core_api', '0001_initial'))
+        migrate_from = ('core_api', '0001_initial')
+        migrate_to = ('core_api', '0002_initial')
+        #migrator = Migrator()
+        #old_state = migrator.apply_initial_migration(
+        #('core_api', '0001_initial'),
+        #)
+        #AreaCode= self.old_state.apps.get_model('core_api', "AreaCode")
+        #org_code=generate_random_org_code()
+        #Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        #organisatio=Organisation.objects.get(name="Farmone")
+        #AreaCode.objects.create(organisation= organisatio,area_code="761",description="This is a good area ")
+        #AreaCode.objects.create(organisation=organisatio,area_code="762",description="This was a good area ")
+
+    def migration_main0002(self):
+        """Run the test itself."""
+        AreaCode = self.new_state.apps.get_model('core_api', 'AreaCode')
+        assert AreaCode.objects.count() == 2
+        assert AreaCode.objects.filter(area_code="762").count() == 1
+
+    def test_migration_003and004(self):
+        migrator = Migrator()
+        old_state = migrator.apply_initial_migration(
+        ('core_api', '0003_auto_20221018_0824'),
+        )
+        OrderStock = old_state.apps.get_model('core_api', 'OrderStock')
+
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+        supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code=204,description="just another area code")
+        stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
+        variety_id =producevariety,
+        quantity = 6.0,
+        quantity_suffix_id =producequantitysuffix,
+        supplier_id =supplier,
+        date_seeded = "2022-10-25",
+        date_planted = "2022-10-26",
+        date_picked = "2022-10-27",
+        ehd = "2022-10-28" ,
+        date_completed ="2022-10-29",
+        area_code_id=areacode)
+        customer=Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
+        order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
+        OrderStock.objects.create(order_id =order,produce_id=produce,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
+
+        new_state = migrator.apply_tested_migration(('core_api', '0004_auto_20221018_1055'))
+        self.assertEquals(new_state.apps.get_model('core_api', 'OrderStock'),"not found")
+        migrator.reset()
+    def test_migration003and004Second(self):
+        migrator = Migrator()
+        old_state = migrator.apply_initial_migration(
+        ('core_api', '0004_auto_20221018_1055'),
+        )
+        OrderItem = old_state.apps.get_model('core_api', 'OrderStock')
+
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+        supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code=204,description="just another area code")
+        stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
+        variety_id =producevariety,
+        quantity = 6.0,
+        quantity_suffix_id =producequantitysuffix,
+        supplier_id =supplier,
+        date_seeded = "2022-10-25",
+        date_planted = "2022-10-26",
+        date_picked = "2022-10-27",
+        ehd = "2022-10-28" ,
+        date_completed ="2022-10-29",
+        area_code_id=areacode)
+        customer=Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
+        order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
+        OrderItem.objects.create(order_id =order,produce_id=produce,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
+        new_state = migrator.apply_tested_migration(('core_api', '0003_auto_20221018_0824'))
+        self.assertEquals(new_state.apps.get_model('core_api', 'OrderItem'),"not found")
+        migrator.reset()
+
+
+
 
 ###class StockPickersTestCases(TestCase):
     #def setUp(self):
