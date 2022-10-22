@@ -84,14 +84,38 @@ function ViewOrder() {
         setDisplayAddProduceModal(true);
     }
 
-    const [produceSelected, setProduceSelected] = useState("");
-    const [produceQuantityInput, setProduceQuantityInput] = useState();
+    const [temporaryProduce, setTemporaryProduce] = useState({
+        produceSelected: "",
+        suffixSelected: "",
+        varietySelected: "",
+        produceQuantity: 0,
+    });
+
+    // const [produceSelected, setProduceSelected] = useState("");
+    // const [produceQuantityInput, setProduceQuantityInput] = useState();
 
     const [produceSuffixes, setProduceSuffixes] = useState([]);
-    const [suffixSelected, setSuffixSelected] = useState(-1);
+    // const [suffixSelected, setSuffixSelected] = useState(-1);
+
+    const clearTemporaryProduce = () => {
+        const formValues = {
+            produceSelected: "",
+            suffixSelected: "",
+            varietySelected: "",
+            produceQuantity: 0,
+        };
+        setTemporaryProduce({ ...formValues });
+    };
 
     const handleProduceChange = (event) => {
-        setProduceSelected(event.target.value);
+        //clear the temporary produce (since all the fields change)
+        clearTemporaryProduce();
+
+        //set new produce
+        // setProduceSelected(event.target.value);
+        const newFormData = { ...temporaryProduce };
+        newFormData["produceSelected"] = event.target.value;
+        setTemporaryProduce({ ...newFormData });
 
         // Correct the displayed suffix and variety options, and clear any prior stored state.
 
@@ -112,8 +136,6 @@ function ViewOrder() {
             }
         }
 
-        setSuffixSelected(-1);
-
         //now do same for varieties
         //remove all from the suffix state
         let len_var = produceVarieties.length
@@ -131,26 +153,33 @@ function ViewOrder() {
                 produceVarieties.push(produceVarietyData[i]);
             }
         }
-
-        setVarietySelected(-1);
     };
 
     const handleSuffixChange = (event) => {
-        setSuffixSelected(event.target.value);
+        // setSuffixSelected(event.target.value);
+        const newFormData = { ...temporaryProduce };
+        newFormData["suffixSelected"] = event.target.value;
+        setTemporaryProduce({ ...newFormData });
     };
 
     const [produceVarieties, setProduceVarieties] = useState([]);
-    const [varietySelected, setVarietySelected] = useState(-1);
+    // const [varietySelected, setVarietySelected] = useState(-1);
 
     const handleVarietyChange = (event) => {
-        setVarietySelected(event.target.value);
+        // setVarietySelected(event.target.value);
+        const newFormData = { ...temporaryProduce };
+        newFormData["varietySelected"] = event.target.value;
+        setTemporaryProduce({ ...newFormData });
     };
 
     const handleFormChange = (event) => {
         event.preventDefault();
         if (!isNaN(+event.target.value)) {
             //is number
-            setProduceQuantityInput(event.target.value)
+            const newFormData = { ...temporaryProduce };
+            newFormData["produceQuantity"] = event.target.value;
+            setTemporaryProduce({ ...newFormData });
+            // setProduceQuantityInput(event.target.value)
         } else {
             alert("Invalid quantity input.");
         }
@@ -164,13 +193,10 @@ function ViewOrder() {
         //TO DO: CHECKS FOR VALID INPUT
 
         //ASSUMING VALID INPUT:
-        alert("Submitted a produce add to order.\nProduce ID:" + produceSelected + "\nSuffix ID: " + suffixSelected + "\nVariety ID: " + varietySelected + "\nQuantity: " + produceQuantityInput)
+        alert("Submitted a produce add to order.\nProduce ID:" + temporaryProduce.produceSelected + "\nSuffix ID: " + temporaryProduce.suffixSelected + "\nVariety ID: " + temporaryProduce.varietySelected + "\nQuantity: " + temporaryProduce.produceQuantity)
 
-        //CLEAR SELECTED FIELDS
-        setProduceQuantityInput(0)
-        setProduceSelected(-1)
-        setVarietySelected(-1)
-        setSuffixSelected(-1)
+        //CLEAR PRODUCE SELECTED FIELDS
+        clearTemporaryProduce();
         setDisplayAddProduceModal(false);
     };
 
@@ -316,6 +342,7 @@ function ViewOrder() {
                                 // value={temporaryOrder.produce_id}
                                 label="Select a Produce"
                                 onChange={handleProduceChange}
+                                value={temporaryProduce.produceSelected}
                             >
                                 {
                                     produceData.map((produce) => {
@@ -338,6 +365,7 @@ function ViewOrder() {
                                 id="demo-simple-select"
                                 label="Select a Suffix"
                                 onChange={handleSuffixChange}
+                                value={temporaryProduce.suffixSelected}
                             >
                                 {produceSuffixOptions}
                             </Select>
@@ -350,8 +378,9 @@ function ViewOrder() {
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                label="Select a Suffix"
+                                label="Select a Variety"
                                 onChange={handleVarietyChange}
+                                value={temporaryProduce.varietySelected}
                             >
                                 {produceVarietyOptions}
                             </Select>
@@ -368,7 +397,7 @@ function ViewOrder() {
                         id="produce_qty"
                         autoComplete="produce_qty"
                         size="small"
-                        value={produceQuantityInput}
+                        value={temporaryProduce.produceQuantity}
                         onChange={handleFormChange}
                         sx={{ width: "300px" }}
                         variant="filled"
