@@ -256,7 +256,7 @@ export default function AccountModify() {
                 autoFocus
               />
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Teams</InputLabel>
+                <InputLabel id="select-label">Teams</InputLabel>
                   <Select
                     label="Teams"
                     multiple
@@ -322,6 +322,7 @@ export default function AccountModify() {
           <TextField
             autoFocus
             margin="dense"
+            size='small'
             id="old_password"
             label="Old Password"
             type="password"
@@ -332,13 +333,14 @@ export default function AccountModify() {
           <TextField
             autoFocus
             margin="dense"
+            size='small'
             id="new_password"
             label="New Password"
             type="password"
             xs
             variant="standard"
             onChange={handleNewPasswordChange}
-            sx={{mt: 5}}
+            sx={{mt: 1}}
           />
         </DialogContent>
         <DialogActions>
