@@ -3,13 +3,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ListItemText, Checkbox, MenuItem, Select, InputLabel, FormControl, TextField, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
-import orderItemsData from "./mock-order-items.json";
+import orderItemsData from "./mock-data/mock-order-items.json";
 import axiosInstance from '../../axios';
-import produceData from "./mock-produce.json";
-import produceSuffixData from "./mock-produce-suffix.json";
-import produceSuffixData2 from "./mock-produce-suffix-2.json";
-import produceVarietyData from "./mock-produce-variety.json";
-import produceVarietyData2 from "./mock-produce-variety-2.json";
+import produceData from "./mock-data/mock-produce.json";
+import produceSuffixData from "./mock-data/mock-produce-suffix.json";
+import produceSuffixData2 from "./mock-data/mock-produce-suffix-2.json";
+import produceVarietyData from "./mock-data/mock-produce-variety.json";
+import produceVarietyData2 from "./mock-data/mock-produce-variety-2.json";
+import orderItemsStockData from "./mock-data/mock-order-items-stock.json";
+import { DataGrid } from '@mui/x-data-grid';
 
 function ViewOrder() {
     const navigate = useNavigate();
@@ -17,11 +19,54 @@ function ViewOrder() {
 
     const [customerName, setCustomerName] = useState("");
 
+    const [displayViewAssignedStock, setDisplayViewAssignedStock] = useState(false);
+
+    const [viewingOrderItemID, setViewingOrderItemID] = useState(-1);
+
     function handleViewAssignedStock(order_item) {
-        // alert("View stock clicked for produce id: " + order_item.produce_id);
-        alert("This will show all the stock that has been added to the order with the produce id of the entry selected.")
-        // navigate("/orders/view-order",{state:order});
+        //OPEN MODAL TO VIEW ASSIGNED STOCK. HERE THEY CAN BE DELETED OR MODIFIED.
+        setViewingOrderItemID(order_item.id);
+        //Using this order_item.id, can make a call to get all the order_items if necessary.
+        setDisplayViewAssignedStock(true);
     }
+
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 70 },
+        { field: 'firstName', headerName: 'First name', width: 130 },
+        { field: 'lastName', headerName: 'Last name', width: 130 },
+        {
+            field: 'age',
+            headerName: 'Age',
+            type: 'number',
+            width: 90,
+        },
+        {
+            field: 'fullName',
+            headerName: 'Full name',
+            description: 'This column has a value getter and is not sortable.',
+            sortable: false,
+            width: 160,
+            valueGetter: (params) =>
+                `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        },
+    ];
+
+    const rows = [
+        { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+        { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
+        { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
+        { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
+        { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+        { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
+        { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+        { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+        { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+    ];
+
+    const onRowsSelectionHandler = (ids) => {
+        const selectedRowsData = ids.map((id) => rows.find((row) => row.id === id));
+        console.log(selectedRowsData);
+      };
 
     function handleAddStock(order_item) {
         alert("This will show a list of stock with the produce id of the order item selected. From the stock list, the user can select a stock, input a quantity, and add it to the order. This is where the produce variety is chosen.")
@@ -57,7 +102,7 @@ function ViewOrder() {
         }
 
         //Temporarily, it will switch between two suffix lists to demonstrate functionality
-        if(len == 2){
+        if (len == 2) {
             for (let i = 0; i < produceSuffixData2.length; i++) {
                 produceSuffixes.push(produceSuffixData2[i]);
             }
@@ -77,7 +122,7 @@ function ViewOrder() {
         }
 
         //Temporarily, it will switch between two varieties lists to demonstrate functionality
-        if(len_var == 2){
+        if (len_var == 2) {
             for (let i = 0; i < produceVarietyData2.length; i++) {
                 produceVarieties.push(produceVarietyData2[i]);
             }
@@ -120,7 +165,7 @@ function ViewOrder() {
 
         //ASSUMING VALID INPUT:
         alert("Submitted a produce add to order.\nProduce ID:" + produceSelected + "\nSuffix ID: " + suffixSelected + "\nVariety ID: " + varietySelected + "\nQuantity: " + produceQuantityInput)
-        
+
         //CLEAR SELECTED FIELDS
         setProduceQuantityInput(0)
         setProduceSelected(-1)
@@ -145,18 +190,18 @@ function ViewOrder() {
 
     //This is required to transfer the changes to produce suffix list to the Select menu
     let produceSuffixOptions = null;
-    if(produceSuffixes.length != 0){
+    if (produceSuffixes.length != 0) {
         produceSuffixOptions = produceSuffixes.map((suf) => <MenuItem key={suf.id} value={suf.id}>
-        <ListItemText primary={suf.suffix} />
-   </MenuItem>);
+            <ListItemText primary={suf.suffix} />
+        </MenuItem>);
     }
 
     //This is required to transfer the changes to produce variety list to the Select menu
     let produceVarietyOptions = null;
-    if(produceVarieties.length != 0){
+    if (produceVarieties.length != 0) {
         produceVarietyOptions = produceVarieties.map((variety_val) => <MenuItem key={variety_val.id} value={variety_val.id}>
-        <ListItemText primary={variety_val.variety} />
-   </MenuItem>);
+            <ListItemText primary={variety_val.variety} />
+        </MenuItem>);
     }
 
     return (
@@ -209,18 +254,18 @@ function ViewOrder() {
                         <TableHead>
                             <TableRow>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce ID</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce Name</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Name</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Variety</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>QTY SUFFIX</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Order QTY</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Stock QTY Added</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>View Assigned Stock</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Assigned Stock</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Add Stock</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {orderItemsData.map((order_item) => (
-                                <TableRow key={order_item.stock_id} >
+                                <TableRow key={order_item.stock_id}>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.variety}</TableCell>
@@ -228,8 +273,8 @@ function ViewOrder() {
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.order_qty}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_qty_added}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
-                                        <Button variant="outlined" size="medium" onClick={() => handleViewAssignedStock(order_item)}
-                                        >View Assigned Stock</Button>
+                                        <Button variant="outlined" size="medium" onClick={() => { handleViewAssignedStock(order_item) }}
+                                        >View Stock</Button>
                                     </TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
                                         <Button variant="outlined" size="medium" onClick={() => handleAddStock(order_item)}
@@ -290,7 +335,7 @@ function ViewOrder() {
                             <InputLabel id="demo-simple-select-label">Suffix</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
-                                id="demo-simple-select"                                
+                                id="demo-simple-select"
                                 label="Select a Suffix"
                                 onChange={handleSuffixChange}
                             >
@@ -346,6 +391,49 @@ function ViewOrder() {
             <div
                 className={`Overlay ${displayAddProduceModal ? "Show" : ""}`}
                 onClick={() => { setDisplayAddProduceModal(false); }}
+            />
+
+            <div className={`Modal ${displayViewAssignedStock ? "Show" : ""}`}>
+                <button
+                    className="Close"
+                    onClick={() => { setDisplayViewAssignedStock(false); }}
+                >
+                    X
+                </button>
+
+                <Typography variant="h4" sx={{
+                    fontFamily: 'Lato',
+                    fontWeight: 'bold',
+                    mt: 2,
+                    textAlign: 'center'
+                }}>View Assigned Stock</Typography>
+
+                <Typography variant="h6" sx={{
+                    fontFamily: 'Lato',
+                    fontWeight: 'bold',
+                    mt: 1,
+                    textAlign: 'center'
+                }}>Order Item ID: {viewingOrderItemID}</Typography>
+
+                {/* A selectable list that shows all the assigned stock. */}
+                {/* Can select a stock and click 'delete selected' to delete it. */}
+
+                <Box sx={{ width: "800px", height:"319px", margin: "auto" }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        pageSize={4}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                        onSelectionModelChange={(ids) => onRowsSelectionHandler(ids)}                        
+                    />
+                </Box>
+            </div>
+
+            {/* Below snippet makes it so that if you click out of the modal it exits. */}
+            <div
+                className={`Overlay ${displayViewAssignedStock ? "Show" : ""}`}
+                onClick={() => { setDisplayViewAssignedStock(false); }}
             />
 
 

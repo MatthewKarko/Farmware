@@ -30,6 +30,7 @@
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.6",
     "@mui/material": "^5.10.8",
+    "@mui/x-data-grid": "^5.17.8",
     "@mui/x-date-pickers": "^5.0.4",
     "axios": "^1.0.0",
     "dayjs": "^1.11.5",

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ListItemText, Checkbox, MenuItem, Select, InputLabel, FormControl, TextField, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
-import ordersData from "./mock-orders.json";
+import ordersData from "./mock-data/mock-orders.json";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import axiosInstance from '../../axios';
