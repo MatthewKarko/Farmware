@@ -75,8 +75,7 @@ function OrdersTable() {
 
   const handleCreateSubmit = (event) => {
     event.preventDefault();
-    console.log("Submitted an order creation:")
-    console.log(temporaryOrder)
+    alert("Submitted an order creation:\nOrder number: " + temporaryOrder.id + "\nInvoice number: " + temporaryOrder.invoice_number + "\ncustomer id: " + temporaryOrder.customer_id + "\nDate: " + temporaryOrder.order_date);
     setDisplayCreateModal(false);
   };
 

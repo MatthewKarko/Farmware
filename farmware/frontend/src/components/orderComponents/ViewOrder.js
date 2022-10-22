@@ -9,6 +9,7 @@ import produceData from "./mock-produce.json";
 import produceSuffixData from "./mock-produce-suffix.json";
 import produceSuffixData2 from "./mock-produce-suffix-2.json";
 import produceVarietyData from "./mock-produce-variety.json";
+import produceVarietyData2 from "./mock-produce-variety-2.json";
 
 function ViewOrder() {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ function ViewOrder() {
     }
 
     const [produceSelected, setProduceSelected] = useState("");
-    const [produceQuantityInput, setProduceQuantityInput] = useState(0);
+    const [produceQuantityInput, setProduceQuantityInput] = useState();
 
     const [produceSuffixes, setProduceSuffixes] = useState([]);
     const [suffixSelected, setSuffixSelected] = useState(-1);
@@ -50,33 +51,54 @@ function ViewOrder() {
         // Correct the displayed suffix and variety options, and clear any prior stored state.
 
         //remove all from the suffix state
-        console.log(produceSuffixes.length);
         let len = produceSuffixes.length
         for (let i = 0; i < len; i++) {
             produceSuffixes.pop();
-            console.log("popped");
         }
 
         //Temporarily, it will switch between two suffix lists to demonstrate functionality
         if(len == 2){
             for (let i = 0; i < produceSuffixData2.length; i++) {
-                console.log("added" + produceSuffixData2[i]);
                 produceSuffixes.push(produceSuffixData2[i]);
             }
         } else {
             for (let i = 0; i < produceSuffixData.length; i++) {
-                console.log("added" + produceSuffixData[i]);
                 produceSuffixes.push(produceSuffixData[i]);
             }
         }
 
-        console.log(produceSuffixes);
-
         setSuffixSelected(-1);
+
+        //now do same for varieties
+        //remove all from the suffix state
+        let len_var = produceVarieties.length
+        for (let i = 0; i < len_var; i++) {
+            produceVarieties.pop();
+        }
+
+        //Temporarily, it will switch between two varieties lists to demonstrate functionality
+        if(len_var == 2){
+            for (let i = 0; i < produceVarietyData2.length; i++) {
+                produceVarieties.push(produceVarietyData2[i]);
+            }
+        } else {
+            for (let i = 0; i < produceVarietyData.length; i++) {
+                produceVarieties.push(produceVarietyData[i]);
+            }
+        }
+
+        setVarietySelected(-1);
     };
 
     const handleSuffixChange = (event) => {
         setSuffixSelected(event.target.value);
+    };
+
+    const [produceVarieties, setProduceVarieties] = useState([]);
+    const [varietySelected, setVarietySelected] = useState(-1);
+
+    const handleVarietyChange = (event) => {
+        setVarietySelected(event.target.value);
     };
 
     const handleFormChange = (event) => {
@@ -93,7 +115,17 @@ function ViewOrder() {
 
     const handleAddProduceSubmit = (event) => {
         event.preventDefault();
-        alert("Submitted a produce add to order. Produce ID:" + produceSelected + ", suffix ID: " + suffixSelected + ", Quantity: " + produceQuantityInput)
+
+        //TO DO: CHECKS FOR VALID INPUT
+
+        //ASSUMING VALID INPUT:
+        alert("Submitted a produce add to order.\nProduce ID:" + produceSelected + "\nSuffix ID: " + suffixSelected + "\nVariety ID: " + varietySelected + "\nQuantity: " + produceQuantityInput)
+        
+        //CLEAR SELECTED FIELDS
+        setProduceQuantityInput(0)
+        setProduceSelected(-1)
+        setVarietySelected(-1)
+        setSuffixSelected(-1)
         setDisplayAddProduceModal(false);
     };
 
@@ -114,9 +146,16 @@ function ViewOrder() {
     //This is required to transfer the changes to produce suffix list to the Select menu
     let produceSuffixOptions = null;
     if(produceSuffixes.length != 0){
-        console.log("this ran");
         produceSuffixOptions = produceSuffixes.map((suf) => <MenuItem key={suf.id} value={suf.id}>
         <ListItemText primary={suf.suffix} />
+   </MenuItem>);
+    }
+
+    //This is required to transfer the changes to produce variety list to the Select menu
+    let produceVarietyOptions = null;
+    if(produceVarieties.length != 0){
+        produceVarietyOptions = produceVarieties.map((variety_val) => <MenuItem key={variety_val.id} value={variety_val.id}>
+        <ListItemText primary={variety_val.variety} />
    </MenuItem>);
     }
 
@@ -171,6 +210,7 @@ function ViewOrder() {
                             <TableRow>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce ID</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce Name</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Variety</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>QTY SUFFIX</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Order QTY</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Stock QTY Added</TableCell>
@@ -183,6 +223,7 @@ function ViewOrder() {
                                 <TableRow key={order_item.stock_id} >
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.variety}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.SUFFIX}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.order_qty}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_qty_added}</TableCell>
@@ -249,12 +290,25 @@ function ViewOrder() {
                             <InputLabel id="demo-simple-select-label">Suffix</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                // value={temporaryOrder.produce_id}
+                                id="demo-simple-select"                                
                                 label="Select a Suffix"
                                 onChange={handleSuffixChange}
                             >
                                 {produceSuffixOptions}
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <Box noValidate>
+                        <FormControl sx={{ width: "300px", mt: 2 }}>
+                            <InputLabel id="demo-simple-select-label">Variety</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                label="Select a Suffix"
+                                onChange={handleVarietyChange}
+                            >
+                                {produceVarietyOptions}
                             </Select>
                         </FormControl>
                     </Box>
@@ -269,6 +323,7 @@ function ViewOrder() {
                         id="produce_qty"
                         autoComplete="produce_qty"
                         size="small"
+                        value={produceQuantityInput}
                         onChange={handleFormChange}
                         sx={{ width: "300px" }}
                         variant="filled"

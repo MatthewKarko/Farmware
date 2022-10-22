@@ -4,7 +4,7 @@
     bottom: -150vh;
     background-color: rgb(255, 255, 255);
     width: calc(100% - 240px); /* The 240 is the width of the navbar. */
-    height: 60%;
+    height: 70%;
     box-shadow: 0 0 6px 0px rgba(0, 0, 0, 0.15);
     left: 240;
     padding: 0 12px 12px;

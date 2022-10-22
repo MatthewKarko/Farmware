@@ -3,6 +3,7 @@
       "produce_id": 0,
       "produce_name": "Apple",
       "SUFFIX": "kg",
+      "variety": "variety1",
       "order_qty": 100,
       "stock_qty_added": 50,
       "items": [
@@ -19,6 +20,7 @@
     {
       "produce_id": 2,
       "produce_name": "Orange",
+      "variety": "var2",
       "SUFFIX": "tonne",
       "order_qty": 100,
       "stock_qty_added": 100,

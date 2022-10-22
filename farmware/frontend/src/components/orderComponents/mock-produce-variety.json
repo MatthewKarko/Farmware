@@ -1,7 +1,9 @@
 [ {
+    "id": 1,
     "variety": "green apple"
 },
 {
+    "id": 2,
     "variety": "red apple"
 }
 ]
