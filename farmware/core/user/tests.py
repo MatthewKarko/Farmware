@@ -150,14 +150,14 @@ class UserViewSetTestCases(TestCase):
     def test_testRegisteringUser(self):
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
+        user=get_user_model().objects.get(first_name="first_name")
         serializer_data = { 'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org}
-        response=c.post(reverse('user-register-user',args=serializer_data))
+        response=c.post('^user/register/user/$',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
-        #raise ValueError(router.urls)
     def test_RegisteringUserError(self):
         c = Client()
-        response=c.post(reverse('register/user'),{
-        })
+        #raise ValueError(urlpatterns)
+        response=c.post('^register/admin/$',{})
         self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
     def test_RegisteringAdmin(self):
         c = Client()
@@ -180,20 +180,14 @@ class UserViewSetTestCases(TestCase):
     def test_estingSettingPasswordsError(self):
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
-        serializer_data = {
-         'email': 'example@gmail.com',
-         'first_name':'firstn',
-         'last_name':'lastn',
-         'password':'passwd',
-         'organisation':org
-       }
-        response=c.post(reverse(''),serializer_data)
+        serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org}
+        response=c.post(reverse('user:user-set-password',args=[serializer_data],kwargs={'pk': user.pk}))
         self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
     def test_testingSettingPasswordsError2(self):
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'old_password':'','new_password':''}
-        response=c.post(reverse('register/user'),serializer_data)
+        response=c.post()
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
         user=User.objects.get(first_name="firstn")
         response=c.post(reverse(''),serializer_data,user.id)
@@ -204,13 +198,11 @@ class UserViewSetTestCases(TestCase):
         user=get_user_model().objects.get(first_name="first_name")
         serializer_data = {'email': 'example@gmail.com','first_name':'first_name','last_name':'last_name','password':'passwd','organisation':org,'old_password':'pass','new_password':'passwpr'}
         f=UserViewSet()
-        raise ValueError(urlpatterns)
-        ur=reverse('user:user-set-password',args=[serializer_data],kwargs={'pk': user.pk})
-        raise ValueError(ur)
-        response=c.post(reverse('user:user-set-pasword',args=[serializer_data]))
+        #response=c.post('^register/admin',serializer_data)
+        response=c.post('/register/admin',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
         user=User.objects.get(first_name="firstn")
-        response=c.post(reverse((''),args=[serializer_data,user.id]))
+        response=c.post('^(?P<pk>[^/.]+)/set_password/$',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_200_OK)
     def test_testingDestroy(self):
         c = Client()
@@ -226,8 +218,8 @@ class UserViewSetTestCases(TestCase):
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org}
         response=c.post(reverse('register/user'),serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
-        repsonse=c.get(reverse('list'),serializer_data)
-        self.assertNotEquals(response,Null)
+        #repsonse=c.get(,serializer_data)
+        #self.assertNotEquals(response,Null)
     def test_testingpermissionsInvalid(self):
         c = Client()
         response= c.get(reverse(),{})
@@ -236,7 +228,7 @@ class UserViewSetTestCases(TestCase):
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'role':000}
-        response=c.post(reverse('register/admin'),serializer_data)
+        response=c.post('^register/admin/$',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
         response= c.get(reverse(get_permissions))
         self.assertEquals(response,[AllowAny()])
