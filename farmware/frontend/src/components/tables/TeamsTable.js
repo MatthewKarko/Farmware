@@ -45,7 +45,7 @@ function TeamsPage() {
             });
 
         axiosInstance
-            .get(`teams/`, {
+            .get(`team/`, {
             })
             .then((res) => {
                 res.data.map((data) => {
@@ -80,7 +80,7 @@ function TeamsPage() {
         }
 
         //Send PUT request to update user
-        axiosInstance.put(`teams/${temporaryTeam.id}/`, putObject)
+        axiosInstance.put(`team/${temporaryTeam.id}/`, putObject)
 
         //reset values
         clearState();
@@ -108,7 +108,7 @@ function TeamsPage() {
 
     const handleTeamDelete = (event) => {
         event.preventDefault();
-        axiosInstance.delete(`teams/${temporaryTeam.id}/`)
+        axiosInstance.delete(`team/${temporaryTeam.id}/`)
         clearState();
         window.location.reload();
     }

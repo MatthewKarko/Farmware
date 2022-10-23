@@ -147,10 +147,9 @@ function UsersTable() {
     postObject["role"] = currentRole;
     // console.log(postObject)
     //Send PUT request to update user
-    axiosInstance.put(`user/${temporaryUser.id}/`, postObject)
-
+    axiosInstance.put(`user/${temporaryUser.id}/`, postObject);
     //reset values
-    clearState();
+    // clearState();
 
     //reload page
     window.location.reload();
