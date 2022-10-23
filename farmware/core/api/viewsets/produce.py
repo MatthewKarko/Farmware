@@ -3,7 +3,7 @@ from django.http import QueryDict
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-
+from rest_framework.decorators import action
 
 from ..models.produce import Produce, ProduceVariety, ProduceQuantitySuffix
 from ..responses import DefaultResponses
@@ -94,7 +94,8 @@ class ProduceVarietyViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        serialiser = self.get_serializer(data=data)
+        print(data)
+        serialiser = self.get_serializer(data=data, many=isinstance(request.data, list))
         serialiser.is_valid(raise_exception=True)
         try:
             serialiser.save()
