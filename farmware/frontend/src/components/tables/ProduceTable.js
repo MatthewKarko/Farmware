@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
+import { Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
@@ -65,24 +65,46 @@ function ProduceTable() {
     return (
         <React.Fragment>
             <div className="main-content">
-                <Typography variant="h4" sx={{
-                    fontFamily: 'Lato',
-                    fontWeight: 'bold',
-                    paddingBottom: '20px',
-                }}>Produce Table</Typography>
 
-                <TableContainer component={Paper} style={{ maxWidth: 800, margin:"auto"}}>
-                    <Table aria-label="simple table" style={{ maxWidth: 800, margin:"auto" }}>
-                    <colgroup>
-                        <col style={{width:'20%'}}/>
-                        <col style={{width:'50%'}}/>
-                        <col style={{width:'30%'}}/>
-                    </colgroup>
+                <Box sx={{ width: '100%', height: '10%' }}>
+                    <Grid container rowSpacing={0} columnSpacing={{ xs: 6, sm: 2, md: 4 }}
+                        style={{ minHeight: '10vh' }}>
+
+                        <Grid item xs={6}>
+                            <Typography variant="h4" sx={{
+                                fontFamily: 'Lato',
+                                fontWeight: 'bold',
+                                paddingBottom: '20px',
+                            }}>Produce Table</Typography>
+
+                        </Grid>
+
+                        <Grid item xs={6} sx={{ textAlign: "right" }}>
+                            {/* <Box textAlign='center'> */}
+                            <Button variant="outlined" size="large"
+                                style={{
+                                    color: "#028357",
+                                    borderColor: "#028357",
+                                    marginTop: "20px",
+                                }}
+                                onClick={(event) => handleCreateClick()}
+                            >Create Produce</Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+
+                <TableContainer component={Paper} style={{ maxWidth: 800, margin: "auto" }}>
+                    <Table aria-label="simple table" style={{ maxWidth: 800, margin: "auto" }}>
+                        <colgroup>
+                            <col style={{ width: '20%' }} />
+                            <col style={{ width: '50%' }} />
+                            <col style={{ width: '30%' }} />
+                        </colgroup>
                         <TableHead>
                             <TableRow sx={{
                                 "& th": {
                                     fontSize: "1.10rem",
-                                  }
+                                }
                             }}>
                                 <TableCell className="tableCell">Produce ID</TableCell>
                                 <TableCell className="tableCell">Produce Name</TableCell>
@@ -94,7 +116,7 @@ function ProduceTable() {
                                 <TableRow sx={{
                                     "& th": {
                                         fontSize: "1.10rem",
-                                      }
+                                    }
                                 }} key={row.id} >
                                     <TableCell className="tableCell">{row.id}</TableCell>
                                     <TableCell className="tableCell">{row.name}</TableCell>
@@ -102,17 +124,17 @@ function ProduceTable() {
                                     <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
                                             style={{
-                                                margin:"10px",
+                                                margin: "10px",
                                                 width: "80px",
                                             }}
                                             onClick={(event) => handleEditClick(event, row)}
                                         >Edit</Button>
-                                    
+
                                         <Button variant="outlined" size="medium"
                                             style={{
                                                 color: "#FF0000",
                                                 borderColor: "#FF0000",
-                                                margin:"10px",
+                                                margin: "10px",
                                                 width: "80px",
                                             }}
                                             onClick={(event) => handleDeleteClick(event, row)}
@@ -124,17 +146,6 @@ function ProduceTable() {
                         </TableBody>
                     </Table>
                 </TableContainer>
-
-                <Box textAlign='center'>
-                    <Button variant="outlined" size="large"
-                        style={{
-                            color: "#028357",
-                            borderColor: "#028357",
-                            marginTop: "20px",
-                        }}
-                        onClick={(event) => handleCreateClick()}
-                    >Create Produce</Button>
-                </Box>
 
             </div>
 
