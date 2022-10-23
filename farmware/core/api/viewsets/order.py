@@ -114,6 +114,7 @@ class OrderItemViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
+        print(data)
 
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
@@ -169,7 +170,7 @@ class OrderItemStockLinkViewSet(ModelViewSet):
         """Get all order item stock links in the user's organisation."""
         user: User = self.request.user  # type: ignore
         return OrderItemStockLink.objects.all().filter(
-            order_id__organisation=user.organisation, **kwargs
+            order_item_id__order_id__organisation=user.organisation, **kwargs
             )
 
     def create(self, request, *args, **kwargs):

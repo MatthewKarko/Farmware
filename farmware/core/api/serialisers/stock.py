@@ -7,6 +7,11 @@ class StockSerialiser(serializers.ModelSerializer):
         model = Stock
         fields = '__all__'
 
+class StockFilteredSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Stock
+        fields = ['produce_id', 'variety_id']
+
 class StockPickersSerialiser(serializers.ModelSerializer):
     class Meta:
         model = StockPickers
