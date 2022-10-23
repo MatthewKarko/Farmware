@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 
 from core.api.responses import DefaultResponses
 
+from ..models import Produce, ProduceVariety, ProduceQuantitySuffix, AreaCode, Supplier
 from ..models.stock import Stock, StockPickers
 from ..serialisers.stock import StockSerialiser, StockPickersSerialiser, StockFilteredSerialiser
 from ...user.models import User
@@ -54,13 +55,54 @@ class StockViewSet(ModelViewSet):
             return self.responses.RESPONSE_FORBIDDEN
         return super().update(request, *args, **kwargs)
 
+    def append_foreign_tables(self, user, obj):
+        for item in obj:
+            produce = Produce.objects.all().filter(organisation=user.organisation).filter(id=item['produce_id']).first()
+            if produce != None:
+                item['produce_name'] = produce.name
+            else:
+                item['produce_name'] = "Unknown"
+
+            variety = ProduceVariety.objects.all().filter(id=item['variety_id']).first()
+            if variety != None and variety.produce_id.id == item['produce_id']:
+                item['variety_name'] = variety.variety
+            else:
+                item['variety_name'] = "Unknown"
+
+            quantity_suffix = ProduceQuantitySuffix.objects.all().filter(id=item['quantity_suffix_id']).first()
+            if quantity_suffix != None and quantity_suffix.produce_id.id == item['produce_id']:
+                item['quantity_suffix_name'] = quantity_suffix.suffix
+                item['base_equivalent'] = quantity_suffix.base_equivalent
+            else:
+                item['quantity_suffix_name'] = "Unknown"
+                item['base_equivalent'] = 1
+            
+            area_code = AreaCode.objects.all().filter(id=item['area_code_id']).first()
+            if area_code != None:
+                item['area_code_name'] = area_code.area_code
+                item['area_code_description'] = area_code.description
+            else:
+                item['area_code_name'] = "Unknown"
+                item['area_code_description'] = "Unknown"
+
+            supplier = Supplier.objects.all().filter(id=item['supplier_id']).first()
+            if supplier != None:
+                item['supplier_name'] = supplier.name
+                item['supplier_phone_number'] = supplier.phone_number
+            else:
+                item['supplier_name'] = "Unknown"
+                item['supplier_phone_number'] = "Unknown"
+
     def list(self, request, *args, **kwargs):
         serialiser = StockSerialiser(self.get_queryset(), many=True)
+        self.append_foreign_tables(user, serialiser.data)
         return Response(serialiser.data)
 
     @action(detail=False, methods=['post'])
     def list_filtered(self, request, *args, **kwargs):
+        user: User = self.request.user
         serialiser = StockSerialiser(self.get_queryset(), many=True)
+        self.append_foreign_tables(user, serialiser.data)
         return Response(serialiser.data)
 
     def destroy(self, request, *args, **kwargs):
