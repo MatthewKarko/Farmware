@@ -314,7 +314,7 @@ function ViewOrder() {
 
             </div>
 
-            <div className={`Modal ${displayAddProduceModal ? "Show" : ""}`}>
+            <div className={`Modal Large ${displayAddProduceModal ? "Show" : ""}`}>
                 <button
                     className="Close"
                     onClick={() => { setDisplayAddProduceModal(false); }}
@@ -421,7 +421,7 @@ function ViewOrder() {
                 onClick={() => { setDisplayAddProduceModal(false); }}
             />
 
-            <div className={`Modal ${displayViewAssignedStock ? "Show" : ""}`}>
+            <div className={`Modal Large ${displayViewAssignedStock ? "Show" : ""}`}>
                 <button
                     className="Close"
                     onClick={() => { setDisplayViewAssignedStock(false); }}
@@ -520,7 +520,7 @@ function ViewOrder() {
 
 
             {/* Add stock modal */}
-            <div className={`Modal ${displayAddStockModal ? "Show" : ""}`}>
+            <div className={`Modal Large ${displayAddStockModal ? "Show" : ""}`}>
                 <button
                     className="Close"
                     onClick={() => { setDisplayAddStockModal(false); }}

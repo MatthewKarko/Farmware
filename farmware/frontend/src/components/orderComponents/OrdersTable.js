@@ -183,7 +183,7 @@ function OrdersTable() {
       </div>
 
       {/* Create Order Modal */}
-      <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
+      <div className={`Modal Large ${displayCreateModal ? "Show" : ""}`}>
         <button
           className="Close"
           onClick={() => { setDisplayCreateModal(!displayCreateModal); }}

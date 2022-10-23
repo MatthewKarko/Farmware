@@ -4,12 +4,24 @@
     bottom: -150vh;
     background-color: rgb(255, 255, 255);
     width: calc(100% - 240px); /* The 240 is the width of the navbar. */
-    height: 70%;
+    height: 50%; /* Defaults to medium */
     box-shadow: 0 0 6px 0px rgba(0, 0, 0, 0.15);
     left: 240;
     padding: 0 12px 12px;
     transition: all 0.3s ease-out;
     z-index: 10;
+  }
+
+  .Modal.Large {
+    height: 70%;
+  }
+
+  .Modal.Medium {
+    height: 50%;
+  }
+
+  .Modal.Small {
+    height: 30%;
   }
   
   .Modal.Show {
