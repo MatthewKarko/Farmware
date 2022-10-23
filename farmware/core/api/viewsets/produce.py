@@ -57,13 +57,14 @@ class ProduceViewSet(ModelViewSet):
 
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
+        item = None
         try:
-            serialiser.save()
+            item = serialiser.save()
         except IntegrityError as e:
             if 'UNIQUE constraint' in e.args[0]:
                 return self.responses.ITEM_ALREADY_EXISTS
             return self.responses.RESPONSE_FORBIDDEN
-        return self.responses.CREATION_SUCCESS
+        return self.responses.json(item)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
