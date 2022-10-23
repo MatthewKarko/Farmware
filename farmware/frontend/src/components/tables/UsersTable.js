@@ -248,6 +248,8 @@ function UsersTable() {
           fontFamily: 'Lato',
           fontWeight: 'bold',
           margin: "20px",
+          mt: 2,
+          textAlign: 'center'
         }}> Edit User</Typography>
 
 

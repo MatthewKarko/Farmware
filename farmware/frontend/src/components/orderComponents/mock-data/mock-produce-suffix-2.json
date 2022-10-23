@@ -1,0 +1,16 @@
+[ {
+    "id": 3,
+    "suffix": "bale",
+    "base_equivalent": 0   
+},
+{
+    "id": 4,
+    "suffix": "tonne",
+    "base_equivalent": 1000   
+},
+{
+    "id": 5,
+    "suffix": "alot",
+    "base_equivalent": 100000   
+}
+]

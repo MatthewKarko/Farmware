@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
@@ -139,20 +139,32 @@ function CustomersTable() {
     return (
         <React.Fragment>
             <div className="main-content">
-                <Typography variant="h4" sx={{
-                    fontFamily: 'Lato',
-                    fontWeight: 'bold',
-                }}> Customers Table</Typography>
 
-                {isAdmin &&
-                <Button type="submit" variant="outlined" size="large" style={{
-                    color: "#028357",
-                    borderColor: "#028357",
-                    margin: "20px",
-                }}
-                    onClick={() => { setDisplayCreateModal(!displayCreateModal) }}
-                >Create Customer</Button>
-                }
+                <Box sx={{ width: '100%', height: '10%' }}>
+                    <Grid container rowSpacing={0} columnSpacing={{ xs: 6, sm: 2, md: 4 }}
+                        style={{ minHeight: '10vh' }}>
+
+                        <Grid item xs={6}>
+                            <Typography variant="h4" sx={{
+                                fontFamily: 'Lato',
+                                fontWeight: 'bold',
+                            }}> Customers Table</Typography>
+                        </Grid>
+
+                        <Grid item xs={6} sx={{ textAlign: "right" }}>
+                            {isAdmin &&
+                                <Button type="submit" variant="outlined" size="large" style={{
+                                    color: "#028357",
+                                    borderColor: "#028357",
+                                    margin: "20px",
+                                }}
+                                    onClick={() => { setDisplayCreateModal(!displayCreateModal) }}
+                                >Create Customer</Button>
+                            }
+                        </Grid>
+                    </Grid>
+                </Box>
+
 
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
@@ -196,10 +208,11 @@ function CustomersTable() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                    margin: "20px",
+                    mt: 2,
+                    textAlign:"center"
                 }}> Edit Customer</Typography>
 
-                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField
                         xs
                         required
@@ -212,11 +225,11 @@ function CustomersTable() {
                         autoComplete="name"
                         value={temporaryCustomer.name}
                         onChange={handleFormChange}
-                        sx={{ mt: 2}}
+                        sx={{ mt: 2 }}
                         variant="filled"
                     />
                     <TextField
-                    xs
+                        xs
                         required
                         margin="dense"
                         id="phone_number"
@@ -227,11 +240,11 @@ function CustomersTable() {
                         size="small"
                         value={temporaryCustomer.phone_number}
                         onChange={handleFormChange}
-                        // sx={{width: "250px"}}
+                        sx={{ mt: 2 }}
                         variant="filled"
-                        
+
                     />
-                    
+
 
                     <Box noValidate>
                         <Button
@@ -239,17 +252,17 @@ function CustomersTable() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                         >
-                        Submit
+                            Submit
                         </Button>
                         <Button
                             type="delete"
                             variant="contained"
-                            sx={{ mt: 3, mb: 2, ml: 2,  bgcolor: 'red' }}
+                            sx={{ mt: 3, mb: 2, ml: 2, bgcolor: 'red' }}
                             onClick={handleCustomerDelete}
                         >
-                        Delete
+                            Delete
                         </Button>
-                    </Box>     
+                    </Box>
 
 
                 </Box>
@@ -301,9 +314,9 @@ function CustomersTable() {
                 onClick={() => { setDisplayEditModal(!displayEditModal); clearState(); }}
             />
 
-        
-         {/* Modal for CREATE customer */}
-         <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
+
+            {/* Modal for CREATE customer */}
+            <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
                 <button
                     className="Close"
                     onClick={() => { setDisplayCreateModal(!displayCreateModal); clearState(); }}
@@ -314,7 +327,8 @@ function CustomersTable() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                    margin: "20px",
+                    mt: 2,
+                    textAlign: 'center'
                 }}> Create Customer</Typography>
 
                 <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -330,12 +344,12 @@ function CustomersTable() {
                         autoComplete="name"
                         value={temporaryCustomer.name}
                         onChange={handleFormChange}
-                        sx={{ mt: 2}}
+                        sx={{ mt: 2 }}
                         variant="filled"
                     />
 
                     <TextField
-                    xs
+                        xs
                         required
                         margin="dense"
                         id="phone_number"
@@ -346,23 +360,23 @@ function CustomersTable() {
                         size="small"
                         value={temporaryCustomer.phone_number}
                         onChange={handleFormChange}
-                        // sx={{width: "250px"}}
+                        sx={{ mt: 2 }}
                         variant="filled"
-                        
-                    />
-                    
 
-                        
+                    />
+
+
+
                     <Button
                         type="create"
                         variant="contained"
                         sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                     >
-                    Create
+                        Create
                     </Button>
-                            
-                    
-                    
+
+
+
                 </Box>
             </div>
 
