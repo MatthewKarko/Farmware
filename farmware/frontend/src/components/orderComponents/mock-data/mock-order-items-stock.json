@@ -24,6 +24,14 @@
         "suffix":"kg",
         "supplier_name": "Aldi",
         "quantity": 1
+    },{
+        "id": 3,
+        "stock_id": 3,
+        "produce_name": "Pear",
+        "produce_variety": "green apple",
+        "suffix":"tonne",
+        "supplier_name": "Kmart",
+        "quantity": 1
     }
 
 ]
