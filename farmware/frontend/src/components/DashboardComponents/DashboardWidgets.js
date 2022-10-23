@@ -1,22 +1,12 @@
 import React, { useState, useEffect, Fragment } from "react";
-import PackagingWidgetDashboard from './PackagingWidgetDashboard.js'
-import OrdersWidgetDashboard from './OrdersWidgetDashboard'
 import '../../css/DashboardWidgets.css';
-import Container from '@mui/material/Container';
+import { Typography } from "@mui/material";
 
 function DashboardWidgets() {
     return (
         <>
             <div>
-                <Container maxWidth="md" component="main" sx={{ paddingTop: "0px", marginLeft: "0px" }}>
-                    <h2>Orders:</h2>
-                    <OrdersWidgetDashboard />
-                </Container>
-
-                <Container maxWidth="md" component="main" sx={{ paddingTop: "50px", marginLeft: "0px" }}>
-                    <h2>Packaging:</h2>
-                    <PackagingWidgetDashboard />
-                </Container>
+                <Typography> Dashboard will be remade. Will list things like number of open orders, stock pie charts, etc.</Typography>
             </div>
         </>
     )
