@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
@@ -7,6 +8,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 function SuppliersPage() {
+    const navigate = useNavigate();
 
     const [suppliersList, setSuppliersList] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
@@ -75,7 +77,27 @@ function SuppliersPage() {
         setTemporarySupplier({ ...newFormData });
     };
 
-    const handleEditSubmit = () => {
+    const handleEditSubmit = (event) => {
+        event.preventDefault();
+        //VALIDATE temporarySupplier.name (max: 100, non empty)
+        if(temporarySupplier.name.length > 100){
+            alert("ERROR: Invalid name input. Must be less than 100 characters long.")
+            return;
+        }
+        if(temporarySupplier.name.length < 1){
+            alert("ERROR: Invalid name input. Must not be empty.")
+            return;
+        }
+
+        //VALIDATE temporarySupplier.phone_number (max: 10, non empty)
+        if(temporarySupplier.phone_number.length > 10){
+            alert("ERROR: Invalid phone number input. Must be less than 10 digits.")
+            return;
+        }
+        if(temporarySupplier.phone_number.length < 1){
+            alert("ERROR: Invalid phone number input. Must not be empty.")
+            return;
+        }
 
         var putObject = {
             name: temporarySupplier.name,
@@ -117,13 +139,33 @@ function SuppliersPage() {
         window.location.reload();
     }
 
-    const handleCreateSubmit = () => {
+    const handleCreateSubmit = (event) => {
+        event.preventDefault();
+        //VALIDATE temporarySupplier.name (max: 100, non empty)
+        if(temporarySupplier.name.length > 100){
+            alert("ERROR: Invalid name input. Must be less than 100 characters long.")
+            return;
+        }
+        if(temporarySupplier.name.length < 1){
+            alert("ERROR: Invalid name input. Must not be empty.")
+            return;
+        }
+
+        //VALIDATE temporarySupplier.phone_number (max: 10, non empty)
+        if(temporarySupplier.phone_number.length > 10){
+            alert("ERROR: Invalid phone number input. Must be less than 10 digits.")
+            return;
+        }
+        if(temporarySupplier.phone_number.length < 1){
+            alert("ERROR: Invalid phone number input. Must not be empty.")
+            return;
+        }
+
         var postObject = {
             name: temporarySupplier.name,
             phone_number: temporarySupplier.phone_number,
             organisation: organisationCode,
         }
-
 
         axiosInstance.post(`supplier/`, postObject);
         //reset values
@@ -134,12 +176,12 @@ function SuppliersPage() {
 
         //reload page
         window.location.reload();
+        navigate("/suppliers");
     };
 
     return (
         <React.Fragment>
             <div className="main-content">
-
                 <Box sx={{ width: '100%', height: '10%' }}>
                     <Grid container rowSpacing={0} columnSpacing={{ xs: 6, sm: 2, md: 4 }}
                         style={{ minHeight: '10vh' }}>
@@ -166,8 +208,14 @@ function SuppliersPage() {
                 </Box>
 
 
-                <TableContainer component={Paper}>
-                    <Table aria-label="simple table">
+                <TableContainer component={Paper} style={{margin: "auto" }}>
+                    <Table aria-label="simple table" style={{margin: "auto" }}>
+                    <colgroup>
+                            <col style={{ width: '15%' }} />
+                            <col style={{ width: '40%' }} />
+                            <col style={{ width: '30%' }} />
+                            <col style={{ width: '15%' }} />
+                        </colgroup>
                         <TableHead>
                             <TableRow>
                                 <TableCell className="tableCell">ID</TableCell>
@@ -248,8 +296,9 @@ function SuppliersPage() {
 
                     <Box noValidate>
                         <Button
-                            type="submit"
+                            type="normal"
                             variant="contained"
+                            onClick={(event) => { handleEditSubmit }}
                             sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                         >
                             Submit
@@ -327,49 +376,15 @@ function SuppliersPage() {
 
 
                     <Button
-                        type="create"
+                        type="normal"
                         variant="contained"
+                        onClick={(event) => { handleCreateSubmit }}
                         sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                     >
                         Create
                     </Button>
 
-
-
                 </Box>
-
-                {/* <form>
-                    <label>Name:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        required="required"
-                        placeholder="Enter a name..."
-                        value={temporarySupplier.name}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <label>Phone Number:</label>
-                    <input
-                        type="text"
-                        name="phone_number"
-                        required="required"
-                        placeholder="Enter a phone number..."
-                        value={temporarySupplier.phone_number}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleCreateSubmit() }}
-                    >Create</Button>
-                    <br></br>
-                </form> */}
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}

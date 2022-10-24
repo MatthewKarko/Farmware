@@ -77,7 +77,7 @@ function CustomersTable() {
         setTemporaryCustomer({ ...newFormData });
     };
 
-    const handleEditSubmit = () => {
+    const handleEditSubmit = (event) => {
         event.preventDefault();
         //VALIDATE temporaryCustomer.name (max: 50, non empty)
         if(temporaryCustomer.name.length > 50){
