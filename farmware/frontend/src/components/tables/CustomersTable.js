@@ -80,21 +80,21 @@ function CustomersTable() {
     const handleEditSubmit = (event) => {
         event.preventDefault();
         //VALIDATE temporaryCustomer.name (max: 50, non empty)
-        if(temporaryCustomer.name.length > 50){
+        if (temporaryCustomer.name.length > 50) {
             alert("ERROR: Invalid name input. Must be less than 50 characters long.")
             return;
         }
-        if(temporaryCustomer.name.length < 1){
+        if (temporaryCustomer.name.length < 1) {
             alert("ERROR: Invalid name input. Must not be empty.")
             return;
         }
 
         //VALIDATE temporaryCustomer.phone_number (max: 10, non empty)
-        if(temporaryCustomer.phone_number.length > 10){
+        if (temporaryCustomer.phone_number.length > 10) {
             alert("ERROR: Invalid phone number input. Must be less than 10 digits.")
             return;
         }
-        if(temporaryCustomer.phone_number.length < 1){
+        if (temporaryCustomer.phone_number.length < 1) {
             alert("ERROR: Invalid phone number input. Must not be empty.")
             return;
         }
@@ -107,6 +107,9 @@ function CustomersTable() {
 
         //Send PUT request to update user
         axiosInstance.put(`customer/${temporaryCustomer.id}/`, putObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
         //reset values
         clearState();
@@ -136,6 +139,9 @@ function CustomersTable() {
     const handleCustomerDelete = (event) => {
         event.preventDefault();
         axiosInstance.delete(`customer/${temporaryCustomer.id}/`)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
         clearState();
         window.location.reload();
     }
@@ -143,21 +149,21 @@ function CustomersTable() {
     const handleCreateSubmit = (event) => {
         event.preventDefault();
         //VALIDATE temporaryCustomer.name (max: 50, non empty)
-        if(temporaryCustomer.name.length > 50){
+        if (temporaryCustomer.name.length > 50) {
             alert("ERROR: Invalid name input. Must be less than 50 characters long.")
             return;
         }
-        if(temporaryCustomer.name.length < 1){
+        if (temporaryCustomer.name.length < 1) {
             alert("ERROR: Invalid name input. Must not be empty.")
             return;
         }
 
         //VALIDATE temporaryCustomer.phone_number (max: 10, non empty)
-        if(temporaryCustomer.phone_number.length > 10){
+        if (temporaryCustomer.phone_number.length > 10) {
             alert("ERROR: Invalid phone number input. Must be less than 10 digits.")
             return;
         }
-        if(temporaryCustomer.phone_number.length < 1){
+        if (temporaryCustomer.phone_number.length < 1) {
             alert("ERROR: Invalid phone number input. Must not be empty.")
             return;
         }
@@ -170,6 +176,9 @@ function CustomersTable() {
 
         //Send PUT request to update user
         axiosInstance.post(`customer/`, postObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
         //reset values
         clearState();
@@ -212,7 +221,7 @@ function CustomersTable() {
 
 
                 <TableContainer component={Paper} style={{ margin: "auto" }}>
-                    <Table aria-label="simple table" style={{margin: "auto" }}>
+                    <Table aria-label="simple table" style={{ margin: "auto" }}>
                         <colgroup>
                             <col style={{ width: '15%' }} />
                             <col style={{ width: '40%' }} />
@@ -260,7 +269,7 @@ function CustomersTable() {
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
                     mt: 2,
-                    textAlign:"center"
+                    textAlign: "center"
                 }}> Edit Customer</Typography>
 
                 <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -303,7 +312,7 @@ function CustomersTable() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                             onClick={(event) => { handleEditSubmit }}
-                            >
+                        >
                             Submit
                         </Button>
                         <Button

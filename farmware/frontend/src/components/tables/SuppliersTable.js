@@ -107,6 +107,9 @@ function SuppliersPage() {
 
         //Send PUT request to update user
         axiosInstance.put(`supplier/${temporarySupplier.id}/`, putObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
         //reset values
         clearState();
@@ -135,6 +138,9 @@ function SuppliersPage() {
     const handleSupplierDelete = (event) => {
         event.preventDefault();
         axiosInstance.delete(`supplier/${temporarySupplier.id}/`)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
         clearState();
         window.location.reload();
     }
@@ -167,7 +173,10 @@ function SuppliersPage() {
             organisation: organisationCode,
         }
 
-        axiosInstance.post(`supplier/`, postObject);
+        axiosInstance.post(`supplier/`, postObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
         //reset values
         clearState();
 

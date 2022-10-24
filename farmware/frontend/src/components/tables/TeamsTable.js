@@ -102,6 +102,9 @@ function TeamsPage() {
 
         //Send PUT request to update user
         axiosInstance.put(`team/${temporaryTeam.id}/`, putObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
         //reset values
         clearState();
@@ -130,6 +133,9 @@ function TeamsPage() {
     const handleTeamDelete = (event) => {
         event.preventDefault();
         axiosInstance.delete(`team/${temporaryTeam.id}/`)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
         clearState();
         window.location.reload();
     }
@@ -164,6 +170,9 @@ function TeamsPage() {
 
         //Send PUT request to update user
         axiosInstance.post(`team/`, postObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
         //reset values
         clearState();

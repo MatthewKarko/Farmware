@@ -101,6 +101,9 @@ function AreaCodesTable() {
 
         //Send PUT request to update user
         axiosInstance.put(`area_code/${temporaryAreaCode.id}/`, putObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
         //reset values
         clearState();
@@ -129,6 +132,9 @@ function AreaCodesTable() {
     const handleAreaCodeDelete = (event) => {
         event.preventDefault();
         axiosInstance.delete(`area_code/${temporaryAreaCode.id}/`)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
         clearState();
         window.location.reload();
     }
@@ -161,6 +167,9 @@ function AreaCodesTable() {
 
         //Send PUT request to update user
         axiosInstance.post(`area_code/`, postObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
         //reset values
         clearState();
