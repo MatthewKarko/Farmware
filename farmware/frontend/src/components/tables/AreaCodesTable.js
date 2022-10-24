@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
@@ -7,6 +8,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 function AreaCodesTable() {
+    const navigate = useNavigate();
 
     const [areaCodesList, setAreaCodesList] = useState([]);
     const [organisationCode, setOrganisationCode] = useState("");
@@ -36,7 +38,7 @@ function AreaCodesTable() {
             .get(`user/me/`, {
             })
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 // Set the organisation code as well
                 setOrganisationCode(res.data.organisation)
             })
@@ -50,7 +52,7 @@ function AreaCodesTable() {
             .then((res) => {
                 res.data.map((data) => {
                     setAreaCodesList(areaCodesList => [...areaCodesList, data])
-                    console.log(res.data)
+                    // console.log(res.data)
                 })
             })
             .catch((err) => {
@@ -71,7 +73,25 @@ function AreaCodesTable() {
         setTemporaryAreaCode({ ...newFormData });
     };
 
-    const handleEditSubmit = () => {
+    const handleEditSubmit = (event) => {
+        event.preventDefault();
+        if (temporaryAreaCode.area_code.length > 50) {
+            alert("ERROR: Invalid area code input. Must be less than 50 characters long.")
+            return;
+        }
+        if (temporaryAreaCode.area_code.length < 1) {
+            alert("ERROR: Invalid area code input. Must not be empty.")
+            return;
+        }
+
+        if (temporaryAreaCode.description.length > 200) {
+            alert("ERROR: Invalid description input. Must be less than 200 digits.")
+            return;
+        }
+        if (temporaryAreaCode.description.length < 1) {
+            alert("ERROR: Invalid description input. Must not be empty.")
+            return;
+        }
 
         var putObject = {
             area_code: temporaryAreaCode.area_code,
@@ -113,7 +133,26 @@ function AreaCodesTable() {
         window.location.reload();
     }
 
-    const handleCreateSubmit = () => {
+    const handleCreateSubmit = (event) => {
+        event.preventDefault();
+        if (temporaryAreaCode.area_code.length > 50) {
+            alert("ERROR: Invalid area code input. Must be less than 50 characters long.")
+            return;
+        }
+        if (temporaryAreaCode.area_code.length < 1) {
+            alert("ERROR: Invalid area code input. Must not be empty.")
+            return;
+        }
+
+        if (temporaryAreaCode.description.length > 200) {
+            alert("ERROR: Invalid description input. Must be less than 200 digits.")
+            return;
+        }
+        if (temporaryAreaCode.description.length < 1) {
+            alert("ERROR: Invalid description input. Must not be empty.")
+            return;
+        }
+
         var postObject = {
             area_code: temporaryAreaCode.area_code,
             description: temporaryAreaCode.description,
@@ -163,6 +202,12 @@ function AreaCodesTable() {
 
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
+                        <colgroup>
+                            <col style={{ width: '15%' }} />
+                            <col style={{ width: '30%' }} />
+                            <col style={{ width: '40%' }} />
+                            <col style={{ width: '15%' }} />
+                        </colgroup>
                         <TableHead>
                             <TableRow>
                                 <TableCell className="tableCell">ID</TableCell>
@@ -243,8 +288,9 @@ function AreaCodesTable() {
 
                     <Box noValidate>
                         <Button
-                            type="submit"
+                            type="normal"
                             variant="contained"
+                            onClick={(event) => { handleEditSubmit }}
                             sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                         >
                             Submit
@@ -320,11 +366,10 @@ function AreaCodesTable() {
 
                     />
 
-
-
                     <Button
-                        type="create"
+                        type="normal"
                         variant="contained"
+                        onClick={(event) => { handleCreateSubmit }}
                         sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                     >
                         Create

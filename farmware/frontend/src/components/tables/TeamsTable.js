@@ -75,21 +75,21 @@ function TeamsPage() {
 
     const handleEditSubmit = (event) => {
         event.preventDefault();
-        if(temporaryTeam.category.length > 100){
+        if (temporaryTeam.category.length > 100) {
             alert("ERROR: Invalid category input. Must be less than 100 characters long.")
             return;
         }
-        if(temporaryTeam.category.length < 1){
+        if (temporaryTeam.category.length < 1) {
             alert("ERROR: Invalid category input. Must not be empty.")
             return;
         }
 
         //VALIDATE temporaryTeam.name (max: 100, non empty)
-        if(temporaryTeam.name.length > 100){
+        if (temporaryTeam.name.length > 100) {
             alert("ERROR: Invalid name input. Must be less than 100 digits.")
             return;
         }
-        if(temporaryTeam.name.length < 1){
+        if (temporaryTeam.name.length < 1) {
             alert("ERROR: Invalid name input. Must not be empty.")
             return;
         }
@@ -137,21 +137,21 @@ function TeamsPage() {
     const handleCreateSubmit = (event) => {
         event.preventDefault();
         //VALIDATE temporaryTeam.category (max: 100, non empty)
-        if(temporaryTeam.category.length > 100){
+        if (temporaryTeam.category.length > 100) {
             alert("ERROR: Invalid category input. Must be less than 100 characters long.")
             return;
         }
-        if(temporaryTeam.category.length < 1){
+        if (temporaryTeam.category.length < 1) {
             alert("ERROR: Invalid category input. Must not be empty.")
             return;
         }
 
         //VALIDATE temporaryTeam.name (max: 100, non empty)
-        if(temporaryTeam.name.length > 100){
+        if (temporaryTeam.name.length > 100) {
             alert("ERROR: Invalid name input. Must be less than 100 digits.")
             return;
         }
-        if(temporaryTeam.name.length < 1){
+        if (temporaryTeam.name.length < 1) {
             alert("ERROR: Invalid name input. Must not be empty.")
             return;
         }
@@ -206,7 +206,7 @@ function TeamsPage() {
 
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
-                    <colgroup>
+                        <colgroup>
                             <col style={{ width: '15%' }} />
                             <col style={{ width: '30%' }} />
                             <col style={{ width: '40%' }} />

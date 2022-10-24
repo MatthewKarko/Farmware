@@ -39,7 +39,7 @@ function SuppliersPage() {
             .get(`user/me/`, {
             })
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 if (res.data.role.level < 200) {
                     setIsAdmin(true)
                 }
@@ -56,7 +56,7 @@ function SuppliersPage() {
             .then((res) => {
                 res.data.map((data) => {
                     setSuppliersList(suppliersList => [...suppliersList, data])
-                    console.log(res.data)
+                    // console.log(res.data)
                 })
             })
             .catch((err) => {
@@ -80,21 +80,21 @@ function SuppliersPage() {
     const handleEditSubmit = (event) => {
         event.preventDefault();
         //VALIDATE temporarySupplier.name (max: 100, non empty)
-        if(temporarySupplier.name.length > 100){
+        if (temporarySupplier.name.length > 100) {
             alert("ERROR: Invalid name input. Must be less than 100 characters long.")
             return;
         }
-        if(temporarySupplier.name.length < 1){
+        if (temporarySupplier.name.length < 1) {
             alert("ERROR: Invalid name input. Must not be empty.")
             return;
         }
 
         //VALIDATE temporarySupplier.phone_number (max: 10, non empty)
-        if(temporarySupplier.phone_number.length > 10){
+        if (temporarySupplier.phone_number.length > 10) {
             alert("ERROR: Invalid phone number input. Must be less than 10 digits.")
             return;
         }
-        if(temporarySupplier.phone_number.length < 1){
+        if (temporarySupplier.phone_number.length < 1) {
             alert("ERROR: Invalid phone number input. Must not be empty.")
             return;
         }
@@ -142,21 +142,21 @@ function SuppliersPage() {
     const handleCreateSubmit = (event) => {
         event.preventDefault();
         //VALIDATE temporarySupplier.name (max: 100, non empty)
-        if(temporarySupplier.name.length > 100){
+        if (temporarySupplier.name.length > 100) {
             alert("ERROR: Invalid name input. Must be less than 100 characters long.")
             return;
         }
-        if(temporarySupplier.name.length < 1){
+        if (temporarySupplier.name.length < 1) {
             alert("ERROR: Invalid name input. Must not be empty.")
             return;
         }
 
         //VALIDATE temporarySupplier.phone_number (max: 10, non empty)
-        if(temporarySupplier.phone_number.length > 10){
+        if (temporarySupplier.phone_number.length > 10) {
             alert("ERROR: Invalid phone number input. Must be less than 10 digits.")
             return;
         }
-        if(temporarySupplier.phone_number.length < 1){
+        if (temporarySupplier.phone_number.length < 1) {
             alert("ERROR: Invalid phone number input. Must not be empty.")
             return;
         }
@@ -208,9 +208,9 @@ function SuppliersPage() {
                 </Box>
 
 
-                <TableContainer component={Paper} style={{margin: "auto" }}>
-                    <Table aria-label="simple table" style={{margin: "auto" }}>
-                    <colgroup>
+                <TableContainer component={Paper} style={{ margin: "auto" }}>
+                    <Table aria-label="simple table" style={{ margin: "auto" }}>
+                        <colgroup>
                             <col style={{ width: '15%' }} />
                             <col style={{ width: '40%' }} />
                             <col style={{ width: '30%' }} />
