@@ -45,7 +45,7 @@ function TeamsPage() {
             });
 
         axiosInstance
-            .get(`teams/`, {
+            .get(`team/`, {
             })
             .then((res) => {
                 res.data.map((data) => {
