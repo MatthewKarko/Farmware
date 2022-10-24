@@ -16,28 +16,25 @@ function OrdersTable() {
   const navigate = useNavigate();
 
   const [temporaryOrder, setTemporaryOrder] = useState({
-    id: -1,
     customer_id: -1,
-    invoice_number: -1,
+    invoice_number: "",
     order_date: "",
     completion_date: ""
   });
 
   const clearTemporaryOrderState = () => {
     const formValues = {
-      id: -1,
       customer_id: -1,
-      invoice_number: -1,
-      order_date: "",
+      invoice_number: "",
+      order_date: temporaryOrder.order_date, //Just keep prev date inputted
       completion_date: ""
     };
     setTemporaryOrder({ ...formValues });
   };
 
   const [displayCreateModal, setDisplayCreateModal] = useState(false);
-  const [meState, setMeState] = useState([]);
+  const [meState, setMeState] = useState([]); //for organisation id if required
   const [customersList, setCustomersList] = useState([]);
-  const [custName, setCustName] = useState("");
 
   function handleViewOrderClick(order) {
     //get customer name based on id
@@ -75,8 +72,44 @@ function OrdersTable() {
 
   const handleCreateSubmit = (event) => {
     event.preventDefault();
-    alert("Submitted an order creation:\nOrder number: " + temporaryOrder.id + "\nInvoice number: " + temporaryOrder.invoice_number + "\ncustomer id: " + temporaryOrder.customer_id + "\nDate: " + temporaryOrder.order_date);
+
+    //DO INPUT CHECKS:
+    //Invoice number is a string < 20 characters, but can be empty
+    if (temporaryOrder.invoice_number.length > 20) {
+      //INVALID
+      alert("ERROR: Invalid invoice number. Must be less than 20 characters");
+      return;
+    }
+
+    //CHECK CUSTOMER ID IS NUMBER AND >= 0
+    if (!isNaN(+temporaryOrder.customer_id)) {
+      //Is number
+      if (temporaryOrder.customer_id < 0) {
+        //error
+        alert("ERROR: Select a customer.");
+        return;
+      }
+    } else {
+      //not number: error
+      alert("ERROR: Select a customer.");
+      return;
+    }
+
+    if (temporaryOrder.order_date.length != 10) {
+      //ERROR: not date format
+      alert("ERROR: Invalid date format. Use DD/MM/YYYY." + temporaryOrder.order_date);
+      return;
+    }
+
+    //IF MADE IT HERE, IS VALID INPUT:
+    alert("Submitted an order creation:" +
+      "\nInvoice number: " + temporaryOrder.invoice_number +
+      "\nCustomer id: " + temporaryOrder.customer_id +
+      "\nDate: " + temporaryOrder.order_date);
+    clearTemporaryOrderState();
     setDisplayCreateModal(false);
+    //reload page
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -195,7 +228,7 @@ function OrdersTable() {
           fontFamily: 'Lato',
           fontWeight: 'bold',
           marginTop: "20px",
-          textAlign:"center"
+          textAlign: "center"
         }}>Create Order</Typography>
 
         <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -208,8 +241,9 @@ function OrdersTable() {
             autoComplete="invoice_number"
             autoFocus
             size="small"
+            value={temporaryOrder.invoice_number}
             onChange={handleFormChange}
-            sx={{ width: "300px", mt:3, mb:3 }}
+            sx={{ width: "300px", mt: 3, mb: 3 }}
             variant="filled"
           />
 
@@ -219,9 +253,10 @@ function OrdersTable() {
               name="order_date"
               inputFormat="DD/MM/YYYY"
               value={dateValue}
+              // value={temporaryOrder.order_date}
               onChange={handleDateChange}
               renderInput={(params) => <TextField {...params} />}
-              sx={{ width: "300px", mt:3 }}
+              sx={{ width: "300px", mt: 3 }}
             />
           </LocalizationProvider>
 

@@ -49,9 +49,9 @@ function ViewOrder() {
     }
 
     const [temporaryProduce, setTemporaryProduce] = useState({
-        produceSelected: "",
-        suffixSelected: "",
-        varietySelected: "",
+        produceSelected: -1,
+        suffixSelected: -1,
+        varietySelected: -1,
         produceQuantity: 0,
     });
 
@@ -59,9 +59,9 @@ function ViewOrder() {
 
     const clearTemporaryProduce = () => {
         const formValues = {
-            produceSelected: "",
-            suffixSelected: "",
-            varietySelected: "",
+            produceSelected: -1,
+            suffixSelected: -1,
+            varietySelected: -1,
             produceQuantity: 0,
         };
         setTemporaryProduce({ ...formValues });
@@ -130,14 +130,9 @@ function ViewOrder() {
 
     const handleFormChange = (event) => {
         event.preventDefault();
-        if (!isNaN(+event.target.value)) {
-            //is number
-            const newFormData = { ...temporaryProduce };
-            newFormData["produceQuantity"] = event.target.value;
-            setTemporaryProduce({ ...newFormData });
-        } else {
-            alert("Invalid quantity input.");
-        }
+        const newFormData = { ...temporaryProduce };
+        newFormData["produceQuantity"] = event.target.value;
+        setTemporaryProduce({ ...newFormData });
     };
 
     const [displayAddProduceModal, setDisplayAddProduceModal] = useState(false);
@@ -146,6 +141,31 @@ function ViewOrder() {
         event.preventDefault();
 
         //TO DO: CHECKS FOR VALID INPUT
+        if (temporaryProduce.produceSelected < 0) {
+            alert("ERROR: Please select a produce.");
+            return;
+        }
+        if (temporaryProduce.suffixSelected < 0) {
+            alert("ERROR: Please select a produce suffix.");
+            return;
+        }
+        if (temporaryProduce.varietySelected < 0) {
+            alert("ERROR: Please select a produce variety.");
+            return;
+        }
+        //check quantity is an integer
+        if (!isNaN(+temporaryProduce.produceQuantity)) {
+            //Is number
+            if (temporaryProduce.produceQuantity < 1) {
+                //error
+                alert("ERROR: Quantity must be greater than 0.");
+                return;
+            }
+        } else {
+            //not number: error
+            alert("ERROR: Quantity must numeric.");
+            return;
+        }
 
         //ASSUMING VALID INPUT:
         alert("Submitted a produce add to order.\nProduce ID:" + temporaryProduce.produceSelected + "\nSuffix ID: " + temporaryProduce.suffixSelected + "\nVariety ID: " + temporaryProduce.varietySelected + "\nQuantity: " + temporaryProduce.produceQuantity)
@@ -153,6 +173,8 @@ function ViewOrder() {
         //CLEAR PRODUCE SELECTED FIELDS
         clearTemporaryProduce();
         setDisplayAddProduceModal(false);
+        //reload page
+        window.location.reload();
     };
 
     useEffect(() => {
@@ -223,7 +245,25 @@ function ViewOrder() {
     };
 
     const addStockToOrderItemSubmit = () => {
-        alert("send stock based on temporaryStockAdded array");
+        //check all the quantity are valid
+        let len_var = temporaryStockAdded.length
+        let found = false
+        for (let i = 0; i < len_var; i++) {
+            if(!isNaN(+temporaryStockAdded[i].quantity)){
+                //number
+                if (temporaryStockAdded[i].quantity < 1) {
+                    //error
+                    alert("ERROR: Quantity must be greater than 0.");
+                    return;
+                }
+            } else {
+                //error
+                alert("ERROR: Quantity must numeric.");
+                return;
+            }
+        }
+        
+        alert("SUCCESS: Make API call.");
         clearTemporaryStockAdded();
         setDisplayAddStockModal(false);
         window.location.reload();
@@ -490,10 +530,10 @@ function ViewOrder() {
                                         <Button variant="outlined" size="medium" sx={{
                                             borderColor: "#FF0000", color: "#FF0000", ':hover': {
                                                 bgcolor: "#FFCCCB",
-                                                borderColor:"#FF0000"
+                                                borderColor: "#FF0000"
                                             },
                                         }}
-                                        onClick={() => alert("delete stock_id: " + order_item.stock_id)}
+                                            onClick={() => alert("delete stock_id: " + order_item.stock_id)}
                                         >Delete</Button>
                                     </TableCell>
                                 </TableRow>
