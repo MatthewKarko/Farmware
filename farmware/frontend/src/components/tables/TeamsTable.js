@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
@@ -7,6 +8,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 function TeamsPage() {
+    const navigate = useNavigate();
 
     const [teamsList, setTeamsList] = useState([]);
     const [organisationCode, setOrganisationCode] = useState("");
@@ -36,7 +38,7 @@ function TeamsPage() {
             .get(`user/me/`, {
             })
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 // Set the organisation code as well
                 setOrganisationCode(res.data.organisation)
             })
@@ -50,7 +52,7 @@ function TeamsPage() {
             .then((res) => {
                 res.data.map((data) => {
                     setTeamsList(teamsList => [...teamsList, data])
-                    console.log(res.data)
+                    // console.log(res.data)
                 })
             })
             .catch((err) => {
@@ -73,6 +75,25 @@ function TeamsPage() {
 
     const handleEditSubmit = (event) => {
         event.preventDefault();
+        if(temporaryTeam.category.length > 100){
+            alert("ERROR: Invalid category input. Must be less than 100 characters long.")
+            return;
+        }
+        if(temporaryTeam.category.length < 1){
+            alert("ERROR: Invalid category input. Must not be empty.")
+            return;
+        }
+
+        //VALIDATE temporaryTeam.name (max: 100, non empty)
+        if(temporaryTeam.name.length > 100){
+            alert("ERROR: Invalid name input. Must be less than 100 digits.")
+            return;
+        }
+        if(temporaryTeam.name.length < 1){
+            alert("ERROR: Invalid name input. Must not be empty.")
+            return;
+        }
+
         var putObject = {
             category: temporaryTeam.category,
             name: temporaryTeam.name,
@@ -80,7 +101,7 @@ function TeamsPage() {
         }
 
         //Send PUT request to update user
-        axiosInstance.put(`teams/${temporaryTeam.id}/`, putObject)
+        axiosInstance.put(`team/${temporaryTeam.id}/`, putObject)
 
         //reset values
         clearState();
@@ -108,12 +129,33 @@ function TeamsPage() {
 
     const handleTeamDelete = (event) => {
         event.preventDefault();
-        axiosInstance.delete(`teams/${temporaryTeam.id}/`)
+        axiosInstance.delete(`team/${temporaryTeam.id}/`)
         clearState();
         window.location.reload();
     }
 
-    const handleCreateSubmit = () => {
+    const handleCreateSubmit = (event) => {
+        event.preventDefault();
+        //VALIDATE temporaryTeam.category (max: 100, non empty)
+        if(temporaryTeam.category.length > 100){
+            alert("ERROR: Invalid category input. Must be less than 100 characters long.")
+            return;
+        }
+        if(temporaryTeam.category.length < 1){
+            alert("ERROR: Invalid category input. Must not be empty.")
+            return;
+        }
+
+        //VALIDATE temporaryTeam.name (max: 100, non empty)
+        if(temporaryTeam.name.length > 100){
+            alert("ERROR: Invalid name input. Must be less than 100 digits.")
+            return;
+        }
+        if(temporaryTeam.name.length < 1){
+            alert("ERROR: Invalid name input. Must not be empty.")
+            return;
+        }
+
         var postObject = {
             category: temporaryTeam.category,
             name: temporaryTeam.name,
@@ -121,7 +163,7 @@ function TeamsPage() {
         }
 
         //Send PUT request to update user
-        axiosInstance.post(`teams/`, postObject)
+        axiosInstance.post(`team/`, postObject)
 
         //reset values
         clearState();
@@ -131,6 +173,7 @@ function TeamsPage() {
 
         //reload page
         window.location.reload();
+        navigate("/teams");
     };
 
     return (
@@ -163,6 +206,12 @@ function TeamsPage() {
 
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
+                    <colgroup>
+                            <col style={{ width: '15%' }} />
+                            <col style={{ width: '30%' }} />
+                            <col style={{ width: '40%' }} />
+                            <col style={{ width: '15%' }} />
+                        </colgroup>
                         <TableHead>
                             <TableRow>
                                 <TableCell className="tableCell">ID</TableCell>
@@ -202,7 +251,8 @@ function TeamsPage() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                    margin: "20px",
+                    mt: 2,
+                    textAlign: 'center'
                 }}> Edit Team</Typography>
 
                 <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -242,8 +292,9 @@ function TeamsPage() {
                     <Box noValidate>
 
                         <Button
-                            type="submit"
+                            type="normal"
                             variant="contained"
+                            onClick={(event) => { handleEditSubmit }}
                             sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                         >
                             Submit
@@ -323,8 +374,9 @@ function TeamsPage() {
 
 
                     <Button
-                        type="create"
+                        type="normal"
                         variant="contained"
+                        onClick={(event) => { handleCreateSubmit }}
                         sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
                     >
                         Create
