@@ -53,7 +53,27 @@ class ProduceViewSet(ModelViewSet):
         """Get all produce in the user's organisation."""
         user: User = self.request.user  # type: ignore
         return Produce.objects.all().filter(organisation=user.organisation, **kwargs)
-    
+
+    @action(detail=True, methods=['get'])
+    def get_varieties(self, request, *args, **kwargs):
+        user: User = self.request.user
+        prod = (Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation)).first()
+        if (prod == None):
+            return self.responses.DOES_NOT_EXIST
+
+        varieties = ProduceVariety.objects.all().filter(produce_id=kwargs.get('pk'))
+        return self.responses.list_json(varieties)
+
+    @action(detail=True, methods=['get'])
+    def get_suffixes(self, request, *args, **kwargs):
+        user: User = self.request.user
+        prod = (Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation)).first()
+        if (prod == None):
+            return self.responses.DOES_NOT_EXIST
+
+        suffixes = ProduceQuantitySuffix.objects.all().filter(produce_id=kwargs.get('pk'))
+        return self.responses.list_json(suffixes)
+
     @action(detail=True, methods=['post'])
     def create_varieties(self, request, *args, **kwargs):
         data: QueryDict = request.data
