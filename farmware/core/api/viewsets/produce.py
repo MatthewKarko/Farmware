@@ -1,8 +1,9 @@
 from django.db import IntegrityError
 from django.http import QueryDict
 
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 
 from ..models.produce import Produce, ProduceVariety, ProduceQuantitySuffix
 from ..responses import DefaultResponses
@@ -56,13 +57,14 @@ class ProduceViewSet(ModelViewSet):
 
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
+        item = None
         try:
-            serialiser.save()
+            item = serialiser.save()
         except IntegrityError as e:
             if 'UNIQUE constraint' in e.args[0]:
                 return self.responses.ITEM_ALREADY_EXISTS
             return self.responses.RESPONSE_FORBIDDEN
-        return self.responses.CREATION_SUCCESS
+        return self.responses.json(item)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -92,7 +94,8 @@ class ProduceVarietyViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        serialiser = self.get_serializer(data=data)
+        print(data)
+        serialiser = self.get_serializer(data=data, many=isinstance(request.data, list))
         serialiser.is_valid(raise_exception=True)
         try:
             serialiser.save()

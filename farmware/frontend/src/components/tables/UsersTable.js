@@ -12,9 +12,6 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 
-
-
-
 function UsersTable() {
 
   const [usersList, setUsersList] = useState([]);
@@ -25,7 +22,7 @@ function UsersTable() {
 
   //modal state
   const [displayEditModal, setDisplayEditModal] = useState(false);
-  let role_dict = {400: 'Worker', 0: 'Organisation Admin', 100: 'Admin', 200: 'Team Leader', 300: 'Office'};
+  let role_dict = { 400: 'Worker', 0: 'Organisation Admin', 100: 'Admin', 200: 'Team Leader', 300: 'Office' };
   //Stores temporary form changes
   const [temporaryUser, setTemporaryUser] = useState({
     id: -1,
@@ -90,9 +87,9 @@ function UsersTable() {
         alert("ERROR: Getting teams failed");
       });
 
-    
 
-    
+
+
   }, []);
 
   const handleTeamChange = (event) => {
@@ -107,7 +104,7 @@ function UsersTable() {
 
   const handleRoleChange = (event) => {
     event.preventDefault();
-    
+
     setCurrentRole(event.target.value);
     console.log(event.target.value);
 
@@ -127,6 +124,29 @@ function UsersTable() {
 
   const handleEditSubmit = (event) => {
     event.preventDefault();
+    if (temporaryUser.first_name.length > 50) {
+      alert("ERROR: Invalid first name input. Must be less than 50 characters long.")
+      return;
+    }
+    if (temporaryUser.first_name.length < 1) {
+      alert("ERROR: Invalid first name input. Must not be empty.")
+      return;
+    }
+
+    if (temporaryUser.last_name.length > 50) {
+      alert("ERROR: Invalid last name input. Must be less than 50 characters long.")
+      return;
+    }
+    if (temporaryUser.last_name.length < 1) {
+      alert("ERROR: Invalid last name input. Must not be empty.")
+      return;
+    }
+
+    if (temporaryUser.email.length < 1) {
+      alert("ERROR: Invalid email input. Must not be empty.")
+      return;
+    }
+
     var postObject = {
       first_name: temporaryUser.first_name,
       last_name: temporaryUser.last_name,
@@ -134,20 +154,24 @@ function UsersTable() {
     }
 
     let updatedTeams = [];
-      teamList.map((data) => {
-        currentTeams.map((currentTeam) => {
-          if(data.name ==  currentTeam){
-            updatedTeams.push(data.id);
-          }
-        })
-       
-      });
+    teamList.map((data) => {
+      currentTeams.map((currentTeam) => {
+        if (data.name == currentTeam) {
+          updatedTeams.push(data.id);
+        }
+      })
+
+    });
 
     postObject["teams"] = updatedTeams;
     postObject["role"] = currentRole;
     // console.log(postObject)
     //Send PUT request to update user
-    axiosInstance.put(`user/${temporaryUser.id}/`, postObject);
+    axiosInstance.put(`user/${temporaryUser.id}/`, postObject)
+      .catch((err) => {
+        alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+      });
+
     //reset values
     // clearState();
 
@@ -166,19 +190,19 @@ function UsersTable() {
       role: row.role.name,
     };
     axiosInstance
-		  .get(`user/${row.id}/teams/`, {
-			})
-			.then((res) => {
+      .get(`user/${row.id}/teams/`, {
+      })
+      .then((res) => {
         res.data.teams.map((data) => {
           // teamList.push(data.name);
           // console.log(data);
           setCurrentTeams(currentTeams => [...currentTeams, data.name])
-        })        
-			})
+        })
+      })
       .catch((err) => {
         console.log("AXIOS ERROR: ", err);
         // alert("ERROR: Incorrect call");
-    });
+      });
     setTemporaryUser({ ...formValues });
     setCurrentRole(row.role.level);
     //cause the modal to open.
@@ -188,6 +212,9 @@ function UsersTable() {
   const handleUserDelete = (event) => {
     event.preventDefault();
     axiosInstance.delete(`user/${temporaryUser.id}/`)
+      .catch((err) => {
+        alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+      });
     clearState();
     window.location.reload();
   }
@@ -199,6 +226,7 @@ function UsersTable() {
         <Typography variant="h4" sx={{
           fontFamily: 'Lato',
           fontWeight: 'bold',
+          mb: 2
         }}> Users Table</Typography>
         <TableContainer component={Paper}>
           <Table aria-label="simple table">
@@ -254,97 +282,97 @@ function UsersTable() {
 
         <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Box noValidate>
-              <TextField
-                required
-                margin="normal"
-                id="first_name"
-                label="Firstname"
-                name="first_name"
-                autoComplete="first_name"
-                autoFocus
-                size="small"
-                value={temporaryUser.first_name}
-                onChange={handleFormChange}
-                sx={{width: "200px"}}
-                variant="filled"
-               
-              />
-              <TextField
-                required
-                margin="dense"
-                name="last_name"
-                label="Lastname"
-                type="last_name"
-                id="last_name"
-                autoComplete="last_name"
-                size="small"
-                value={temporaryUser.last_name}
-                onChange={handleFormChange}
-                sx={{width: "200px", mt: 2, ml: 2}}
-                variant="filled"
-              />
-            </Box>
             <TextField
-                required
-                margin="dense"
-                name="email"
-                label="Email Address"
-                type="email"
-                id="email"
-                autoComplete="email"
-                size="small"
-                value={temporaryUser.email}
-                onChange={handleFormChange}
-                sx={{width: "420px", mt: 1}}
-                variant="filled"
-              />
-            <Box noValidate>
-              <FormControl sx={{width: "200px", mt: 1}} >
-                  <InputLabel id="demo-simple-select-label">Teams</InputLabel>
-                    <Select
-                      label="Teams"
-                      multiple
-                      value={currentTeams}
-                      onChange={handleTeamChange}
-                      renderValue={(selected) => selected.join(', ')}
-                    >
-                    {/* <MenuItem key={1} value={1}>test</MenuItem> */}
-                    {
-                        // names = ['t1', 't2', 'TestTeam'];
-                        teamList.map((team) => {
-                  
-                          return(
-                            <MenuItem key={team.name} value={team.name}>
-                            <Checkbox checked={currentTeams.indexOf(team.name) > -1} />
-                            <ListItemText primary={team.name} />
-                          </MenuItem>
-                          )
-                        })
-                    }
-                  </Select>
-              </FormControl>
-              <FormControl sx={{width: "200px", mt: 1, ml: 2}} >
-                  <InputLabel id="select-label">Role</InputLabel>
-                    <Select
-                      label="Role"
-                      value={currentRole}
-                      onChange={handleRoleChange}
-                    >
-                    {
-                    
-                        Object.entries(role_dict).map(([key, value]) => {
-                          return(
-                            <MenuItem key={key} value={key}>
-                            {value}
-                            </MenuItem>
-                          )
-                          
-                        })
-                    }
-                  </Select>
-              </FormControl>
-            </Box>
-            <Box noValidate>
+              required
+              margin="normal"
+              id="first_name"
+              label="Firstname"
+              name="first_name"
+              autoComplete="first_name"
+              autoFocus
+              size="small"
+              value={temporaryUser.first_name}
+              onChange={handleFormChange}
+              sx={{ width: "200px" }}
+              variant="filled"
+
+            />
+            <TextField
+              required
+              margin="dense"
+              name="last_name"
+              label="Lastname"
+              type="last_name"
+              id="last_name"
+              autoComplete="last_name"
+              size="small"
+              value={temporaryUser.last_name}
+              onChange={handleFormChange}
+              sx={{ width: "200px", mt: 2, ml: 2 }}
+              variant="filled"
+            />
+          </Box>
+          <TextField
+            required
+            margin="dense"
+            name="email"
+            label="Email Address"
+            type="email"
+            id="email"
+            autoComplete="email"
+            size="small"
+            value={temporaryUser.email}
+            onChange={handleFormChange}
+            sx={{ width: "420px", mt: 1 }}
+            variant="filled"
+          />
+          <Box noValidate>
+            <FormControl sx={{ width: "200px", mt: 1 }} >
+              <InputLabel id="demo-simple-select-label">Teams</InputLabel>
+              <Select
+                label="Teams"
+                multiple
+                value={currentTeams}
+                onChange={handleTeamChange}
+                renderValue={(selected) => selected.join(', ')}
+              >
+                {/* <MenuItem key={1} value={1}>test</MenuItem> */}
+                {
+                  // names = ['t1', 't2', 'TestTeam'];
+                  teamList.map((team) => {
+
+                    return (
+                      <MenuItem key={team.name} value={team.name}>
+                        <Checkbox checked={currentTeams.indexOf(team.name) > -1} />
+                        <ListItemText primary={team.name} />
+                      </MenuItem>
+                    )
+                  })
+                }
+              </Select>
+            </FormControl>
+            <FormControl sx={{ width: "200px", mt: 1, ml: 2 }} >
+              <InputLabel id="select-label">Role</InputLabel>
+              <Select
+                label="Role"
+                value={currentRole}
+                onChange={handleRoleChange}
+              >
+                {
+
+                  Object.entries(role_dict).map(([key, value]) => {
+                    return (
+                      <MenuItem key={key} value={key}>
+                        {value}
+                      </MenuItem>
+                    )
+
+                  })
+                }
+              </Select>
+            </FormControl>
+          </Box>
+          <Box noValidate>
             <Button
               type="submit"
               variant="contained"
@@ -361,71 +389,9 @@ function UsersTable() {
               Delete
             </Button>
 
-            </Box>
-            
           </Box>
-         
 
-        {/* <form>
-          <label>First Name:</label>
-          <input
-            type="text"
-            name="first_name"
-            required="required"
-            placeholder="Enter a first name..."
-            value={temporaryUser.first_name}
-            onChange={handleFormChange}
-            style={{ width: "200px" }}
-          />
-          <br></br>
-          <label>Last Name:</label>
-          <input
-            type="text"
-            name="last_name"
-            required="required"
-            placeholder="Enter a last name..."
-            value={temporaryUser.last_name}
-            onChange={handleFormChange}
-            style={{ width: "200px" }}
-          />
-          <br></br>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            required="required"
-            placeholder="Enter an email..."
-            value={temporaryUser.email}
-            onChange={handleFormChange}
-            style={{ width: "200px" }}
-          />
-          <br></br>
-          <label>Role:</label>
-          <input
-            type="text"
-            name="role"
-            required="required"
-            placeholder="Enter a role..."
-            value={temporaryUser.role.level}
-            onChange={handleFormChange}
-            style={{ width: "200px" }}
-          />
-          <br></br>
-          <Button type="submit" variant="outlined" size="large" style={{
-            color: "#028357",
-            borderColor: "#028357",
-          }}
-            onClick={() => { setDisplayEditModal(!displayEditModal); handleEditSubmit() }}
-          >Edit User</Button>
-          <br></br>
-          <Button type="submit" variant="outlined" size="large" style={{
-            color: "#FF0000",
-            borderColor: "#FF0000",
-            margin: "20px",
-          }}
-            onClick={() => { handleUserDelete() }}
-          >Delete User</Button>
-        </form> */}
+        </Box>
       </div>
 
       {/* Below snippet makes it so that if you click out of the modal it exits. */}

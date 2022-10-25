@@ -1,11 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+
 function CustomersTable() {
+    const navigate = useNavigate();
 
     const [customersList, setCustomersList] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
@@ -36,7 +39,7 @@ function CustomersTable() {
             .get(`user/me/`, {
             })
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 if (res.data.role.level < 200) {
                     setIsAdmin(true)
                 }
@@ -53,7 +56,7 @@ function CustomersTable() {
             .then((res) => {
                 res.data.map((data) => {
                     setCustomersList(customersList => [...customersList, data])
-                    console.log(res.data)
+                    // console.log(res.data)
                 })
             })
             .catch((err) => {
@@ -74,7 +77,27 @@ function CustomersTable() {
         setTemporaryCustomer({ ...newFormData });
     };
 
-    const handleEditSubmit = () => {
+    const handleEditSubmit = (event) => {
+        event.preventDefault();
+        //VALIDATE temporaryCustomer.name (max: 50, non empty)
+        if (temporaryCustomer.name.length > 50) {
+            alert("ERROR: Invalid name input. Must be less than 50 characters long.")
+            return;
+        }
+        if (temporaryCustomer.name.length < 1) {
+            alert("ERROR: Invalid name input. Must not be empty.")
+            return;
+        }
+
+        //VALIDATE temporaryCustomer.phone_number (max: 10, non empty)
+        if (temporaryCustomer.phone_number.length > 10) {
+            alert("ERROR: Invalid phone number input. Must be less than 10 digits.")
+            return;
+        }
+        if (temporaryCustomer.phone_number.length < 1) {
+            alert("ERROR: Invalid phone number input. Must not be empty.")
+            return;
+        }
 
         var putObject = {
             name: temporaryCustomer.name,
@@ -84,6 +107,9 @@ function CustomersTable() {
 
         //Send PUT request to update user
         axiosInstance.put(`customer/${temporaryCustomer.id}/`, putObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
         //reset values
         clearState();
@@ -93,6 +119,7 @@ function CustomersTable() {
 
         //reload page
         window.location.reload();
+        navigate("/customers");
     };
 
     const handleEditClick = (event, row) => {
@@ -112,11 +139,35 @@ function CustomersTable() {
     const handleCustomerDelete = (event) => {
         event.preventDefault();
         axiosInstance.delete(`customer/${temporaryCustomer.id}/`)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
         clearState();
         window.location.reload();
     }
 
-    const handleCreateSubmit = () => {
+    const handleCreateSubmit = (event) => {
+        event.preventDefault();
+        //VALIDATE temporaryCustomer.name (max: 50, non empty)
+        if (temporaryCustomer.name.length > 50) {
+            alert("ERROR: Invalid name input. Must be less than 50 characters long.")
+            return;
+        }
+        if (temporaryCustomer.name.length < 1) {
+            alert("ERROR: Invalid name input. Must not be empty.")
+            return;
+        }
+
+        //VALIDATE temporaryCustomer.phone_number (max: 10, non empty)
+        if (temporaryCustomer.phone_number.length > 10) {
+            alert("ERROR: Invalid phone number input. Must be less than 10 digits.")
+            return;
+        }
+        if (temporaryCustomer.phone_number.length < 1) {
+            alert("ERROR: Invalid phone number input. Must not be empty.")
+            return;
+        }
+
         var postObject = {
             name: temporaryCustomer.name,
             phone_number: temporaryCustomer.phone_number,
@@ -125,6 +176,9 @@ function CustomersTable() {
 
         //Send PUT request to update user
         axiosInstance.post(`customer/`, postObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
         //reset values
         clearState();
@@ -166,8 +220,14 @@ function CustomersTable() {
                 </Box>
 
 
-                <TableContainer component={Paper}>
-                    <Table aria-label="simple table">
+                <TableContainer component={Paper} style={{ margin: "auto" }}>
+                    <Table aria-label="simple table" style={{ margin: "auto" }}>
+                        <colgroup>
+                            <col style={{ width: '15%' }} />
+                            <col style={{ width: '40%' }} />
+                            <col style={{ width: '30%' }} />
+                            <col style={{ width: '15%' }} />
+                        </colgroup>
                         <TableHead>
                             <TableRow>
                                 <TableCell className="tableCell">ID</TableCell>
@@ -209,7 +269,7 @@ function CustomersTable() {
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
                     mt: 2,
-                    textAlign:"center"
+                    textAlign: "center"
                 }}> Edit Customer</Typography>
 
                 <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -248,9 +308,10 @@ function CustomersTable() {
 
                     <Box noValidate>
                         <Button
-                            type="submit"
+                            type="normal"
                             variant="contained"
                             sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                            onClick={(event) => { handleEditSubmit }}
                         >
                             Submit
                         </Button>
@@ -263,49 +324,7 @@ function CustomersTable() {
                             Delete
                         </Button>
                     </Box>
-
-
                 </Box>
-
-                {/* <form>
-                    <label>Name:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        required="required"
-                        placeholder="Enter a name..."
-                        value={temporaryCustomer.name}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <label>Phone Number:</label>
-                    <input
-                        type="text"
-                        name="phone_number"
-                        required="required"
-                        placeholder="Enter a phone number..."
-                        value={temporaryCustomer.phone_number}
-                        onChange={handleFormChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleEditSubmit() }}
-                    >Submit</Button>
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#FF0000",
-                        borderColor: "#FF0000",
-                        margin: "8px",
-                    }}
-                        onClick={() => { handleCustomerDelete() }}
-                    >Delete Customer</Button>
-                </form> */}
             </div>
 
             {/* Below snippet makes it so that if you click out of the modal it exits. */}
@@ -365,12 +384,11 @@ function CustomersTable() {
 
                     />
 
-
-
                     <Button
-                        type="create"
+                        type="normal"
                         variant="contained"
                         sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                        onClick={(event) => { handleCreateSubmit }}
                     >
                         Create
                     </Button>

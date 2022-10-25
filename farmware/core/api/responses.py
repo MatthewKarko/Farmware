@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.response import Response
+from django.forms.models import model_to_dict
 
 class DefaultResponses:
     RESPONSE_FORBIDDEN = Response({'error': 'You do not have permission to do that.'}, status=status.HTTP_403_FORBIDDEN)
@@ -27,3 +28,6 @@ class DefaultResponses:
             {'error': f'{context} already exists.'}, 
             status=status.HTTP_404_NOT_FOUND
             )
+
+    def json(self, model):
+        return Response(model_to_dict(model), status=status.HTTP_200_OK)
