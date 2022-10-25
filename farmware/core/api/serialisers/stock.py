@@ -16,3 +16,16 @@ class StockPickersSerialiser(serializers.ModelSerializer):
     class Meta:
         model = StockPickers
         fields = '__all__'
+
+class StockCreationSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Stock
+        exclude = ['organisation']
+
+    def create(self, validated_data):
+        validated_data['organisation'] = self.context['request'].user.organisation
+        return Stock.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data['organisation'] = self.context['request'].user.organisation
+        return super().update(instance=instance, validated_data=validated_data)

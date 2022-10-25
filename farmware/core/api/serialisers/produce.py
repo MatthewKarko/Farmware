@@ -23,10 +23,12 @@ class ProduceCreationSerialiser(serializers.ModelSerializer):
     
     def create(self, validated_data):        
         # Add organisational data
-        validated_data['organisation'] = self.\
-            context['request'].user.organisation
-        
+        validated_data['organisation'] = self.context['request'].user.organisation
         return Produce.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data['organisation'] = self.context['request'].user.organisation
+        return super().update(instance=instance, validated_data=validated_data)
 
 class ProduceFullSerialiser(serializers.ModelSerializer):
     """Serialiser: Produce.
@@ -63,6 +65,11 @@ class ProduceVarietyInOrganisationSerialiser(serializers.ModelSerializer):
     class Meta:
         model = ProduceVariety
         fields = ['id', 'variety']
+
+class ProduceVarietyUpdateSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = ProduceVariety
+        fields = ['variety']
 ###############################################################################
 
 
@@ -79,4 +86,9 @@ class ProduceQuantitySuffixInOrganisationSerialiser(serializers.ModelSerializer)
     class Meta:
         model = ProduceQuantitySuffix
         fields = ['id', 'suffix', 'base_equivalent']
+
+class ProduceQuantitySuffixUpdateSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = ProduceQuantitySuffix
+        fields = ['suffix', 'base_equivalent']
 ###############################################################################
