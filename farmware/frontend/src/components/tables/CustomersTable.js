@@ -118,11 +118,10 @@ function CustomersTable() {
 
         //reset values
         clearState();
+        reloadCustomers();
 
         //close modal
-        setDisplayEditModal(!displayEditModal);
-        
-        reloadCustomers();
+        setDisplayEditModal(!displayEditModal);        
     };
 
     const handleEditClick = (event, row) => {
@@ -146,6 +145,7 @@ function CustomersTable() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
+        setDisplayEditModal(!displayEditModal);
         reloadCustomers();
     }
 
@@ -186,11 +186,10 @@ function CustomersTable() {
         //reset values
         clearState();
 
+        reloadCustomers();
+
         //close modal
         setDisplayCreateModal(!displayCreateModal);
-
-        //reload page
-        reloadCustomers();
     };
 
     return (

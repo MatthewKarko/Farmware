@@ -58,7 +58,7 @@ function TeamsPage() {
             .then((res) => {
                 res.data.map((data) => {
                     setTeamsList(teamsList => [...teamsList, data])
-                    // console.log(res.data)
+                    console.log(res.data)
                 })
             })
             .catch((err) => {
@@ -142,8 +142,8 @@ function TeamsPage() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        setDisplayEditModal(!displayEditModal);
         reloadTeams();
+        setDisplayEditModal(!displayEditModal);
     }
 
     const handleCreateSubmit = (event) => {

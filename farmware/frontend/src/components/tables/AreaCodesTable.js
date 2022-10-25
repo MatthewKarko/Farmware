@@ -141,8 +141,8 @@ function AreaCodesTable() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        setDisplayEditModal(!displayEditModal);
         reloadAreaCodes();
+        setDisplayEditModal(!displayEditModal);
     }
 
     const handleCreateSubmit = (event) => {
