@@ -12,9 +12,10 @@ function ProduceTable() {
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
     const [displaySuffixModal, setDisplaySuffixModal] = useState(false);
     const [displayVarietyModal, setDisplayVarietyModal] = useState(false);
-
+    const [produceObj, setProduceObj] = useState([]);
+    const [editProduceSuffix, setEditProduceSuffix] = useState([]);
     const [productName, setProductName] = useState("");
-    const [produceId, setProduceId] = useState(-1);
+    const [currentProduceId, setCurrentProduceId] = useState(-1);
     const [produceSuffix, setProduceSuffix] = useState("");
     const [produceVarieties, setProduceVarieties] = useState([[]]);
 
@@ -25,7 +26,7 @@ function ProduceTable() {
             .then((res) => {
                 res.data.map((data) => {
                     setProduceList(produceList => [...produceList, data])
-                    console.log(res.data)
+                    // console.log(res.data)
                 })
             })
             .catch((err) => {
@@ -61,17 +62,19 @@ function ProduceTable() {
         setProduceVarieties(deleteData);
     };
 
-    const handleVarietySubmit = (event) => {
-        event.preventDefault();
-        console.log(produceVarieties);
-        setDisplayVarietyModal(!displayVarietyModal);
-       setProduceVarieties([[]]);
-
-    }
+    
 
     const handleEditClick = (event, row) => {
         event.preventDefault();
         setDisplayEditModal(!displayEditModal);
+
+        axiosInstance.get(`produce/${row.id}`)
+            .then((res) => {
+                console.log(res.data);
+                setProduceObj(res.data);
+                console.log(JSON.parse(res.data.quantity_suffixes));
+                setEditProduceSuffix(JSON.parse(res.data.quantity_suffixes));
+            })
     };
 
     const handleEditSubmit = (event) => {
@@ -81,7 +84,10 @@ function ProduceTable() {
 
     const handleDeleteClick = (event, row) => {
         event.preventDefault();
-        setDisplayDeleteModal(!displayDeleteModal);
+        // setDisplayDeleteModal(!displayDeleteModal);
+
+
+        // axiosInstance.delete(`produce/${row.id}/`);
         //Confirmation modal
     };
 
@@ -89,7 +95,7 @@ function ProduceTable() {
         event.preventDefault();
     };
 
-    const handleCreateClick = () => {
+    const handleCreateClick = (event) => {
         event.preventDefault();
         setDisplayCreateModal(!displayCreateModal);
     };
@@ -104,27 +110,43 @@ function ProduceTable() {
             name: productName,
         };
 
-        axiosInstance.post(`/produce/`, postObject).then((res) => console.log(res.data.success)).catch((err)=> console.log(err));
+        axiosInstance.post(`/produce/`, postObject).then((res) => setCurrentProduceId(res.data.id)).catch((err)=> console.log(err));
 
 
 
     };
+
+    const handleVarietySubmit = (event) => {
+        event.preventDefault();
+        console.log(produceVarieties);
+        setDisplayVarietyModal(!displayVarietyModal);
+       setProduceVarieties([[]]);
+
+    }
 
     const handleProduceSuffixSubmit = (event) => {
         event.preventDefault();
         setDisplaySuffixModal(!displaySuffixModal);
         setDisplayVarietyModal(!displayVarietyModal);
 
-        // var postObject = {
-        //     produce_id: produceId,
-        //     suffix: produceSuffix,
-        //     base_equivalent, produceSuffix,
-        // };
+        var postObject = {
+            produce_id: currentProduceId,
+            suffix: produceSuffix,
+            base_equivalent, produceSuffix,
+        };
 
-        // axiosInstance.post(`produce_quantity_suffix/`, postObject).then((res) => console.log(res.data)).catch((err)=> console.log(err));
-
-
-
+        axiosInstance.post(`produce_quantity_suffix/`, postObject).then((res) => console.log(res.data)).catch((err)=> console.log(err));
+    };
+    const handleFormChange = (event) => {
+        event.preventDefault();
+        
+        const fieldName = event.target.getAttribute("name");
+        const fieldValue = event.target.value;
+        
+        const newFormData = { ...temporaryUser };
+        newFormData[fieldName] = fieldValue;
+        
+        setProduceObj({ ...newFormData });
     };
 
     return (
@@ -228,26 +250,49 @@ function ProduceTable() {
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
                     margin: "20px",
-                }}>Edit Produce</Typography>
+                    mt: 2,
+                    textAlign: 'center'
+                    }}> Edit Produce
+                </Typography>
 
-                <form onSubmit={handleEditSubmit}>
-                    <label>Name:</label>
-                    <input
-                        type="text"
+
+                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Box noValidate>
+                        <TextField
+                        InputLabelProps={{ shrink: !! produceObj.name }}
+                        required
+                        margin="normal"
+                        id="name"
+                        label="Produce Name"
                         name="name"
-                        required="required"
-                        value={productName}
-                        onChange={handleProductNameChange}
-                        style={{ width: "200px" }}
-                    />
-                    <br></br>
-                    <Button type="submit" variant="outlined" size="large" style={{
-                        color: "#028357",
-                        borderColor: "#028357",
-                    }}
-                        onClick={() => setDisplayEditModal(!displayEditModal)}
-                    >Submit</Button>
-                </form>
+                        autoComplete="name"
+                        autoFocus
+                        size="small"
+                        value={produceObj.name}
+                        onChange={handleFormChange}
+                        sx={{ width: "200px" }}
+                        variant="filled"
+
+                        />
+                        <TextField
+
+                        required
+                        margin="dense"
+                        name="last_name"
+                        label="Lastname"
+                        type="last_name"
+                        id="last_name"
+                        autoComplete="last_name"
+                        size="small"
+                        value={editProduceSuffix[0]?.suffix}
+                        onChange={handleFormChange}
+                        sx={{ width: "200px", mt: 2, ml: 2 }}
+                        variant="filled"
+                        />
+                    </Box>
+                </Box>
+
+        
             </div>
             
             {/* Creating the Produce */}
@@ -338,7 +383,7 @@ function ProduceTable() {
             <div className={`Modal ${displayVarietyModal ? "Show" : ""}`}>
                 <button
                     className="Close"
-                    onClick={() => { setDisplayVarietyModal(!displaySuffixModal); }}
+                    onClick={() => { setDisplayVarietyModal(!displayVarietyModal); }}
                 >
                     X
                 </button>
