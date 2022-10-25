@@ -95,8 +95,7 @@ function ProduceTable() {
         event.preventDefault();
     };
 
-    const handleCreateClick = (event) => {
-        event.preventDefault();
+    const handleCreateClick = () => {
         setDisplayCreateModal(!displayCreateModal);
     };
 

@@ -16,7 +16,7 @@ import SuppliersPage from "./webpages/SuppliersPage";
 import TeamsPage from "./webpages/TeamsPage";
 import AreaCodesPage from "./webpages/AreaCodesPage";
 import ViewOrderPage from "./webpages/ViewOrderPage";
-import StockPage from "./webpages/ProducePage";
+import StockPage from "./webpages/StockPage";
 
 const routing = (
     <Router>
