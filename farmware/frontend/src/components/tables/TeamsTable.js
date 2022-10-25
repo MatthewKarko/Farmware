@@ -24,6 +24,12 @@ function TeamsPage() {
         name: "",
     });
 
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadTeams = () => {
+        setTeamsList([]);
+        setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
+
     const clearState = () => {
         const formValues = {
             id: -1,
@@ -58,7 +64,7 @@ function TeamsPage() {
             .catch((err) => {
                 alert("ERROR: Getting teams failed");
             });
-    }, []);
+    }, [reloadFlag]);
 
 
     const handleFormChange = (event) => {
@@ -112,8 +118,7 @@ function TeamsPage() {
         //close modal
         setDisplayEditModal(!displayEditModal);
 
-        //reload page
-        window.location.reload();
+        reloadTeams();
     };
 
     const handleEditClick = (event, row) => {
@@ -137,7 +142,8 @@ function TeamsPage() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        window.location.reload();
+        setDisplayEditModal(!displayEditModal);
+        reloadTeams();
     }
 
     const handleCreateSubmit = (event) => {
@@ -180,9 +186,7 @@ function TeamsPage() {
         //close modal
         setDisplayCreateModal(!displayCreateModal);
 
-        //reload page
-        window.location.reload();
-        navigate("/teams");
+        reloadTeams();
     };
 
     return (

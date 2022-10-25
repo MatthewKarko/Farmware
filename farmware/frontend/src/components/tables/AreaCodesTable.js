@@ -24,6 +24,12 @@ function AreaCodesTable() {
         description: "",
     });
 
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadAreaCodes = () => {
+        setAreaCodesList([]);
+        setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
+
     const clearState = () => {
         const formValues = {
             id: -1,
@@ -58,7 +64,7 @@ function AreaCodesTable() {
             .catch((err) => {
                 alert("ERROR: Getting area_code failed");
             });
-    }, []);
+    }, [reloadFlag]);
 
 
     const handleFormChange = (event) => {
@@ -111,8 +117,7 @@ function AreaCodesTable() {
         //close modal
         setDisplayEditModal(!displayEditModal);
 
-        //reload page
-        window.location.reload();
+        reloadAreaCodes();
     };
 
     const handleEditClick = (event, row) => {
@@ -136,7 +141,8 @@ function AreaCodesTable() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        window.location.reload();
+        setDisplayEditModal(!displayEditModal);
+        reloadAreaCodes();
     }
 
     const handleCreateSubmit = (event) => {
@@ -177,8 +183,7 @@ function AreaCodesTable() {
         //close modal
         setDisplayCreateModal(!displayCreateModal);
 
-        //reload page
-        window.location.reload();
+        reloadAreaCodes();
     };
 
     return (

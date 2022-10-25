@@ -25,6 +25,12 @@ function SuppliersPage() {
         phone_number: "",
     });
 
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadSuppliers = () => {
+        setSuppliersList([]);
+        setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
+
     const clearState = () => {
         const formValues = {
             id: -1,
@@ -62,7 +68,7 @@ function SuppliersPage() {
             .catch((err) => {
                 alert("ERROR: Getting suppliers failed");
             });
-    }, []);
+    }, [reloadFlag]);
 
 
     const handleFormChange = (event) => {
@@ -117,8 +123,7 @@ function SuppliersPage() {
         //close modal
         setDisplayEditModal(!displayEditModal);
 
-        //reload page
-        window.location.reload();
+        reloadSuppliers();
     };
 
     const handleEditClick = (event, row) => {
@@ -142,7 +147,8 @@ function SuppliersPage() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        window.location.reload();
+        setDisplayEditModal(!displayEditModal);
+        reloadSuppliers();
     }
 
     const handleCreateSubmit = (event) => {
@@ -184,8 +190,7 @@ function SuppliersPage() {
         setDisplayCreateModal(!displayCreateModal);
 
         //reload page
-        window.location.reload();
-        navigate("/suppliers");
+        reloadSuppliers();
     };
 
     return (

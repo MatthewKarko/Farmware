@@ -32,6 +32,14 @@ function UsersTable() {
     role: ""
   });
 
+  const [reloadFlag, setReloadFlag] = useState(false);
+  const reloadUsers = () => {
+    setUsersList([]);
+    setTeamlist([]);
+    setCurrentTeams([]);
+    setReloadFlag(!reloadFlag); //prompts a reload of customers
+  }
+
   const clearState = () => {
     const formValues = {
       id: -1,
@@ -86,11 +94,7 @@ function UsersTable() {
         console.log(err)
         alert("ERROR: Getting teams failed");
       });
-
-
-
-
-  }, []);
+  }, [reloadFlag]);
 
   const handleTeamChange = (event) => {
     const {
@@ -175,8 +179,9 @@ function UsersTable() {
     //reset values
     clearState();
 
-    //reload page
-    window.location.reload();
+    reloadUsers();
+
+    setDisplayEditModal(!displayEditModal);
   };
 
   const handleEditClick = (event, row) => {
@@ -216,7 +221,8 @@ function UsersTable() {
         alert("Error code: " + err.response.status + "\n" + err.response.data.error);
       });
     clearState();
-    window.location.reload();
+    setDisplayEditModal(!displayEditModal);
+    reloadUsers();
   }
 
 
