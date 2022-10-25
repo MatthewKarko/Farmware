@@ -25,6 +25,12 @@ function CustomersTable() {
         phone_number: "",
     });
 
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadCustomers = () => {
+        setCustomersList([]);
+        setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
+    
     const clearState = () => {
         const formValues = {
             id: -1,
@@ -49,7 +55,7 @@ function CustomersTable() {
             .catch((err) => {
                 alert("ERROR: user/me failed");
             });
-
+        
         axiosInstance
             .get(`customer/`, {
             })
@@ -62,8 +68,7 @@ function CustomersTable() {
             .catch((err) => {
                 alert("ERROR: Getting customers failed");
             });
-    }, []);
-
+    }, [reloadFlag]);
 
     const handleFormChange = (event) => {
         event.preventDefault();
@@ -116,10 +121,8 @@ function CustomersTable() {
 
         //close modal
         setDisplayEditModal(!displayEditModal);
-
-        //reload page
-        window.location.reload();
-        navigate("/customers");
+        
+        reloadCustomers();
     };
 
     const handleEditClick = (event, row) => {
@@ -143,7 +146,7 @@ function CustomersTable() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        window.location.reload();
+        reloadCustomers();
     }
 
     const handleCreateSubmit = (event) => {
@@ -187,7 +190,7 @@ function CustomersTable() {
         setDisplayCreateModal(!displayCreateModal);
 
         //reload page
-        window.location.reload();
+        reloadCustomers();
     };
 
     return (
