@@ -445,7 +445,7 @@ function ProduceTable() {
             />
             <div
                 className={`Overlay ${displayVarietyModal ? "Show" : ""}`}
-                onClick={() => { setDisplaySuffixModal(!displayVarietyModal);}}
+                onClick={() => { setDisplayVarietyModal(!displayVarietyModal);}}
             />
         </React.Fragment>
     )
