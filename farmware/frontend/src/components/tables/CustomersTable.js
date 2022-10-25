@@ -6,9 +6,12 @@ import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import SuccessAlert from "../alert/SuccessAlert";
 
 function CustomersTable() {
     const navigate = useNavigate();
+
+    let alert = <SuccessAlert message="test 123 123 123 123 123 "/>;
 
     const [customersList, setCustomersList] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
@@ -82,21 +85,21 @@ function CustomersTable() {
         setTemporaryCustomer({ ...newFormData });
     };
 
-    const [openSuccessfulEditAlert, setOpenSuccessfulEditAlert] = React.useState(false);
-    const handleEditAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return; //so clicking something else doesn't close it.
-        }
-        setOpenSuccessfulEditAlert(false);
-    };
+    // const [openSuccessfulEditAlert, setOpenSuccessfulEditAlert] = React.useState(false);
+    // const handleEditAlertClose = (event, reason) => {
+    //     if (reason === 'clickaway') {
+    //         return; //so clicking something else doesn't close it.
+    //     }
+    //     setOpenSuccessfulEditAlert(false);
+    // };
 
-    const [openSuccessfulDeleteAlert, setOpenSuccessfulDeleteAlert] = React.useState(false);
-    const handleDeleteAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return; //so clicking something else doesn't close it.
-        }
-        setOpenSuccessfulDeleteAlert(false);
-    };
+    // const [openSuccessfulDeleteAlert, setOpenSuccessfulDeleteAlert] = React.useState(false);
+    // const handleDeleteAlertClose = (event, reason) => {
+    //     if (reason === 'clickaway') {
+    //         return; //so clicking something else doesn't close it.
+    //     }
+    //     setOpenSuccessfulDeleteAlert(false);
+    // };
 
     const handleEditSubmit = (event) => {
         event.preventDefault();
@@ -139,7 +142,7 @@ function CustomersTable() {
         //close modal
         setDisplayEditModal(!displayEditModal);
 
-        setOpenSuccessfulEditAlert(true);
+        // setOpenSuccessfulEditAlert(true);
     };
 
     const handleEditClick = (event, row) => {
@@ -219,7 +222,9 @@ function CustomersTable() {
         setDisplayCreateModal(!displayCreateModal);
 
         //display success
-        setOpenSuccessfulCreationAlert(true);
+        // setOpenSuccessfulCreationAlert(true);
+        // alert = <SuccessAlert message="Customer Created     "/>;
+        // SuccessAlert("123");
     };
 
     return (
@@ -438,7 +443,7 @@ function CustomersTable() {
 
 
             {/* success snackbars */}
-            <Snackbar open={openSuccessfulCreationAlert} autoHideDuration={4000} onClose={handleCreationAlertClose}>
+            {/* <Snackbar open={openSuccessfulCreationAlert} autoHideDuration={4000} onClose={handleCreationAlertClose}>
                 <Alert severity="success" sx={{ width: '100%',backgroundColor:"#028357",
                 color:"#ffffff","& .MuiAlert-icon": {color: "#ffffff"} }}>
                     Customer Created      
@@ -457,7 +462,13 @@ function CustomersTable() {
                 color:"#ffffff","& .MuiAlert-icon": {color: "#ffffff"} }}>
                     Customer Deleted      
                 </Alert>
-            </Snackbar>
+            </Snackbar> */}
+        {/* <SuccessAlert message="test 123 123 123 123 123 "/> */}
+
+        {/* {alert} */}
+
+
+        <SuccessAlert message="test 123 123 123 123 123 "/>
 
         </React.Fragment>
     )
