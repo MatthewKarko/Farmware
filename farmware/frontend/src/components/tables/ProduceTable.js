@@ -87,8 +87,8 @@ function ProduceTable() {
         // setDisplayDeleteModal(!displayDeleteModal);
 
 
-        // axiosInstance.delete(`produce/${row.id}/`);
-        //Confirmation modal
+        axiosInstance.delete(`produce/${row.id}/`);
+        // Confirmation modal
     };
 
     const handleDeleteSubmit = (event, row) => {
@@ -179,12 +179,14 @@ function ProduceTable() {
                     </Grid>
                 </Box>
 
-                <TableContainer component={Paper} style={{ maxWidth: 800, margin: "auto" }}>
-                    <Table aria-label="simple table" style={{ maxWidth: 800, margin: "auto" }}>
+                <TableContainer component={Paper} >
+                    <Table aria-label="simple table">
                         <colgroup>
                             <col style={{ width: '20%' }} />
-                            <col style={{ width: '50%' }} />
-                            <col style={{ width: '30%' }} />
+                            <col style={{ width: '65%' }} />
+                            <col style={{ width: '5%' }} />
+                            <col style={{ width: '5%' }} />
+                            <col style={{ width: '5%' }} />
                         </colgroup>
                         <TableHead>
                             <TableRow sx={{
@@ -206,16 +208,34 @@ function ProduceTable() {
                                 }} key={row.id} >
                                     <TableCell className="tableCell">{row.id}</TableCell>
                                     <TableCell className="tableCell">{row.name}</TableCell>
-
                                     <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
                                             style={{
                                                 margin: "10px",
-                                                width: "80px",
+                                                width: "150px",
                                             }}
                                             onClick={(event) => handleEditClick(event, row)}
-                                        >Edit</Button>
-
+                                        >Edit Name</Button>
+                                    </TableCell>
+                                    <TableCell className="tableCell">
+                                        <Button variant="outlined" size="medium"
+                                            style={{
+                                                margin: "10px",
+                                                width: "150px",
+                                            }}
+                                            onClick={(event) => handleEditClick(event, row)}
+                                        >Edit Varieties</Button>
+                                    </TableCell>
+                                    <TableCell className="tableCell">
+                                        <Button variant="outlined" size="medium"
+                                            style={{
+                                                margin: "10px",
+                                                width: "150px",
+                                            }}
+                                            onClick={(event) => handleEditClick(event, row)}
+                                        >Edit Suffixes</Button>
+                                    </TableCell>
+                                    <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
                                             style={{
                                                 color: "#FF0000",
