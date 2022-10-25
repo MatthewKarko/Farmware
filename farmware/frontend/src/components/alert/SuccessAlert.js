@@ -2,8 +2,15 @@ import React from "react";
 import { Snackbar, Alert } from "@mui/material"
 
 const SuccessAlert = (props) => {
-    const { message } = props;
-    const [open, setOpen] = React.useState(true);
+    const { message, run } = props;
+    let val = false;
+    if(run=="true"){
+        val=true;
+    }
+    if(props.key == 0){
+        val=false;
+    }
+    const [open, setOpen] = React.useState(val);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -11,6 +18,8 @@ const SuccessAlert = (props) => {
         }
         setOpen(false);
     };
+
+    console.log("Run");
 
     return (
             <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>

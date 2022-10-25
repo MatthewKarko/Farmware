@@ -7,11 +7,11 @@ import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import SuccessAlert from "../alert/SuccessAlert";
+import useNotification from "../alert/UseNotification";
 
 function CustomersTable() {
     const navigate = useNavigate();
-
-    let alert = <SuccessAlert message="test 123 123 123 123 123 "/>;
+    const [msg, sendNotification] = useNotification();
 
     const [customersList, setCustomersList] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
@@ -143,6 +143,9 @@ function CustomersTable() {
         setDisplayEditModal(!displayEditModal);
 
         // setOpenSuccessfulEditAlert(true);
+        setUpdateAlert(true);
+        setUpdateAlertVal({updateAlertVal}+1);
+        console.log("this ran?");
     };
 
     const handleEditClick = (event, row) => {
@@ -168,16 +171,19 @@ function CustomersTable() {
         clearState();
         setDisplayEditModal(!displayEditModal);
         reloadCustomers();
-        setOpenSuccessfulDeleteAlert(true);
+        // setOpenSuccessfulDeleteAlert(true);
+        setDeleteAlert(true);
+        setDeleteAlertVal({deleteAlertVal}+1);
+
     }
 
-    const [openSuccessfulCreationAlert, setOpenSuccessfulCreationAlert] = React.useState(false);
-    const handleCreationAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return; //so clicking something else doesn't close it.
-        }
-        setOpenSuccessfulCreationAlert(false);
-    };
+    // const [openSuccessfulCreationAlert, setOpenSuccessfulCreationAlert] = React.useState(false);
+    // const handleCreationAlertClose = (event, reason) => {
+    //     if (reason === 'clickaway') {
+    //         return; //so clicking something else doesn't close it.
+    //     }
+    //     setOpenSuccessfulCreationAlert(false);
+    // };
 
     const handleCreateSubmit = (event) => {
         event.preventDefault();
@@ -225,6 +231,10 @@ function CustomersTable() {
         // setOpenSuccessfulCreationAlert(true);
         // alert = <SuccessAlert message="Customer Created     "/>;
         // SuccessAlert("123");
+        // setCreateAlert(true);
+        // setCreateAlertVal({createAlertVal}+1);
+
+        sendNotification({msg: 'Success: Customer Created', variant: 'success'});
     };
 
     return (
@@ -463,13 +473,24 @@ function CustomersTable() {
                     Customer Deleted      
                 </Alert>
             </Snackbar> */}
-        {/* <SuccessAlert message="test 123 123 123 123 123 "/> */}
+            {/* <SuccessAlert message="test 123 123 123 123 123 "/> */}
 
-        {/* {alert} */}
+            {/* {alert} */}
 
 
-        <SuccessAlert message="test 123 123 123 123 123 "/>
-
+{/* 
+            {{createAlert} ?
+                <SuccessAlert message="Customer Created     " run="true"  key={createAlertVal}/> :
+                null
+            }
+            { {deleteAlert} ?
+                <SuccessAlert message="Customer Deleted     " run="true"  key={deleteAlertVal}/> :
+                null
+            }
+            { {updateAlert} ?
+                <SuccessAlert message="Customer Updated     " run="true" key={updateAlertVal}/> :
+                null
+            } */}
         </React.Fragment>
     )
 }
