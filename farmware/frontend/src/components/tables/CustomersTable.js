@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useNavigate } from 'react-router-dom';
-import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Snackbar, Alert } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
@@ -30,7 +30,7 @@ function CustomersTable() {
         setCustomersList([]);
         setReloadFlag(!reloadFlag); //prompts a reload of customers
     }
-    
+
     const clearState = () => {
         const formValues = {
             id: -1,
@@ -55,7 +55,7 @@ function CustomersTable() {
             .catch((err) => {
                 alert("ERROR: user/me failed");
             });
-        
+
         axiosInstance
             .get(`customer/`, {
             })
@@ -80,6 +80,22 @@ function CustomersTable() {
         newFormData[fieldName] = fieldValue;
 
         setTemporaryCustomer({ ...newFormData });
+    };
+
+    const [openSuccessfulEditAlert, setOpenSuccessfulEditAlert] = React.useState(false);
+    const handleEditAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return; //so clicking something else doesn't close it.
+        }
+        setOpenSuccessfulEditAlert(false);
+    };
+
+    const [openSuccessfulDeleteAlert, setOpenSuccessfulDeleteAlert] = React.useState(false);
+    const handleDeleteAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return; //so clicking something else doesn't close it.
+        }
+        setOpenSuccessfulDeleteAlert(false);
     };
 
     const handleEditSubmit = (event) => {
@@ -121,7 +137,9 @@ function CustomersTable() {
         reloadCustomers();
 
         //close modal
-        setDisplayEditModal(!displayEditModal);        
+        setDisplayEditModal(!displayEditModal);
+
+        setOpenSuccessfulEditAlert(true);
     };
 
     const handleEditClick = (event, row) => {
@@ -147,7 +165,16 @@ function CustomersTable() {
         clearState();
         setDisplayEditModal(!displayEditModal);
         reloadCustomers();
+        setOpenSuccessfulDeleteAlert(true);
     }
+
+    const [openSuccessfulCreationAlert, setOpenSuccessfulCreationAlert] = React.useState(false);
+    const handleCreationAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return; //so clicking something else doesn't close it.
+        }
+        setOpenSuccessfulCreationAlert(false);
+    };
 
     const handleCreateSubmit = (event) => {
         event.preventDefault();
@@ -190,6 +217,9 @@ function CustomersTable() {
 
         //close modal
         setDisplayCreateModal(!displayCreateModal);
+
+        //display success
+        setOpenSuccessfulCreationAlert(true);
     };
 
     return (
@@ -405,6 +435,29 @@ function CustomersTable() {
                 className={`Overlay ${displayCreateModal ? "Show" : ""}`}
                 onClick={() => { setDisplayCreateModal(!displayCreateModal); clearState(); }}
             />
+
+
+            {/* success snackbars */}
+            <Snackbar open={openSuccessfulCreationAlert} autoHideDuration={4000} onClose={handleCreationAlertClose}>
+                <Alert severity="success" sx={{ width: '100%',backgroundColor:"#028357",
+                color:"#ffffff","& .MuiAlert-icon": {color: "#ffffff"} }}>
+                    Customer Created      
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={openSuccessfulEditAlert} autoHideDuration={4000} onClose={handleEditAlertClose}>
+                <Alert severity="success" sx={{ width: '100%',backgroundColor:"#028357",
+                color:"#ffffff","& .MuiAlert-icon": {color: "#ffffff"} }}>
+                    Customer Updated      
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={openSuccessfulDeleteAlert} autoHideDuration={4000} onClose={handleDeleteAlertClose}>
+                <Alert severity="success" sx={{ width: '100%',backgroundColor:"#028357",
+                color:"#ffffff","& .MuiAlert-icon": {color: "#ffffff"} }}>
+                    Customer Deleted      
+                </Alert>
+            </Snackbar>
 
         </React.Fragment>
     )
