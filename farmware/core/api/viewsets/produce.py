@@ -1,5 +1,8 @@
+from http.client import responses
 from django.db import IntegrityError
 from django.http import QueryDict
+import json
+from django.forms.models import model_to_dict
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
@@ -50,6 +53,27 @@ class ProduceViewSet(ModelViewSet):
         """Get all produce in the user's organisation."""
         user: User = self.request.user  # type: ignore
         return Produce.objects.all().filter(organisation=user.organisation, **kwargs)
+    
+    @action(detail=True, methods=['post'])
+    def create_varieties(self, request, *args, **kwargs):
+        data: QueryDict = request.data
+        user: User = self.request.user
+        varieties = json.loads(data['name'])
+        if (len(varieties) == 0):
+            return self.responses.BAD_REQUEST
+        
+        output = []
+        prod = Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation).first()
+        if (prod != None):
+            for name in varieties:
+                obj = ProduceVariety(produce_id = prod, variety=name)
+                obj.save()
+                output.append(obj)
+
+        if len(output) == 0:
+            return self.responses.BAD_REQUEST
+
+        return self.responses.list_json(output)
 
     def create(self, request, *args, **kwargs):
         """Create new produce."""
