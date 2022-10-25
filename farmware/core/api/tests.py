@@ -312,7 +312,6 @@ class TestDirectMigration(MigratorTestCase):
         ('core_api', '0004_auto_20221018_1055'),
         )
         OrderItem = old_state.apps.get_model('core_api', 'OrderStock')
-
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
         organisatio=Organisation.objects.get(name="Farmone")

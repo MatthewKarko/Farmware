@@ -120,8 +120,8 @@ class RegisterSerialiserTests(TestCase):
         ],['id']))
 class RegisterUserSerialiserTests(TestCase):
     def setUp(self):
-        org_code=generate_random_org_code()
-        Organisation.objects.create(code=org_code,name="nameoforg", logo="logoofog")
+        orgcode=generate_random_org_code()
+        Organisation.objects.create(code=orgcode,name="nameoforg", logo="logoofog")
         Org=Organisation.objects.get(name="nameoforg")
         user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", Org,"password123")
         serializer=UserSerialiser()
@@ -136,9 +136,13 @@ class RegisterUserSerialiserTests(TestCase):
             'first_name', 'last_name', 'password', 'email','org_name',
         ],['id']))
     def test_testing_create(self):
+        serializer=UserSerialiser()
+        rs=RegisterSerialiser(serializer)
+        rus=RegisterUserSerialiser(rs)
         Org=Organisation.objects.get(name="nameoforg")
-        serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org}
-        self.assertNotNull(rus.create(serializer_data))
+        serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':Org}
+        rus.org_code=Org.code
+        self.assertIsNotNone(rus.create(serializer_data))
 
 class UserViewSetTestCases(TestCase):
     def setUp(self):
@@ -170,27 +174,27 @@ class UserViewSetTestCases(TestCase):
          'organisation':org,
          'role':000
        }
-        response=c.post(reverse('register--admin'),serializer_data)
+        response=c.post('/register/admin',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
     def  test_RegisteringAdminError(self):
         c = Client()
         serializer_data={}
-        response=c.post(reverse('register/admin'),serializer_data)
+        response=c.post('/register/admin',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
     def test_estingSettingPasswordsError(self):
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org}
-        response=c.post(reverse('user:user-set-password',args=[serializer_data],kwargs={'pk': user.pk}))
+        response=c.post('/set_password/',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
     def test_testingSettingPasswordsError2(self):
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'old_password':'','new_password':''}
-        response=c.post()
+        response=c.post('/register/user/',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
         user=User.objects.get(first_name="firstn")
-        response=c.post(reverse(''),serializer_data,user.id)
+        response=c.post('/set_password/',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
     def test_testingSettingPasswords(self):
         c = Client()
@@ -208,15 +212,15 @@ class UserViewSetTestCases(TestCase):
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org}
-        response=c.post(reverse('register/user'),serializer_data)
+        response=c.post('/register/user',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
-        response=c.post(reverse("destroy"),serializer_data)
+        response=c.post('destroy',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_200_OK)
     def test_testingList(self):
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org}
-        response=c.post(reverse('register/user'),serializer_data)
+        response=c.post('/register/user',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
         #repsonse=c.get(,serializer_data)
         #self.assertNotEquals(response,Null)
@@ -230,31 +234,31 @@ class UserViewSetTestCases(TestCase):
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'role':000}
         response=c.post('^register/admin/$',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
-        response= c.get(reverse(get_permissions))
+        response= c.get(get_permissions)
         self.assertEquals(response,[AllowAny()])
     def test_testingMyteams(self):
         c= Client()
         org= Organisation.objects.get(name="nameoforg")
         team=Team.objects.create(category="sports",name="fifa team 12",organisation=org)
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'role':000,'team':team}
-        response=c.post(reverse('register/admin'),serializer_data)
+        response=c.post('register/admin',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
         s_data={
         'user':user
         }
-        response2 = c.post(reverse('teams',args=s_data))
+        response2 = c.post('/teams/',s_data)
         self.assertEquals(response2.status,200)
     def test_testingUserteams(self):
         c= Client()
         org= Organisation.objects.get(name="nameoforg")
         team=Team.objects.create(category="sports",name="fifa team 12",organisation=org)
         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'role':000,'team':team}
-        response=c.post(reverse('register/admin'),serializer_data)
+        response=c.post('register/admin',serializer_data)
         self.assertEquals(response.status_code,status.HTTP_201_CREATED)
         s_data={
         'user':user
         }
-        response2 = c.post(reverse('teams',args=[s_data,user.pk]))
+        response2 = c.post('teams',s_data)
         self.assertEquals(response2.status,200)
 
 
