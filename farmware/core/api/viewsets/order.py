@@ -19,8 +19,7 @@ from ..serialisers.order import (
     OrderCreationSerialiser,
     OrderFullSerialiser,
     OrderItemSerialiser,
-    OrderItemStockLinkSerialiser,
-    OrderUpdateSerialiser
+    OrderItemStockLinkSerialiser
     )
 from ..serialisers.stock import (
     StockSerialiser,
@@ -45,34 +44,52 @@ class OrderViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         """Get the serialiser class for the appropriate action."""
-        if self.action == 'create': return OrderCreationSerialiser
+        if self.action in ['create', 'update', 'partial_update']: return OrderCreationSerialiser
         if self.action == 'retrieve': return OrderFullSerialiser
-
-        if 'update' in self.action: return OrderUpdateSerialiser
 
         return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
-
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
-
+        item = None
         try:
-            serialiser.save()
+            item = serialiser.save()
         except IntegrityError as e:
-            print('OrderViewSet (create):', e)
+            if 'UNIQUE constraint' in e.args[0]:
+                return self.responses.ITEM_ALREADY_EXISTS
             return self.responses.RESPONSE_FORBIDDEN
-        return self.responses.CREATION_SUCCESS
+        return self.responses.json(item)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
-    
+
     def update(self, request, *args, **kwargs):
-        return super().update(request, *args, **kwargs)
+        data: QueryDict = request.data
+        obj = self.get_queryset().filter(id=kwargs.get('pk')).first()
+        if obj == None:
+            return self.responses.BAD_REQUEST
+        serialiser = self.get_serializer(obj, data=data)
+        serialiser.is_valid(raise_exception=True)
+        item = serialiser.save()
+        if item == None:
+            return self.responses.BAD_REQUEST
+        else:
+            return self.responses.json(item)
 
     def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, *args, **kwargs)
+        data: QueryDict = request.data
+        obj = self.get_queryset().filter(id=kwargs.get('pk')).first()
+        if obj == None:
+            return self.responses.BAD_REQUEST
+        serialiser = self.get_serializer(obj, data=data, partial=True)
+        serialiser.is_valid(raise_exception=True)
+        item = serialiser.save()
+        if item == None:
+            return self.responses.BAD_REQUEST
+        else:
+            return self.responses.json(item)
 
     def list(self, request, *args, **kwargs):
         serialiser = OrderSerialiser(self.get_queryset(), many=True)
@@ -125,6 +142,7 @@ class OrderItemViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
+        print(data)
 
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
@@ -196,7 +214,7 @@ class OrderItemStockLinkViewSet(ModelViewSet):
         """Get all order item stock links in the user's organisation."""
         user: User = self.request.user  # type: ignore
         return OrderItemStockLink.objects.all().filter(
-            order_id__organisation=user.organisation, **kwargs
+            order_item_id__order_id__organisation=user.organisation, **kwargs
             )
 
     def create(self, request, *args, **kwargs):
