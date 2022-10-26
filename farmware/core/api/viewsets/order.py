@@ -12,6 +12,7 @@ from ..models.order import (
     OrderItem,
     OrderItemStockLink
 )
+from ..models.stock import Stock
 from ..responses import DefaultResponses
 from ..serialisers.order import (
     OrderSerialiser,
@@ -21,6 +22,9 @@ from ..serialisers.order import (
     OrderItemStockLinkSerialiser,
     OrderUpdateSerialiser
     )
+from ..serialisers.stock import (
+    StockSerialiser
+)
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
 
@@ -137,6 +141,21 @@ class OrderItemViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @action(detail=True, methods=['get'])
+    def get_available_stock(self, request, pk=None):
+        order_item: OrderItem = self.get_object()
+
+        data = StockSerialiser(Stock.objects.all().filter(
+            produce_id=order_item.produce_id, 
+            variety_id=order_item.produce_variety_id,
+            date_completed__isnull=True
+            ), many=True
+        ).data
+
+        response = {'stock':data}
+
+        return Response(response, status=status.HTTP_200_OK)
 ###############################################################################
 
 

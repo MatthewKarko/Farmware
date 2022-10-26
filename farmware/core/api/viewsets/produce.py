@@ -1,8 +1,12 @@
+from http.client import responses
 from django.db import IntegrityError
 from django.http import QueryDict
+import json
+from django.forms.models import model_to_dict
 
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 
 from ..models.produce import Produce, ProduceVariety, ProduceQuantitySuffix
 from ..responses import DefaultResponses
@@ -50,19 +54,61 @@ class ProduceViewSet(ModelViewSet):
         user: User = self.request.user  # type: ignore
         return Produce.objects.all().filter(organisation=user.organisation, **kwargs)
 
+    @action(detail=True, methods=['get'])
+    def get_varieties(self, request, *args, **kwargs):
+        user: User = self.request.user
+        prod = (Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation)).first()
+        if (prod == None):
+            return self.responses.DOES_NOT_EXIST
+
+        varieties = ProduceVariety.objects.all().filter(produce_id=kwargs.get('pk'))
+        return self.responses.list_json(varieties)
+
+    @action(detail=True, methods=['get'])
+    def get_suffixes(self, request, *args, **kwargs):
+        user: User = self.request.user
+        prod = (Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation)).first()
+        if (prod == None):
+            return self.responses.DOES_NOT_EXIST
+
+        suffixes = ProduceQuantitySuffix.objects.all().filter(produce_id=kwargs.get('pk'))
+        return self.responses.list_json(suffixes)
+
+    @action(detail=True, methods=['post'])
+    def create_varieties(self, request, *args, **kwargs):
+        data: QueryDict = request.data
+        user: User = self.request.user
+        varieties = json.loads(data['name'])
+        if (len(varieties) == 0):
+            return self.responses.BAD_REQUEST
+        
+        output = []
+        prod = Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation).first()
+        if (prod != None):
+            for name in varieties:
+                obj = ProduceVariety(produce_id = prod, variety=name)
+                obj.save()
+                output.append(obj)
+
+        if len(output) == 0:
+            return self.responses.BAD_REQUEST
+
+        return self.responses.list_json(output)
+
     def create(self, request, *args, **kwargs):
         """Create new produce."""
         data: QueryDict = request.data
 
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
+        item = None
         try:
-            serialiser.save()
+            item = serialiser.save()
         except IntegrityError as e:
             if 'UNIQUE constraint' in e.args[0]:
                 return self.responses.ITEM_ALREADY_EXISTS
             return self.responses.RESPONSE_FORBIDDEN
-        return self.responses.CREATION_SUCCESS
+        return self.responses.json(item)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -92,7 +138,8 @@ class ProduceVarietyViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        serialiser = self.get_serializer(data=data)
+        print(data)
+        serialiser = self.get_serializer(data=data, many=isinstance(request.data, list))
         serialiser.is_valid(raise_exception=True)
         try:
             serialiser.save()
