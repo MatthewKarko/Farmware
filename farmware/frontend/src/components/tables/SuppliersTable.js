@@ -1,14 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { useNavigate } from 'react-router-dom';
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import useNotification from "../alert/UseNotification";
 
 function SuppliersPage() {
-    const navigate = useNavigate();
+    const [msg, sendNotification] = useNotification();
 
     const [suppliersList, setSuppliersList] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
@@ -124,6 +124,7 @@ function SuppliersPage() {
         setDisplayEditModal(!displayEditModal);
 
         reloadSuppliers();
+        sendNotification({msg: 'Success: Supplier Updated', variant: 'success'});
     };
 
     const handleEditClick = (event, row) => {
@@ -149,6 +150,8 @@ function SuppliersPage() {
         clearState();
         setDisplayEditModal(!displayEditModal);
         reloadSuppliers();
+        sendNotification({msg: 'Success: Supplier Deleted', variant: 'success'});
+
     }
 
     const handleCreateSubmit = (event) => {
@@ -191,6 +194,8 @@ function SuppliersPage() {
 
         //reload page
         reloadSuppliers();
+        sendNotification({msg: 'Success: Supplier Created', variant: 'success'});
+
     };
 
     return (

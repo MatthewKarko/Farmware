@@ -11,8 +11,10 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
+import useNotification from "../alert/UseNotification";
 
 function UsersTable() {
+  const [msg, sendNotification] = useNotification();
 
   const [usersList, setUsersList] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -182,6 +184,8 @@ function UsersTable() {
     reloadUsers();
 
     setDisplayEditModal(!displayEditModal);
+
+    sendNotification({msg: 'Success: User Updated', variant: 'success'});
   };
 
   const handleEditClick = (event, row) => {
@@ -223,6 +227,7 @@ function UsersTable() {
     clearState();
     setDisplayEditModal(!displayEditModal);
     reloadUsers();
+    sendNotification({msg: 'Success: User Deleted', variant: 'success'});
   }
 
 

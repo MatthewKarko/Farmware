@@ -6,9 +6,10 @@ import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import useNotification from "../alert/UseNotification";
 
 function AreaCodesTable() {
-    const navigate = useNavigate();
+    const [msg, sendNotification] = useNotification();
 
     const [areaCodesList, setAreaCodesList] = useState([]);
     const [organisationCode, setOrganisationCode] = useState("");
@@ -118,6 +119,8 @@ function AreaCodesTable() {
         setDisplayEditModal(!displayEditModal);
 
         reloadAreaCodes();
+        sendNotification({msg: 'Success: Area Code Updated', variant: 'success'});
+
     };
 
     const handleEditClick = (event, row) => {
@@ -143,6 +146,7 @@ function AreaCodesTable() {
         clearState();
         reloadAreaCodes();
         setDisplayEditModal(!displayEditModal);
+        sendNotification({msg: 'Success: Area Code Deleted', variant: 'success'});
     }
 
     const handleCreateSubmit = (event) => {
@@ -184,6 +188,8 @@ function AreaCodesTable() {
         setDisplayCreateModal(!displayCreateModal);
 
         reloadAreaCodes();
+
+        sendNotification({msg: 'Success: Area Code Created', variant: 'success'});
     };
 
     return (

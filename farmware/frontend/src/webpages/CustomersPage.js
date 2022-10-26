@@ -14,7 +14,6 @@ export default function CustomerPage() {
                 <SnackbarProvider maxSnack={3}>
                     <CustomersTable />
                 </SnackbarProvider>
-                {/* <CustomersTable /> */}
             </div>
         </div>
     );

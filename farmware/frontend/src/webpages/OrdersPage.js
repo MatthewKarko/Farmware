@@ -5,6 +5,7 @@ import '../css/DashboardPages.css';
 import axios from 'axios';
 import axiosInstance from '../axios.js';
 import Button from '@mui/material/Button';
+import { SnackbarProvider } from 'notistack';
 
 import { 
     BrowserRouter as Router, 
@@ -21,7 +22,9 @@ export default function OrdersPage() {
             <Navbar/> 
             <div className='componentContainer'>
                 <Header />
-                <OrdersTable/>
+                <SnackbarProvider maxSnack={3}>
+                    <OrdersTable />
+                </SnackbarProvider>
             </div>
    
         </div>

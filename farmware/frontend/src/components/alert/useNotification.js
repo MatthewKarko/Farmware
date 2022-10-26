@@ -1,17 +1,21 @@
 import { useSnackbar } from 'notistack';
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/material/SvgIcon/SvgIcon";
+// import IconButton from "@mui/material/IconButton";
+// import CloseIcon from "@mui/material/SvgIcon/SvgIcon";
 import React, {Fragment, useEffect, useState} from "react";
 
 const useNotification = () => {
     const [conf, setConf] = useState({});
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
     const action = key => (
-        <Fragment>
-            <IconButton onClick={() => { closeSnackbar(key) }}>
-                <CloseIcon />
+        <>
+            <IconButton onClick={() => { closeSnackbar(key) }}  sx={{color:"#FFFFFF", backgroundColor:"#FFFFFF"}}>
+                <CloseIcon sx={{color:"#FFFFFF", backgroundColor:"#FFFFFF"}}/>
             </IconButton>
-        </Fragment>
+            <button onClick={() => { closeSnackbar(snackbarId) }}>
+      Dismiss
+    </button>
+        </>
+        
     );
     useEffect(()=>{
         if(conf?.msg){
