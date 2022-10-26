@@ -19,7 +19,8 @@ from ..serialisers.order import (
     OrderCreationSerialiser,
     OrderFullSerialiser,
     OrderItemSerialiser,
-    OrderItemStockLinkSerialiser
+    OrderItemStockLinkSerialiser,
+    OrderUpdateSerialiser
     )
 from ..serialisers.stock import (
     StockSerialiser,
