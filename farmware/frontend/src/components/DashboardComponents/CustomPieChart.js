@@ -25,7 +25,7 @@ export default function CustomPieChart() {
         <PieChart width={340} height={310} mt={0}>
           <Pie
             data={data}
-            cx={200}
+            cx={195}
             cy={150}
             labelLine={false}
             // label={renderCustomizedLabel}
