@@ -12,7 +12,8 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django_test_migrations.migrator import Migrator
 from django.db import migrations, models
-from core.api.migrations import * #0001_initial,0002_initial,0003_auto_20221018_0824,0004_auto_20221018_1055,0005_auto_20221018_1132
+from core.api.migrations import *
+from .urls import * #0001_initial,0002_initial,0003_auto_20221018_0824,0004_auto_20221018_1055,0005_auto_20221018_1132
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
 
 # Create your tests here.
@@ -226,7 +227,7 @@ class  OrderStockTestCases(TestCase):
     area_code_id=areacode)
         customer=Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
         order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
-        OrderItem.objects.create(order_id =order,produce_id=produce,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
+        OrderItem.objects.create(order_id =order,produce_id=produce,produce_variety_id =producevariety,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
     def test_OrderItem(self):
         customer=Customer.objects.get(name="Henry")
         order=Order.objects.get(customer_id= customer)
@@ -338,7 +339,9 @@ class TestDirectMigration(MigratorTestCase):
         self.assertEquals(new_state.apps.get_model('core_api', 'OrderItem'),"not found")
         migrator.reset()
 
-
+class AreaCodeViewsetTestCases(TestCase):
+    def setUp(self):
+        pass
 
 
 ###class StockPickersTestCases(TestCase):
