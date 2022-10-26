@@ -10,6 +10,12 @@ class StockSerialiser(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class StockFilteredSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Stock
+        fields = ['produce_id', 'variety_id']
+
+
 class BulkAddStockSerialiser(serializers.ModelSerializer):
     quantity = serializers.FloatField()
     class Meta:
@@ -33,12 +39,6 @@ class StockCreationSerialiser(serializers.ModelSerializer):
 
 
 ### STOCK PICKERS #############################################################
-class StockFilteredSerialiser(serializers.ModelSerializer):
-    class Meta:
-        model = Stock
-        fields = ['produce_id', 'variety_id']
-
-
 class StockPickersSerialiser(serializers.ModelSerializer):
     class Meta:
         model = StockPickers
