@@ -9,6 +9,7 @@ class Stock(models.Model):
     produce_id = models.ForeignKey('core_api.Produce', on_delete=models.DO_NOTHING)
     variety_id = models.ForeignKey('core_api.ProduceVariety', on_delete=models.DO_NOTHING)
     quantity = models.FloatField()
+    quantity_available = models.FloatField()
     quantity_suffix_id = models.ForeignKey('core_api.ProduceQuantitySuffix', on_delete=models.DO_NOTHING)
     supplier_id = models.ForeignKey('core_api.Supplier', on_delete=models.DO_NOTHING)
     date_seeded = models.DateField(null=True, blank=True)

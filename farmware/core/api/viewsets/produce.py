@@ -56,7 +56,7 @@ class ProduceViewSet(ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def get_varieties(self, request, *args, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         prod = (Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation)).first()
         if (prod == None):
             return self.responses.DOES_NOT_EXIST
@@ -66,7 +66,7 @@ class ProduceViewSet(ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def get_suffixes(self, request, *args, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         prod = (Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation)).first()
         if (prod == None):
             return self.responses.DOES_NOT_EXIST
@@ -77,7 +77,7 @@ class ProduceViewSet(ModelViewSet):
     @action(detail=True, methods=['post'])
     def create_varieties(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         varieties = json.loads(data['name'])
         if (len(varieties) == 0):
             return self.responses.BAD_REQUEST

@@ -21,7 +21,7 @@ class StockViewSet(ModelViewSet):
     RESPONSE_DELETION_SUCCESS = Response({'success': 'Stock deleted.'}, status=status.HTTP_200_OK)
 
     def get_queryset(self, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         return Stock.objects.all().filter(organisation=user.organisation, **kwargs)
     
     def valid_organisation(self, request):
@@ -62,7 +62,7 @@ class StockPickersViewSet(ModelViewSet):
     RESPONSE_DELETION_SUCCESS = Response({'success': 'Stock Picker deleted.'}, status=status.HTTP_200_OK)
 
     def get_queryset(self, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         return StockPickers.objects.all().filter(stock_id__organisation=user.organisation, **kwargs)
 
     def valid_organisation(self, request, data):
