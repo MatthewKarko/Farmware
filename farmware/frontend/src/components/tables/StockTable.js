@@ -103,7 +103,7 @@ function StockTable() {
     const handleDeleteClick = (event, row) => {
         event.preventDefault();
         axiosInstance
-            .delete('stock/'+row.id+'/', {
+            .delete('stock/' + row.id + '/', {
             })
             .catch((err) => {
                 alert("ERROR: Failed to delete stock");
@@ -123,6 +123,7 @@ function StockTable() {
         date_planted: "",
         date_picked: "",
         ehd: "",
+        base_equivalent: ""
     });
 
     const [produceSuffixes, setProduceSuffixes] = useState([]);
@@ -139,6 +140,7 @@ function StockTable() {
             date_planted: "",
             date_picked: "",
             ehd: "",
+            base_equivalent: ""
         };
         setTemporaryStock({ ...formValues });
     };
@@ -203,6 +205,15 @@ function StockTable() {
     const handleSuffixChange = (event) => {
         const newFormData = { ...temporaryStock };
         newFormData["quantity_suffix_id"] = event.target.value;
+        //going to need to get the base_equivalent from the event.target.value 
+        let base_equivalent = 0;
+        for (let i = 0; i < produceSuffixes.length; i++) {
+            if (produceSuffixes[i].id == event.target.value) {
+                console.log("found suffix");
+                base_equivalent = produceSuffixes[i].base_equivalent;
+            }
+        }
+        newFormData["base_equivalent"] = base_equivalent;
         setTemporaryStock({ ...newFormData });
     };
 
@@ -244,17 +255,17 @@ function StockTable() {
             supplier_id: temporaryStock.supplier_id,
             area_code_id: temporaryStock.area_code_id,
         }
-        if(temporaryStock.date_seeded!=""){
-            postObject['date_seeded']=temporaryStock.date_seeded;
+        if (temporaryStock.date_seeded != "") {
+            postObject['date_seeded'] = temporaryStock.date_seeded;
         }
-        if(temporaryStock.date_picked!=""){
-            postObject['date_picked']=temporaryStock.date_picked;
+        if (temporaryStock.date_picked != "") {
+            postObject['date_picked'] = temporaryStock.date_picked;
         }
-        if(temporaryStock.date_planted!=""){
-            postObject['date_planted']=temporaryStock.date_planted;
+        if (temporaryStock.date_planted != "") {
+            postObject['date_planted'] = temporaryStock.date_planted;
         }
-        if(temporaryStock.ehd!=""){
-            postObject['ehd']=temporaryStock.ehd;
+        if (temporaryStock.ehd != "") {
+            postObject['ehd'] = temporaryStock.ehd;
         }
 
         console.log(postObject);
@@ -604,27 +615,35 @@ function StockTable() {
                         </FormControl>
                     </Box>
 
+                    <Typography sx={{mt:2}}>Base Equivalent: {temporaryStock.base_equivalent}</Typography>
 
-                    <TextField
-                        required
-                        margin="normal"
-                        name="produce_qty"
-                        label="Produce Quantity"
-                        type="produce_qty"
-                        id="produce_qty"
-                        autoComplete="produce_qty"
-                        size="small"
-                        value={temporaryStock.quantity}
-                        onChange={handleFormChange}
-                        sx={{ width: "200px" }}
-                        variant="filled"
-                    />
+                    <Box noValidate>
+                        {/* <FormControl sx={{ width: "200px", mt: 5 }}>
+                        </FormControl> */}
+
+                        <FormControl sx={{ width: "200px" }}>
+                            <TextField
+                                required
+                                margin="normal"
+                                name="produce_qty"
+                                label="Stock Quantity"
+                                type="produce_qty"
+                                id="produce_qty"
+                                autoComplete="produce_qty"
+                                size="small"
+                                value={temporaryStock.quantity}
+                                onChange={handleFormChange}
+                                sx={{ width: "200px" }}
+                                variant="filled"
+                            />
+                        </FormControl>
+                    </Box>
 
                     <Box noValidate>
                         <Button
                             type="submit"
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{ mt: 2, mb: 2 }}
                         >
                             Create
                         </Button>
