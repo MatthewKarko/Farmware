@@ -4,20 +4,30 @@ import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import useNotification from "../alert/UseNotification";
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 function StockTable() {
     const [msg, sendNotification] = useNotification(); //for the success alerts
 
     const [stockList, setStockList] = useState([]);
     const [produceList, setProduceList] = useState([]);
+    const [areaCodesList, setAreaCodeList] = useState([]);
+    const [supplierList, setSupplierList] = useState([]);
 
     const [displayCreateModal, setDisplayCreateModal] = useState(false);
 
     const [reloadFlag, setReloadFlag] = useState(false);
     const reloadStock = () => {
         setStockList([]);
-        setReloadFlag(!reloadFlag); //prompts a reload of stock
+        setProduceList([]);
+        setAreaCodeList([]);
+        setSupplierList([]);
+        setReloadFlag(!reloadFlag);
     }
+
     useEffect(() => {
         axiosInstance
             .get(`stock/`, {
@@ -41,6 +51,30 @@ function StockTable() {
             })
             .catch((err) => {
                 alert("ERROR: Getting produce failed");
+            });
+
+        axiosInstance
+            .get(`area_code/`, {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setAreaCodeList(areaCodeList => [...areaCodeList, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting area codes failed");
+            });
+
+        axiosInstance
+            .get(`supplier/`, {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setSupplierList(supplierList => [...supplierList, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting suppliers failed");
             });
     }, [reloadFlag]);
 
@@ -75,33 +109,51 @@ function StockTable() {
         //Confirmation modal
     };
 
-    const [temporaryProduce, setTemporaryProduce] = useState({
-        produceSelected: "",
-        suffixSelected: "",
-        varietySelected: "",
-        produceQuantity: 0,
+    const [temporaryStock, setTemporaryStock] = useState({
+        produce_id: "",
+        quantity_suffix_id: "",
+        variety_id: "",
+        quantity: "",
+        supplier_id: "",
+        area_code_id: "",
+        date_seeded: "",
+        date_planted: "",
+        date_picked: "",
+        ehd: "",
     });
 
     const [produceSuffixes, setProduceSuffixes] = useState([]);
 
-    const clearTemporaryProduce = () => {
+    const clearTemporaryStock = () => {
         const formValues = {
-            produceSelected: "",
-            suffixSelected: "",
-            varietySelected: "",
-            produceQuantity: 0,
+            produce_id: "",
+            quantity_suffix_id: "",
+            variety_id: "",
+            quantity: "",
+            supplier_id: "",
+            area_code_id: "",
+            date_seeded: "",
+            date_planted: "",
+            date_picked: "",
+            ehd: "",
         };
-        setTemporaryProduce({ ...formValues });
+        setTemporaryStock({ ...formValues });
     };
 
     const handleProduceChange = (event) => {
-        //clear the temporary produce (since all the fields change)
-        clearTemporaryProduce();
+        //clear the fields that relate to produce. And set produce to new value.
+        const newFormData = { ...temporaryStock };
+        newFormData["produce_id"] = event.target.value;
+        newFormData["quantity_suffix_id"] = "";
+        newFormData["variety_id"] = "";
+        newFormData["quantity"] = "";
+        setTemporaryStock({ ...newFormData });
+
 
         //set new produce
-        const newFormData = { ...temporaryProduce };
-        newFormData["produceSelected"] = event.target.value;
-        setTemporaryProduce({ ...newFormData });
+        // const newFormData = { ...temporaryProduce };
+        // newFormData["produce_id"] = event.target.value;
+        // setTemporaryProduce({ ...newFormData });
 
         // Correct the displayed suffix and variety options, and clear any prior stored state.
 
@@ -124,17 +176,6 @@ function StockTable() {
                 alert("ERROR: Getting suffixes for produce id failed");
             });
 
-        // //Temporarily, it will switch between two suffix lists to demonstrate functionality
-        // if (len == 2) {
-        //     for (let i = 0; i < produceSuffixData2.length; i++) {
-        //         produceSuffixes.push(produceSuffixData2[i]);
-        //     }
-        // } else {
-        //     for (let i = 0; i < produceSuffixData.length; i++) {
-        //         produceSuffixes.push(produceSuffixData[i]);
-        //     }
-        // }
-
         //now do same for varieties
         //remove all from the suffix state
         let len_var = produceVarieties.length
@@ -154,58 +195,83 @@ function StockTable() {
             .catch((err) => {
                 alert("ERROR: Getting suffixes for produce id failed");
             });
-
-        // //Temporarily, it will switch between two varieties lists to demonstrate functionality
-        // if (len_var == 2) {
-        //     for (let i = 0; i < produceVarietyData2.length; i++) {
-        //         produceVarieties.push(produceVarietyData2[i]);
-        //     }
-        // } else {
-        //     for (let i = 0; i < produceVarietyData.length; i++) {
-        //         produceVarieties.push(produceVarietyData[i]);
-        //     }
-        // }
     };
 
     const handleSuffixChange = (event) => {
-        const newFormData = { ...temporaryProduce };
-        newFormData["suffixSelected"] = event.target.value;
-        setTemporaryProduce({ ...newFormData });
+        const newFormData = { ...temporaryStock };
+        newFormData["quantity_suffix_id"] = event.target.value;
+        setTemporaryStock({ ...newFormData });
     };
 
     const [produceVarieties, setProduceVarieties] = useState([]);
 
     const handleVarietyChange = (event) => {
-        const newFormData = { ...temporaryProduce };
-        newFormData["varietySelected"] = event.target.value;
-        setTemporaryProduce({ ...newFormData });
+        const newFormData = { ...temporaryStock };
+        newFormData["variety_id"] = event.target.value;
+        setTemporaryStock({ ...newFormData });
     };
 
     const handleFormChange = (event) => {
         event.preventDefault();
-        if (!isNaN(+event.target.value)) {
-            //is number
-            const newFormData = { ...temporaryProduce };
-            newFormData["produceQuantity"] = event.target.value;
-            setTemporaryProduce({ ...newFormData });
-        } else {
+        if (event.target.value.length == 0) {
+            const newFormData = { ...temporaryStock };
+            newFormData["quantity"] = "";
+            setTemporaryStock({ ...newFormData });
+            return;
+        }
+        const parsed = parseInt(event.target.value, 10);
+        if (isNaN(parsed)) {
             alert("Invalid quantity input.");
+        } else {
+            const newFormData = { ...temporaryStock };
+            newFormData["quantity"] = parsed;
+            setTemporaryStock({ ...newFormData });
         }
     };
 
     const [displayAddProduceModal, setDisplayAddProduceModal] = useState(false);
 
-    const handleAddProduceSubmit = (event) => {
+    const handleStockCreateSubmit = (event) => {
         event.preventDefault();
+
+        //send off the request
+        var postObject = {
+            produce_id: temporaryStock.produce_id,
+            quantity_suffix_id: temporaryStock.quantity_suffix_id,
+            variety_id: temporaryStock.variety_id,
+            quantity: temporaryStock.quantity,
+            supplier_id: temporaryStock.supplier_id,
+            area_code_id: temporaryStock.area_code_id,
+        }
+        if(temporaryStock.date_seeded!=""){
+            postObject['date_seeded']=temporaryStock.date_seeded;
+        }
+        if(temporaryStock.date_picked!=""){
+            postObject['date_picked']=temporaryStock.date_picked;
+        }
+        if(temporaryStock.date_planted!=""){
+            postObject['date_planted']=temporaryStock.date_planted;
+        }
+        if(temporaryStock.ehd!=""){
+            postObject['ehd']=temporaryStock.ehd;
+        }
+
+        console.log(postObject);
+
+        axiosInstance.post(`stock/`, postObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
+
+        clearTemporaryStock();
 
         //TO DO: CHECKS FOR VALID INPUT
 
-        //ASSUMING VALID INPUT:
-        alert("Submitted a produce add to order.\nProduce ID:" + temporaryProduce.produceSelected + "\nSuffix ID: " + temporaryProduce.suffixSelected + "\nVariety ID: " + temporaryProduce.varietySelected + "\nQuantity: " + temporaryProduce.produceQuantity)
+        setDisplayCreateModal(false);
 
-        //CLEAR PRODUCE SELECTED FIELDS
-        clearTemporaryProduce();
-        setDisplayAddProduceModal(false);
+        reloadStock();
+
+        sendNotification({ msg: 'Success: Stock Created', variant: 'success' });
     };
 
     //This is required to transfer the changes to produce suffix list to the Select menu
@@ -223,6 +289,53 @@ function StockTable() {
             <ListItemText primary={variety_val.variety} />
         </MenuItem>);
     }
+
+
+    const handleSupplierChange = (event) => {
+        event.preventDefault();
+        const newFormData = { ...temporaryStock };
+        newFormData["supplier_id"] = event.target.value;
+        setTemporaryStock({ ...newFormData });
+    }
+
+    const handleAreaCodeChange = (event) => {
+        event.preventDefault();
+        const newFormData = { ...temporaryStock };
+        newFormData["area_code_id"] = event.target.value;
+        setTemporaryStock({ ...newFormData });
+    }
+
+    const [seededDateValue, setSeededDateValue] = useState("");
+    const handleSeededDateChange = (newValue) => {
+        setSeededDateValue(newValue); //set value for the date input field
+        const newFormData = { ...temporaryStock };
+        newFormData["date_seeded"] = dayjs(newValue).format('DD/MM/YYYY');
+        setTemporaryStock({ ...newFormData });
+    };
+
+    const [plantedDateValue, setPlantedDateValue] = useState("");
+    const handlePlantedDateChange = (newValue) => {
+        setPlantedDateValue(newValue); //set value for the date input field
+        const newFormData = { ...temporaryStock };
+        newFormData["date_planted"] = dayjs(newValue).format('DD/MM/YYYY');
+        setTemporaryStock({ ...newFormData });
+    };
+
+    const [pickedDateValue, setPickedDateValue] = useState("");
+    const handlePickedDateChange = (newValue) => {
+        setPickedDateValue(newValue); //set value for the date input field
+        const newFormData = { ...temporaryStock };
+        newFormData["date_picked"] = dayjs(newValue).format('DD/MM/YYYY');
+        setTemporaryStock({ ...newFormData });
+    };
+
+    const [ehd, setEHD] = useState("");
+    const handleEHD = (newValue) => {
+        setEHD(newValue); //set value for the date input field
+        const newFormData = { ...temporaryStock };
+        newFormData["ehd"] = dayjs(newValue).format('DD/MM/YYYY');
+        setTemporaryStock({ ...newFormData });
+    };
 
     return (
         <React.Fragment>
@@ -337,9 +450,107 @@ function StockTable() {
                 }}>Create Stock</Typography>
 
 
-                <Box component="form" onSubmit={handleAddProduceSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Box component="form" onSubmit={handleStockCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
                     <Box noValidate>
-                        <FormControl sx={{ width: "300px", mt: 2 }}>
+                        <FormControl sx={{ width: "200px", mt: 2 }}>
+                            <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                // value={temporaryOrder.produce_id}
+                                label="Select a Supplier"
+                                onChange={handleSupplierChange}
+                                value={temporaryStock.supplier_id}
+                                sx={{ height: "55px" }}
+                            >
+                                {
+                                    supplierList.map((supplier) => {
+                                        return (
+                                            <MenuItem key={supplier.id} value={supplier.id}>
+                                                <ListItemText primary={supplier.name} />
+                                            </MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+
+                        <FormControl sx={{ width: "200px", mt: 2, ml: 2 }}>
+                            <InputLabel id="demo-simple-select-label">Area Code</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                // value={temporaryOrder.produce_id}
+                                label="Select an Area Code"
+                                onChange={handleAreaCodeChange}
+                                value={temporaryStock.area_code_id}
+                                sx={{ height: "55px" }}
+                            >
+                                {
+                                    areaCodesList.map((areaCode) => {
+                                        return (
+                                            <MenuItem key={areaCode.id} value={areaCode.id}>
+                                                <ListItemText primary={areaCode.area_code} />
+                                            </MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <Box noValidate>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DesktopDatePicker
+                                label="Date Seeded"
+                                name="seeded_date"
+                                inputFormat="DD/MM/YYYY"
+                                value={seededDateValue}
+                                onChange={handleSeededDateChange}
+                                renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2 }} />}
+                            />
+                        </LocalizationProvider>
+
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DesktopDatePicker
+                                label="Date Planted"
+                                name="planted_date"
+                                inputFormat="DD/MM/YYYY"
+                                value={plantedDateValue}
+                                onChange={handlePlantedDateChange}
+                                renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
+                            />
+                        </LocalizationProvider>
+
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DesktopDatePicker
+                                label="Date Picked"
+                                name="date_picked"
+                                inputFormat="DD/MM/YYYY"
+                                value={pickedDateValue}
+                                onChange={handlePickedDateChange}
+                                renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
+                            />
+                        </LocalizationProvider>
+
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DesktopDatePicker
+                                label="Earliest Harvest Date"
+                                name="ehd"
+                                inputFormat="DD/MM/YYYY"
+                                value={ehd}
+                                onChange={handleEHD}
+                                renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
+                            />
+                        </LocalizationProvider>
+
+
+                    </Box>
+
+
+                    <Box noValidate>
+                        <FormControl sx={{ width: "200px", mt: 2 }}>
                             <InputLabel id="demo-simple-select-label">Produce</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -347,7 +558,8 @@ function StockTable() {
                                 // value={temporaryOrder.produce_id}
                                 label="Select a Produce"
                                 onChange={handleProduceChange}
-                                value={temporaryProduce.produceSelected}
+                                value={temporaryStock.produce_id}
+                                sx={{ height: "55px" }}
                             >
                                 {
                                     produceList.map((produce) => {
@@ -360,32 +572,30 @@ function StockTable() {
                                 }
                             </Select>
                         </FormControl>
-                    </Box>
 
-                    <Box noValidate>
-                        <FormControl sx={{ width: "300px", mt: 2 }}>
-                            <InputLabel id="demo-simple-select-label">Suffix</InputLabel>
+                        <FormControl sx={{ width: "200px", mt: 2, ml: 2 }}>
+                            <InputLabel id="demo-simple-select-label">Produce Suffix</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label="Select a Suffix"
                                 onChange={handleSuffixChange}
-                                value={temporaryProduce.suffixSelected}
+                                value={temporaryStock.quantity_suffix_id}
+                                sx={{ height: "55px" }}
                             >
                                 {produceSuffixOptions}
                             </Select>
                         </FormControl>
-                    </Box>
 
-                    <Box noValidate>
-                        <FormControl sx={{ width: "300px", mt: 2 }}>
-                            <InputLabel id="demo-simple-select-label">Variety</InputLabel>
+                        <FormControl sx={{ width: "200px", mt: 2, ml: 2 }}>
+                            <InputLabel id="demo-simple-select-label">Produce Variety</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label="Select a Variety"
                                 onChange={handleVarietyChange}
-                                value={temporaryProduce.varietySelected}
+                                value={temporaryStock.variety_id}
+                                sx={{ height: "55px" }}
                             >
                                 {produceVarietyOptions}
                             </Select>
@@ -402,9 +612,9 @@ function StockTable() {
                         id="produce_qty"
                         autoComplete="produce_qty"
                         size="small"
-                        value={temporaryProduce.produceQuantity}
+                        value={temporaryStock.quantity}
                         onChange={handleFormChange}
-                        sx={{ width: "300px" }}
+                        sx={{ width: "200px" }}
                         variant="filled"
                     />
 
