@@ -121,7 +121,7 @@ class OrderViewSet(ModelViewSet):
 ### ORDER ITEM ################################################################
 class OrderItemViewSet(ModelViewSet):
     serializer_class = OrderItemSerialiser
-    permission_classes = [IsAuthenticated, IsInOrganisation]
+    permission_classes = [IsAuthenticated]
     responses = DefaultResponses('Order Item')
 
     def get_queryset(self, **kwargs):
@@ -193,13 +193,16 @@ class OrderItemViewSet(ModelViewSet):
         order_item: OrderItem = self.get_object()
         data: QueryDict = request.data
 
-        serialiser: BulkAddStockSerialiser = self.get_serializer(data=data, many=True)
+        serialiser: BulkAddStockSerialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
-
-        print(serialiser)
-        print(serialiser.data)
-        for stock in serialiser.data:
-            print('stock:', stock)
+        for stock_item in serialiser.validated_data.get('items'):  # type: ignore
+            # Create new order item stock link (OrderItemStockLink)
+            OrderItemStockLink.objects.create(
+                order_item_id=order_item.pk,
+                stock_id = stock_item.id,
+                quantity = stock_item.quantity,
+                quantity_suffix_id = stock_item.quantity_suffix_id
+            )
 
         return Response(serialiser.data, status=status.HTTP_200_OK)
 ###############################################################################

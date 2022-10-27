@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.db import models
 
+from .produce import ProduceQuantitySuffix
+
+
 class Stock(models.Model):
     organisation = models.ForeignKey(
         'core_api.Organisation',
@@ -23,6 +26,22 @@ class Stock(models.Model):
         verbose_name = "stock"
         verbose_name_plural = "stock"
         ordering = ['-date_picked']
+
+    def use_available_stock(self, quantity: float):
+        self.quantity_available -= quantity
+        self.save()
+
+    def refund_available_stock(self, quantity: float):
+        self.quantity_available += quantity
+        self.save()
+
+    def calculate_native_quantity(
+        self, 
+        quantity: float, 
+        base_equivalent: float
+        ) -> float:
+        self_base_equivalent = self.quantity_suffix_id.base_equivalent
+        return quantity * (base_equivalent / self_base_equivalent)
 
 class StockPickers(models.Model):
     stock_id = models.ManyToManyField(Stock)
