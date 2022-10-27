@@ -1,14 +1,16 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useNavigate } from 'react-router-dom';
-import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Snackbar, Alert } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import useNotification from "../alert/UseNotification";
 
 function CustomersTable() {
     const navigate = useNavigate();
+    const [msg, sendNotification] = useNotification();
 
     const [customersList, setCustomersList] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
@@ -24,6 +26,12 @@ function CustomersTable() {
         name: "",
         phone_number: "",
     });
+
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadCustomers = () => {
+        setCustomersList([]);
+        setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
 
     const clearState = () => {
         const formValues = {
@@ -62,8 +70,7 @@ function CustomersTable() {
             .catch((err) => {
                 alert("ERROR: Getting customers failed");
             });
-    }, []);
-
+    }, [reloadFlag]);
 
     const handleFormChange = (event) => {
         event.preventDefault();
@@ -113,13 +120,13 @@ function CustomersTable() {
 
         //reset values
         clearState();
+        reloadCustomers();
 
         //close modal
         setDisplayEditModal(!displayEditModal);
 
-        //reload page
-        window.location.reload();
-        navigate("/customers");
+        // setOpenSuccessfulEditAlert(true);
+        sendNotification({msg: 'Success: Customer Updated', variant: 'success'});
     };
 
     const handleEditClick = (event, row) => {
@@ -143,7 +150,9 @@ function CustomersTable() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        window.location.reload();
+        setDisplayEditModal(!displayEditModal);
+        reloadCustomers();
+        sendNotification({msg: 'Success: Customer Deleted', variant: 'success'});
     }
 
     const handleCreateSubmit = (event) => {
@@ -183,11 +192,12 @@ function CustomersTable() {
         //reset values
         clearState();
 
+        reloadCustomers();
+
         //close modal
         setDisplayCreateModal(!displayCreateModal);
-
-        //reload page
-        window.location.reload();
+        
+        sendNotification({msg: 'Success: Customer Created', variant: 'success'});
     };
 
     return (
@@ -403,7 +413,6 @@ function CustomersTable() {
                 className={`Overlay ${displayCreateModal ? "Show" : ""}`}
                 onClick={() => { setDisplayCreateModal(!displayCreateModal); clearState(); }}
             />
-
         </React.Fragment>
     )
 }

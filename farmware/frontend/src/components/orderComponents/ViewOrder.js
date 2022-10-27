@@ -266,7 +266,6 @@ function ViewOrder() {
         alert("SUCCESS: Make API call.");
         clearTemporaryStockAdded();
         setDisplayAddStockModal(false);
-        window.location.reload();
     }
 
     return (

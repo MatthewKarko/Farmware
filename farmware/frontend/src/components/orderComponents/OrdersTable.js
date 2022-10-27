@@ -108,8 +108,8 @@ function OrdersTable() {
       "\nDate: " + temporaryOrder.order_date);
     clearTemporaryOrderState();
     setDisplayCreateModal(false);
-    //reload page
-    window.location.reload();
+
+    //reload the data on page
   };
 
   useEffect(() => {
