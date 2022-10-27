@@ -283,6 +283,11 @@ function StockTable() {
 
         reloadStock();
 
+        setPickedDateValue(null);
+        setPlantedDateValue(null);
+        setSeededDateValue(null);
+        setEHD(null);
+        
         sendNotification({ msg: 'Success: Stock Created', variant: 'success' });
     };
 
@@ -400,7 +405,7 @@ function StockTable() {
                                 <TableCell className="tableCell">ID</TableCell>
                                 <TableCell className="tableCell">Produce Name</TableCell>
                                 <TableCell className="tableCell">Produce Variety</TableCell>
-                                <TableCell className="tableCell">SUFFIX</TableCell>
+                                <TableCell className="tableCell">Produce Suffix</TableCell>
                                 <TableCell className="tableCell">Stock Quantity</TableCell>
                                 <TableCell className="tableCell"></TableCell>
                             </TableRow>
@@ -542,7 +547,6 @@ function StockTable() {
                                 name="date_picked"
                                 inputFormat="DD/MM/YYYY"
                                 value={pickedDateValue || null}
-
                                 onChange={handlePickedDateChange}
                                 renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
                             />
