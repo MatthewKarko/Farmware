@@ -12,7 +12,7 @@ class Stock(models.Model):
     produce_id = models.ForeignKey('core_api.Produce', on_delete=models.DO_NOTHING)
     variety_id = models.ForeignKey('core_api.ProduceVariety', on_delete=models.DO_NOTHING)
     quantity = models.FloatField()
-    quantity_available = models.FloatField()
+    quantity_available = models.FloatField(blank=True, default=0)
     quantity_suffix_id = models.ForeignKey('core_api.ProduceQuantitySuffix', on_delete=models.DO_NOTHING)
     supplier_id = models.ForeignKey('core_api.Supplier', on_delete=models.DO_NOTHING)
     date_seeded = models.DateField(null=True, blank=True)
@@ -42,6 +42,9 @@ class Stock(models.Model):
         ) -> float:
         self_base_equivalent = self.quantity_suffix_id.base_equivalent
         return quantity * (base_equivalent / self_base_equivalent)
+
+    def __str__(self) -> str:
+        return f'{self.quantity_available:.2f} (/{self.quantity:.2f}) {self.produce_id} {self.quantity_suffix_id} {self.supplier_id} [{self.date_picked.date()}]' 
 
 class StockPickers(models.Model):
     stock_id = models.ManyToManyField(Stock)

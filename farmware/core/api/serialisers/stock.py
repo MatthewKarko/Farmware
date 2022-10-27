@@ -50,6 +50,7 @@ class StockCreationSerialiser(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['organisation'] = self.context['request'].user.organisation
+        validated_data['quantity_available'] = validated_data['quantity']
         return Stock.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
