@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.db import models
 
-from .produce import ProduceQuantitySuffix
-
 
 class Stock(models.Model):
     organisation = models.ForeignKey(
@@ -44,8 +42,10 @@ class Stock(models.Model):
         return quantity * (base_equivalent / self_base_equivalent)
 
     def __str__(self) -> str:
-        return f'{self.quantity_available:.2f} (/{self.quantity:.2f}) {self.produce_id} {self.quantity_suffix_id} {self.supplier_id} [{self.date_picked.date()}]' 
-
+        return (f'{self.quantity_available:.2f} (/{self.quantity:.2f}) '
+        + f'{self.produce_id} {self.quantity_suffix_id} {self.supplier_id} ' 
+        + f'[{self.date_picked.date()}]'    #type: ignore
+        )
 class StockPickers(models.Model):
     stock_id = models.ManyToManyField(Stock)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
