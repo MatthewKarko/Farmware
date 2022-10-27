@@ -226,7 +226,6 @@ function ViewOrder() {
         alert("send stock based on temporaryStockAdded array");
         clearTemporaryStockAdded();
         setDisplayAddStockModal(false);
-        window.location.reload();
     }
 
     return (

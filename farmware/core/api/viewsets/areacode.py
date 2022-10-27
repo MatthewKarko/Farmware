@@ -1,48 +1,73 @@
 from django.db import IntegrityError
 from django.http import QueryDict
-from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
+
+from core.api.responses import DefaultResponses
 
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
 from ..models import AreaCode
-from ..serialisers.areacode import AreaCodeSerialiser
+from ..serialisers.areacode import AreaCodeCreationSerialiser, AreaCodeSerialiser
 
 class AreaCodeViewSet(ModelViewSet):
-    # todo: check for area code uniqueness (note: using id for PK because multiple orgs might use the same area code)
-    
     serializer_class = AreaCodeSerialiser
     permission_classes = [IsAuthenticated, IsInOrganisation]
-    http_method_names = ['get', 'post', 'head', 'put', 'delete']
-    RESPONSE_FORBIDDEN = Response({'error': 'You are not an admin of the specified organisation.'}, status=status.HTTP_403_FORBIDDEN)
-    RESPONSE_CREATION_SUCCESS = Response({'success': 'Area Code created.'}, status=status.HTTP_200_OK)
-    RESPONSE_DELETION_SUCCESS = Response({'success': 'Area Code deleted.'}, status=status.HTTP_200_OK)
+    responses = DefaultResponses('Area Code')
 
     def get_queryset(self, **kwargs):
         user: User = self.request.user
         return AreaCode.objects.all().filter(organisation=user.organisation, **kwargs)
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'partial_update', 'update']:
+            return AreaCodeCreationSerialiser
+        else:
+            return AreaCodeSerialiser
 
     def valid_organisation(self, request, data):
         return request.user.organisation.code == data['organisation']
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        if not self.valid_organisation(request, data):
-            return self.RESPONSE_FORBIDDEN
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
-        serialiser.save()
-        return self.RESPONSE_CREATION_SUCCESS
+        item = None
+        try:
+            item = serialiser.save()
+        except IntegrityError as e:
+            if 'UNIQUE constraint' in e.args[0]:
+                return self.responses.ITEM_ALREADY_EXISTS
+            return self.responses.RESPONSE_FORBIDDEN
+        return self.responses.json(item)
 
     def update(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        if not self.valid_organisation(request, data):
-            return self.RESPONSE_FORBIDDEN
-        return super().update(request, *args, **kwargs)
+        obj = self.get_queryset().filter(id=kwargs.get('pk')).first()
+        if obj == None:
+            return self.responses.BAD_REQUEST
+        serialiser = self.get_serializer(obj, data=data)
+        serialiser.is_valid(raise_exception=True)
+        item = serialiser.save()
+        if item == None:
+            return self.responses.BAD_REQUEST
+        else:
+            return self.responses.json(item)
+
+    def partial_update(self, request, *args, **kwargs):
+        data: QueryDict = request.data
+        obj = self.get_queryset().filter(id=kwargs.get('pk')).first()
+        if obj == None:
+            return self.responses.BAD_REQUEST
+        serialiser = self.get_serializer(obj, data=data, partial=True)
+        serialiser.is_valid(raise_exception=True)
+        item = serialiser.save()
+        if item == None:
+            return self.responses.BAD_REQUEST
+        else:
+            return self.responses.json(item)
 
     def list(self, request, *args, **kwargs):
         serialiser = AreaCodeSerialiser(self.get_queryset(), many=True)
@@ -50,4 +75,4 @@ class AreaCodeViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
-        return self.RESPONSE_DELETION_SUCCESS
+        return self.responses.DELETION_SUCCESS

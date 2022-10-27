@@ -84,7 +84,7 @@ function Navbar() {
                             </ListItemButton>
                         </ListItem>
 
-                        <ListItem key="Packaging" disablePadding>
+                        {/* <ListItem key="Packaging" disablePadding>
                             <ListItemButton component={Link} to="/" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
@@ -96,7 +96,7 @@ function Navbar() {
                                 </ListItemIcon>
                                 <ListItemText primary="Packaging" />
                             </ListItemButton>
-                        </ListItem>
+                        </ListItem> */}
 
                         <ListItem key="Stock" disablePadding>
                             <ListItemButton component={Link} to="/" sx={{
@@ -202,7 +202,7 @@ function Navbar() {
                             </ListItemButton>
                         </ListItem>
 
-                        <ListItem key="Packaging" disablePadding>
+                        {/* <ListItem key="Packaging" disablePadding>
                             <ListItemButton component={Link} to="/" sx={{
                                 "&:hover": {
                                     backgroundColor: "#028357",
@@ -214,7 +214,7 @@ function Navbar() {
                                 </ListItemIcon>
                                 <ListItemText primary="Packaging" />
                             </ListItemButton>
-                        </ListItem>
+                        </ListItem> */}
                     </List>
                 </Drawer>
             </Box>

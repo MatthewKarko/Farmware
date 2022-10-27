@@ -1,14 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { useNavigate } from 'react-router-dom';
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import useNotification from "../alert/UseNotification";
 
 function TeamsPage() {
-    const navigate = useNavigate();
+    const [msg, sendNotification] = useNotification();
 
     const [teamsList, setTeamsList] = useState([]);
     const [organisationCode, setOrganisationCode] = useState("");
@@ -23,6 +23,12 @@ function TeamsPage() {
         category: "",
         name: "",
     });
+
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadTeams = () => {
+        setTeamsList([]);
+        setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
 
     const clearState = () => {
         const formValues = {
@@ -52,13 +58,13 @@ function TeamsPage() {
             .then((res) => {
                 res.data.map((data) => {
                     setTeamsList(teamsList => [...teamsList, data])
-                    // console.log(res.data)
+                    console.log(res.data)
                 })
             })
             .catch((err) => {
                 alert("ERROR: Getting teams failed");
             });
-    }, []);
+    }, [reloadFlag]);
 
 
     const handleFormChange = (event) => {
@@ -112,8 +118,9 @@ function TeamsPage() {
         //close modal
         setDisplayEditModal(!displayEditModal);
 
-        //reload page
-        window.location.reload();
+        reloadTeams();
+        sendNotification({msg: 'Success: Team Updated', variant: 'success'});
+
     };
 
     const handleEditClick = (event, row) => {
@@ -137,7 +144,10 @@ function TeamsPage() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        window.location.reload();
+        reloadTeams();
+        setDisplayEditModal(!displayEditModal);
+        sendNotification({msg: 'Success: Team Deleted', variant: 'success'});
+
     }
 
     const handleCreateSubmit = (event) => {
@@ -180,9 +190,8 @@ function TeamsPage() {
         //close modal
         setDisplayCreateModal(!displayCreateModal);
 
-        //reload page
-        window.location.reload();
-        navigate("/teams");
+        reloadTeams();
+        sendNotification({msg: 'Success: Team Created', variant: 'success'});
     };
 
     return (
