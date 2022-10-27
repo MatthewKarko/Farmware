@@ -519,7 +519,7 @@ function StockTable() {
                                 label="Date Seeded"
                                 name="seeded_date"
                                 inputFormat="DD/MM/YYYY"
-                                value={seededDateValue}
+                                value={seededDateValue || null}
                                 onChange={handleSeededDateChange}
                                 renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2 }} />}
                             />
@@ -530,7 +530,7 @@ function StockTable() {
                                 label="Date Planted"
                                 name="planted_date"
                                 inputFormat="DD/MM/YYYY"
-                                value={plantedDateValue}
+                                value={plantedDateValue || null}
                                 onChange={handlePlantedDateChange}
                                 renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
                             />
@@ -541,7 +541,8 @@ function StockTable() {
                                 label="Date Picked"
                                 name="date_picked"
                                 inputFormat="DD/MM/YYYY"
-                                value={pickedDateValue}
+                                value={pickedDateValue || null}
+
                                 onChange={handlePickedDateChange}
                                 renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
                             />
@@ -552,7 +553,7 @@ function StockTable() {
                                 label="Earliest Harvest Date"
                                 name="ehd"
                                 inputFormat="DD/MM/YYYY"
-                                value={ehd}
+                                value={ehd || null}
                                 onChange={handleEHD}
                                 renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
                             />
