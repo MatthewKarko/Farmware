@@ -102,11 +102,14 @@ function StockTable() {
 
     const handleDeleteClick = (event, row) => {
         event.preventDefault();
-        // setDisplayDeleteModal(!displayDeleteModal);
-
-
-        // axiosInstance.delete(`produce/${row.id}/`);
-        //Confirmation modal
+        axiosInstance
+            .delete('stock/'+row.id+'/', {
+            })
+            .catch((err) => {
+                alert("ERROR: Failed to delete stock");
+            });
+        reloadStock();
+        sendNotification({ msg: 'Success: Stock Deleted', variant: 'success' });
     };
 
     const [temporaryStock, setTemporaryStock] = useState({
@@ -309,7 +312,7 @@ function StockTable() {
     const handleSeededDateChange = (newValue) => {
         setSeededDateValue(newValue); //set value for the date input field
         const newFormData = { ...temporaryStock };
-        newFormData["date_seeded"] = dayjs(newValue).format('DD/MM/YYYY');
+        newFormData["date_seeded"] = dayjs(newValue).format('YYYY-MM-DD');
         setTemporaryStock({ ...newFormData });
     };
 
@@ -317,7 +320,7 @@ function StockTable() {
     const handlePlantedDateChange = (newValue) => {
         setPlantedDateValue(newValue); //set value for the date input field
         const newFormData = { ...temporaryStock };
-        newFormData["date_planted"] = dayjs(newValue).format('DD/MM/YYYY');
+        newFormData["date_planted"] = dayjs(newValue).format('YYYY-MM-DD');
         setTemporaryStock({ ...newFormData });
     };
 
@@ -325,7 +328,7 @@ function StockTable() {
     const handlePickedDateChange = (newValue) => {
         setPickedDateValue(newValue); //set value for the date input field
         const newFormData = { ...temporaryStock };
-        newFormData["date_picked"] = dayjs(newValue).format('DD/MM/YYYY');
+        newFormData["date_picked"] = dayjs(newValue).format('YYYY-MM-DD');
         setTemporaryStock({ ...newFormData });
     };
 
@@ -333,7 +336,7 @@ function StockTable() {
     const handleEHD = (newValue) => {
         setEHD(newValue); //set value for the date input field
         const newFormData = { ...temporaryStock };
-        newFormData["ehd"] = dayjs(newValue).format('DD/MM/YYYY');
+        newFormData["ehd"] = dayjs(newValue).format('YYYY-MM-DD');
         setTemporaryStock({ ...newFormData });
     };
 
@@ -505,7 +508,7 @@ function StockTable() {
                             <DesktopDatePicker
                                 label="Date Seeded"
                                 name="seeded_date"
-                                inputFormat="DD/MM/YYYY"
+                                inputFormat="YYYY-MM-DD"
                                 value={seededDateValue}
                                 onChange={handleSeededDateChange}
                                 renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2 }} />}
@@ -516,7 +519,7 @@ function StockTable() {
                             <DesktopDatePicker
                                 label="Date Planted"
                                 name="planted_date"
-                                inputFormat="DD/MM/YYYY"
+                                inputFormat="YYYY-MM-DD"
                                 value={plantedDateValue}
                                 onChange={handlePlantedDateChange}
                                 renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
@@ -527,7 +530,7 @@ function StockTable() {
                             <DesktopDatePicker
                                 label="Date Picked"
                                 name="date_picked"
-                                inputFormat="DD/MM/YYYY"
+                                inputFormat="YYYY-MM-DD"
                                 value={pickedDateValue}
                                 onChange={handlePickedDateChange}
                                 renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
@@ -538,7 +541,7 @@ function StockTable() {
                             <DesktopDatePicker
                                 label="Earliest Harvest Date"
                                 name="ehd"
-                                inputFormat="DD/MM/YYYY"
+                                inputFormat="YYYY-MM-DD"
                                 value={ehd}
                                 onChange={handleEHD}
                                 renderInput={(params) => <TextField {...params} sx={{ width: "230px", mt: 2, ml: 2 }} />}
