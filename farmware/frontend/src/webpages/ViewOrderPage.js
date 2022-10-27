@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import ViewOrder from '../components/orderComponents/ViewOrder';
 import '../css/DashboardPages.css';
 import Header from '../components/Header';
+import { SnackbarProvider } from 'notistack';
 
 export default function ViewOrderPage() {
     return (
@@ -10,7 +11,9 @@ export default function ViewOrderPage() {
             <Navbar/> 
             <div className='componentContainer'>
                 <Header />
-                <ViewOrder/>
+                <SnackbarProvider maxSnack={3}>
+                    <ViewOrder />
+                </SnackbarProvider>
             </div>
    
         </div>

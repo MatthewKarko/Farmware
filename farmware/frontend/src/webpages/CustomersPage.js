@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import CustomersTable from '../components/tables/CustomersTable';
 import Header from '../components/Header';
 import '../css/DashboardPages.css';
+import { SnackbarProvider } from 'notistack';
 
 export default function CustomerPage() {
     return (
@@ -10,7 +11,9 @@ export default function CustomerPage() {
             <Navbar />
             <div className='componentContainer'>
                 <Header />
-                <CustomersTable />
+                <SnackbarProvider maxSnack={3}>
+                    <CustomersTable />
+                </SnackbarProvider>
             </div>
         </div>
     );

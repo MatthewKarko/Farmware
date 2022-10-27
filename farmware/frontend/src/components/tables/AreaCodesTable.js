@@ -6,9 +6,10 @@ import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import useNotification from "../alert/UseNotification";
 
 function AreaCodesTable() {
-    const navigate = useNavigate();
+    const [msg, sendNotification] = useNotification();
 
     const [areaCodesList, setAreaCodesList] = useState([]);
     const [organisationCode, setOrganisationCode] = useState("");
@@ -23,6 +24,12 @@ function AreaCodesTable() {
         area_code: "",
         description: "",
     });
+
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadAreaCodes = () => {
+        setAreaCodesList([]);
+        setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
 
     const clearState = () => {
         const formValues = {
@@ -58,7 +65,7 @@ function AreaCodesTable() {
             .catch((err) => {
                 alert("ERROR: Getting area_code failed");
             });
-    }, []);
+    }, [reloadFlag]);
 
 
     const handleFormChange = (event) => {
@@ -111,8 +118,9 @@ function AreaCodesTable() {
         //close modal
         setDisplayEditModal(!displayEditModal);
 
-        //reload page
-        window.location.reload();
+        reloadAreaCodes();
+        sendNotification({msg: 'Success: Area Code Updated', variant: 'success'});
+
     };
 
     const handleEditClick = (event, row) => {
@@ -136,7 +144,9 @@ function AreaCodesTable() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        window.location.reload();
+        reloadAreaCodes();
+        setDisplayEditModal(!displayEditModal);
+        sendNotification({msg: 'Success: Area Code Deleted', variant: 'success'});
     }
 
     const handleCreateSubmit = (event) => {
@@ -177,8 +187,9 @@ function AreaCodesTable() {
         //close modal
         setDisplayCreateModal(!displayCreateModal);
 
-        //reload page
-        window.location.reload();
+        reloadAreaCodes();
+
+        sendNotification({msg: 'Success: Area Code Created', variant: 'success'});
     };
 
     return (
