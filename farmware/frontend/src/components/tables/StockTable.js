@@ -3,23 +3,31 @@ import { Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, Tabl
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
+import useNotification from "../alert/UseNotification";
 
 function StockTable() {
-    const [org, setOrg] = useState(-1);
+    const [msg, sendNotification] = useNotification();
+
     const [stockList, setStockList] = useState([]);
 
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadStock = () => {
+        setStockList([]);
+        setReloadFlag(!reloadFlag); //prompts a reload of stock
+    }
     useEffect(() => {
-    axiosInstance
-        .get(`user/me/`, {
-        })
-        .then((res) => {
-          // console.log(res.data);
-          setOrg(res.data.organisation);
-        })
-        .catch((err) => {
-          alert("ERROR: user/me failed");
-    });
-    }, []);
+        axiosInstance
+            .get(`stock/`, {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setStockList(stockList => [...stockList, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting suppliers failed");
+            });
+    }, [reloadFlag]);
 
     const handleEditClick = (event, row) => {
         event.preventDefault();
@@ -33,6 +41,7 @@ function StockTable() {
         //         setEditProduceSuffix(JSON.parse(res.data.quantity_suffixes));
         //     })
     };
+
     const handleCreateClick = () => {
         // event.preventDefault();
         // setDisplayCreateModal(!displayCreateModal);
@@ -83,13 +92,14 @@ function StockTable() {
                     </Grid>
                 </Box>
 
-                <TableContainer component={Paper} style={{ }}>
+                <TableContainer component={Paper} style={{}}>
                     <Table aria-label="simple table" style={{}}>
                         <colgroup>
-                            <col style={{ width: '15%' }} />
-                            <col style={{ width: '20%' }} />
-                            <col style={{ width: '30%' }} />
-                            <col style={{ width: '15%' }} />
+                            <col style={{ width: '8%' }} />
+                            <col style={{ width: '18%' }} />
+                            <col style={{ width: '18%' }} />
+                            <col style={{ width: '18%' }} />
+                            <col style={{ width: '18%' }} />
                             <col style={{ width: '20%' }} />
                         </colgroup>
                         <TableHead>
@@ -98,9 +108,10 @@ function StockTable() {
                                     fontSize: "1.10rem",
                                 }
                             }}>
-                                <TableCell className="tableCell">Stock ID</TableCell>
+                                <TableCell className="tableCell">ID</TableCell>
                                 <TableCell className="tableCell">Produce Name</TableCell>
                                 <TableCell className="tableCell">Produce Variety</TableCell>
+                                <TableCell className="tableCell">SUFFIX</TableCell>
                                 <TableCell className="tableCell">Stock Quantity</TableCell>
                                 <TableCell className="tableCell"></TableCell>
                             </TableRow>
@@ -115,6 +126,7 @@ function StockTable() {
                                     <TableCell className="tableCell">{row.id}</TableCell>
                                     <TableCell className="tableCell">{row.produce_name}</TableCell>
                                     <TableCell className="tableCell">{row.variety_name}</TableCell>
+                                    <TableCell className="tableCell">{row.quantity_suffix_name}</TableCell>
                                     <TableCell className="tableCell">{row.quantity}</TableCell>
                                     <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
@@ -145,7 +157,7 @@ function StockTable() {
             </div>
 
         </React.Fragment>
-        )
+    )
 
 
 
