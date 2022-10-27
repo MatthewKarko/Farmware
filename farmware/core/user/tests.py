@@ -208,16 +208,25 @@ class UserViewSetTestCases(TestCase):
         #self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
     def test_RegisteringAdmin(self):
         c = Client()
+        #org= Organisation.objects.get(name="nameoforg")
+        #response=Response()
+        #response['email']='example@gmail.com'
+        #response['first_name']='firstn'
+        #response['last_name']='lastn'
+        #response['password']='passwd'
+        #response['organisation']=org
+        #response['role']=000
         org= Organisation.objects.get(name="nameoforg")
-        response=Response()
-        response['email']='example@gmail.com'
+        response = Response()
+        response['email'] = 'example@gmail.com'
         response['first_name']='firstn'
         response['last_name']='lastn'
         response['password']='passwd'
         response['organisation']=org
-        response['role']=400
         respons=c.post('/register/admin',response)
-        self.assertEquals(respons.status_code,status.HTTP_201_CREATED)
+        self.assertEquals(response.status_code,200)
+        #respons=c.post('/register/admin',response)
+        #self.assertEquals(respons.status_code,status.HTTP_201_CREATED)
     def  test_RegisteringAdminError(self):
         c = Client()
         serializer_data={}
@@ -230,38 +239,13 @@ class UserViewSetTestCases(TestCase):
         response['email']='example@gmail.com'
         response['first_name']='firstn'
         response['last_name']='lastn'
-        response['password']='passwd'
-        response['organisation']=org
-        response['role']=400
+        #response['password']='passwd'
+        #response['organisation']=org
+        #response['role']=000
         #serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org}
-        response=c.post('/set_password/',response)
-        self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
-    def test_testingSettingPasswordsError2(self):
-        c = Client()
-        org= Organisation.objects.get(name="nameoforg")
-        response=Response()
-        response['email']='example@gmail.com'
-        response['first_name']='firstn'
-        response['last_name']='lastn'
-        response['old_password']='passwd'
-        response['new_password']=''
-        response['organisation']=org
-        response['role']=400
-        #serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'old_password':'','new_password':''}
-        respons=c.post('/register/user/',response)
-        self.assertEquals(respons.status_code,status.HTTP_201_CREATED)
-        user=User.objects.get(first_name="firstn")
-        respons=c.post('/set_password/',serializer_data)
+        response=c.post('/set_password',response)
         self.assertEquals(response.status_code,status.HTTP_400_BAD_REQUEST)
     def test_testingSettingPasswords(self):
-        #c = Client()
-        #org= Organisation.objects.get(name="nameoforg")
-        #user=get_user_model().objects.get(first_name="first_name")
-        #serializer_data = {'email': #'example@gmail.com','first_name':'first_name','last_name':'last_name','password':'passwd','organ#isation':org,'old_password':'pass','new_password':'passwpr'}
-        #f=UserViewSet()
-        #response=c.post('^register/admin',serializer_data)
-        #response=c.post('/register/user',serializer_data)
-        #self.assertEquals(response.status_code,status.HTTP_201_CREATED)
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
         response = Response()
@@ -272,9 +256,16 @@ class UserViewSetTestCases(TestCase):
         response['organisation']=org
         respons=c.post('/register/user',response)
         self.assertEquals(response.status_code,200)
-        #user=User.objects.get(first_name="firstn")
-        respons=c.post('/set_password',)
-        #self.assertEquals(response.status_code,status.HTTP_200_OK)
+
+        response2 = Response()
+        response2['email'] = 'example@gmail.com'
+        response2['first_name']='firstn'
+        response2['last_name']='lastn'
+        response2['organisation']=org
+        response2['old_password']='passwd'
+        response2['new_password']='pass'
+        respons=c.post('/set_password/',response2)
+        self.assertEquals(respons.status_code,200)
     def test_testingDestroy(self):
         uvs=UserViewSet()
         c = Client()
@@ -305,7 +296,6 @@ class UserViewSetTestCases(TestCase):
     def testingPermissionValid(self):
         c = Client()
         org= Organisation.objects.get(name="nameoforg")
-        #serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'role':000}
         response=Response()
         response['email']='example@gmail.com'
         response['first_name']='firstn'
@@ -321,59 +311,68 @@ class UserViewSetTestCases(TestCase):
         c= Client()
         org= Organisation.objects.get(name="nameoforg")
         team=Team.objects.create(category="sports",name="fifa team 12",organisation=org)
-        #serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'role':000,'team':team}
-        response=Response()
-        response['email']='example@gmail.com'
+
+        response = Response()
+        response['email'] = 'example@gmail.com'
         response['first_name']='firstn'
         response['last_name']='lastn'
         response['password']='passwd'
         response['organisation']=org
-        response['role']=400
-        response['team']=team
         respons=c.post('/register/user',response)
-        self.assertEquals(respons.status_code,status.HTTP_201_CREATED)
+        self.assertEquals(response.status_code,200)
+
+        user=User.objects.get(first_name="first_name")
         s_data =Response()
         s_data['user']=user
-        response2 = c.post('/teams/',s_data)
-        self.assertEquals(response2.status,200)
+        org= Organisation.objects.get(name="nameoforg")
+        response = Response()
+        response['email'] = 'example@gmail.com'
+        response['first_name']='firstn'
+        response['last_name']='lastn'
+        response['password']='passwd'
+        response['organisation']=org
+        respons=c.post('/teams',response)
+        self.assertEquals(response.status_code,200)
     def test_testingUserteams(self):
         c= Client()
-        org= Organisation.objects.get(name="nameoforg")
+        org=Organisation.objects.get(name="nameoforg")
         team=Team.objects.create(category="sports",name="fifa team 12",organisation=org)
-        #serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'role':000,'team':team}
-        response=Response()
-        response['email']='example@gmail.com'
+
+        response = Response()
+        response['email'] = 'example@gmail.com'
         response['first_name']='firstn'
         response['last_name']='lastn'
         response['password']='passwd'
         response['organisation']=org
-        response['role']=400
         response['team']=team
-        respons=c.post('register/admin',response)
-        self.assertEquals(respons.status_code,status.HTTP_201_CREATED)
-        #s_data={
-        #'user':user
-        #}
-        s_data =Response()
-        s_data['user']=user
-        response2 = c.post('teams',s_data)
-        self.assertEquals(response2.status,200)
+        respons=c.post('/register/admin',response)
+        self.assertEquals(response.status_code,200)
+        user =User.objects.get(first_name="first_name")
+        response2 = Response()
+        response2['user'] = user
+        respons=c.post('/teams',response2)
+        self.assertEquals(respons.status_code,200)
     def testingPartialUpdate(self):
         c= Client()
         org= Organisation.objects.get(name="nameoforg")
         team=Team.objects.create(category="sports",name="fifa team 12",organisation=org)
-        serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':org,'role':000,'team':team}
-        response=c.post('register/admin',serializer_data)
+        response = Response()
+        response['email'] = 'example@gmail.com'
+        response['first_name']='firstn'
+        response['last_name']='lastn'
+        response['password']='passwd'
+        response['organisation']=org
+        respons=c.post('/register/admin',response)
+        self.assertEquals(response.status_code,200)
         #self.assertEquals(response.status_code,status.HTTP_201_CREATED)
         user=get_user_model().objects.get(first_name="first_name")
-        s_data={
-        "user":user,
-        "first_name":'first-name',
-        "data":"data"
-        }
-        uvs=UserViewSet()
-        #response2 = uvs.partial_update()
-        #self.assertEquals(response2.status,200)
+
+        response2 = Response()
+        response2['first_name']='firstn'
+        response2['user']=user
+
+        respons=c.patch('/$',response2)
+        self.assertEquals(respons.status_code,202)
 
 
 
@@ -391,9 +390,18 @@ class ActivateAccountTestCases(TestCase):
         timestamp =time.time()
         uidb64 = urlsafe_base64_encode(user.pk.to_bytes(5,'big'))
         token=tg._make_hash_value(user, timestamp)
-        response = c.get('activate/<uidb64>/<token>',request, uidb64, token)
+        org= Organisation.objects.get(name="nameoforg")
+        request = Response()
+        request['user'] = user
+        #response['first_name']='firstn'
+        #response['last_name']='lastn'
+        #response['password']='passwd'
+        #response['organisation']=org
+        respons=c.post('/activate',request)
+        self.assertEquals(respons.status_code,20)
+        #response = c.get('activate/',request, uidb64, token)
         #raise ValueError(response)
-        self.assertEquals(response.status_code,201)
+        #self.assertEquals(response.status_code,201)
     def test_testingGetError1(self):
         c =Client()
         Org=Organisation.objects.get(name="nameoforg")

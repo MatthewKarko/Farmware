@@ -249,14 +249,14 @@ class TeamTestCases(TestCase):
         with self.assertRaises(ValidationError):
             Team.objects.create(category ="Jack",name = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi convallis euismod gravida. Vestibulum quam lacus, faucibus ac dui nec, hendrerit lobortis arcu. Ut vel lorem at enim dignissim porttitor in nec neque. Mauris lobortis justo lorem, id venenatis dui laoreet vel. Quisque egestas neque quis erat porttitor fermentum. Proin cursus, lorem non auctor aliquam, turpis neque tincidunt sem, vitae maximus massa dolor ut diam. Nam euismod urna sed leo vestibulum ultrices. Donec tempus fringilla feugiat. Nullam faucibus mattis diam, in sagittis lacus aliquam eget. Mauris eu ligula fermentum, bibendum enim id, sodales turpis. Praesent sed risus felis. Vivamus ut ultrices nisl.Ut luctus purus neque, eget blandit augue consectetur at. Etiam eleifend cursus tortor, ut venenatis lectus laoreet sollicitudin. Nunc at elementum magna. Integer ut scelerisque arcu, ac pellentesque lorem. Donec rutrum porttitor consectetur. Nunc nunc enim, sollicitudin mollis maximus non, lacinia at neque. Curabitur ultrices tincidunt pharetra. Vestibulum vitae.",organisation = organisation2)
             raise ValidationError("error")
-class TestDirectMigration(MigratorTestCase):
+class TestDirectMigration():
     """This class is used to test direct migrations."""
     def prepare(self):
         """Prepare some data before the migration."""
         #migrator=Migrator()
         #old_state = migrator.before(('core_api', '0001_initial'))
-        migrate_from = ('core_api', '0001_initial')
-        migrate_to = ('core_api', '0002_initial')
+        self.migrate_from = ('core_api', '0001_initial')
+        self.migrate_to = ('core_api', '0002_initial')
         #migrator = Migrator()
         #old_state = migrator.apply_initial_migration(
         #('core_api', '0001_initial'),
@@ -276,11 +276,13 @@ class TestDirectMigration(MigratorTestCase):
 
     def test_migration_003and004(self):
         migrator = Migrator()
-        old_state = migrator.apply_initial_migration(
-        ('core_api', '0003_auto_20221018_0824'),
-        )
+        #old_state = migrator.apply_initial_migration(
+        #('core_api', '0003_auto_20221018_0824'),
+        #)
+        old_state=migrator.before(('core_api', '0003_auto_20221018_0824'))
         OrderStock = old_state.apps.get_model('core_api', 'OrderStock')
-
+        migrate_from=('core_api', '0001_initial')
+        migrate_to = ('core_api', '0002_initial')
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
         organisatio=Organisation.objects.get(name="Farmone")
@@ -309,9 +311,11 @@ class TestDirectMigration(MigratorTestCase):
         migrator.reset()
     def test_migration003and004Second(self):
         migrator = Migrator()
-        old_state = migrator.apply_initial_migration(
-        ('core_api', '0004_auto_20221018_1055'),
-        )
+
+        #old_state = migrator.apply_initial_migration(
+        #('core_api', '0004_auto_20221018_1055'),
+        #)
+        old_state=migrator.after(('core_api', '0004_auto_20221018_1055'))
         OrderItem = old_state.apps.get_model('core_api', 'OrderStock')
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
