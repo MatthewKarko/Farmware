@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import Navbar from '../components/Navbar';
 import '../css/DashboardPages.css';
 import Header from '../components/Header';
-import ProduceTable from '../components/tables/ProduceTable';
-
-export default function ProducePage() {
+import StockTable from '../components/tables/StockTable';
+export default function StockPage() {
 
     return (
         <div className='mainContainer'>
             <Navbar />
             <div className='componentContainer'>
                 <Header />
-                <ProduceTable />
+                <StockTable />
             </div>
         </div>
     );
