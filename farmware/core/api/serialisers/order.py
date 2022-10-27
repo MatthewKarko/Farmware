@@ -25,6 +25,12 @@ class OrderCreationSerialiser(serializers.ModelSerializer):
         return super().update(instance=instance, validated_data=validated_data)
 
 
+class OrderUpdateSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['customer_id', 'invoice_number']
+
+
 class OrderFullSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Order

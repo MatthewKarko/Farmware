@@ -19,10 +19,12 @@ from ..serialisers.order import (
     OrderCreationSerialiser,
     OrderFullSerialiser,
     OrderItemSerialiser,
-    OrderItemStockLinkSerialiser
+    OrderItemStockLinkSerialiser,
+    OrderUpdateSerialiser
     )
 from ..serialisers.stock import (
-    StockSerialiser
+    StockSerialiser,
+    BulkAddStockSerialiser
 )
 from ...user.models import User
 from ...user.permissions import IsInOrganisation
@@ -119,7 +121,7 @@ class OrderViewSet(ModelViewSet):
 ### ORDER ITEM ################################################################
 class OrderItemViewSet(ModelViewSet):
     serializer_class = OrderItemSerialiser
-    permission_classes = [IsAuthenticated, IsInOrganisation]
+    permission_classes = [IsAuthenticated]
     responses = DefaultResponses('Order Item')
 
     def get_queryset(self, **kwargs):
@@ -128,6 +130,16 @@ class OrderItemViewSet(ModelViewSet):
         return OrderItem.objects.all().filter(
             order_id__organisation=user.organisation, **kwargs
             )
+
+    def get_serializer_class(self):
+        """Get the serialiser class for the appropriate action."""
+        if self.action == 'create': return OrderCreationSerialiser
+        if self.action == 'retrieve': return OrderFullSerialiser
+        if self.action == 'bulk_add_stock': return BulkAddStockSerialiser
+
+        if 'update' in self.action: return OrderUpdateSerialiser
+
+        return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
@@ -158,6 +170,7 @@ class OrderItemViewSet(ModelViewSet):
         return self.responses.DELETION_SUCCESS
 
     def list(self, request, *args, **kwargs):
+        print(request.__dict__)
         return super().list(request, *args, **kwargs)
 
     @action(detail=True, methods=['get'])
@@ -174,6 +187,24 @@ class OrderItemViewSet(ModelViewSet):
         response = {'stock':data}
 
         return Response(response, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def bulk_add_stock(self, request, pk=None):
+        order_item: OrderItem = self.get_object()
+        data: QueryDict = request.data
+
+        serialiser: BulkAddStockSerialiser = self.get_serializer(data=data)
+        serialiser.is_valid(raise_exception=True)
+        for stock_item in serialiser.validated_data.get('items'):  # type: ignore
+            # Create new order item stock link (OrderItemStockLink)
+            OrderItemStockLink.objects.create(
+                order_item_id=order_item.pk,
+                stock_id = stock_item.id,
+                quantity = stock_item.quantity,
+                quantity_suffix_id = stock_item.quantity_suffix_id
+            )
+
+        return Response(serialiser.data, status=status.HTTP_200_OK)
 ###############################################################################
 
 

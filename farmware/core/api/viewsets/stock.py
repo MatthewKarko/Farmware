@@ -86,13 +86,13 @@ class StockViewSet(ModelViewSet):
                 item['produce_name'] = "Unknown"
 
             variety = ProduceVariety.objects.all().filter(id=item['variety_id']).first()
-            if variety != None and variety.produce_id.id == item['produce_id']:
+            if variety != None and variety.produce_id.pk == item['produce_id']:
                 item['variety_name'] = variety.variety
             else:
                 item['variety_name'] = "Unknown"
 
             quantity_suffix = ProduceQuantitySuffix.objects.all().filter(id=item['quantity_suffix_id']).first()
-            if quantity_suffix != None and quantity_suffix.produce_id.id == item['produce_id']:
+            if quantity_suffix != None and quantity_suffix.produce_id.pk == item['produce_id']:
                 item['quantity_suffix_name'] = quantity_suffix.suffix
                 item['base_equivalent'] = quantity_suffix.base_equivalent
             else:
@@ -140,7 +140,7 @@ class StockPickersViewSet(ModelViewSet):
     responses = DefaultResponses('Stock Pickers')
 
     def get_queryset(self, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         return StockPickers.objects.all().filter(stock_id__organisation=user.organisation, **kwargs)
 
     def valid_organisation(self, request, data):
