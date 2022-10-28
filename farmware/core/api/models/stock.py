@@ -17,6 +17,7 @@ class Stock(models.Model):
     date_planted = models.DateField(null=True, blank=True)
     date_picked = models.DateField(null=True, blank=True)
     ehd = models.DateField(null=True, blank=True) # Earliest Harvest Date
+    date_completed = models.DateField(null=True, blank=True)
     area_code_id = models.ForeignKey('core_api.AreaCode', on_delete=models.DO_NOTHING)
 
     class Meta:
