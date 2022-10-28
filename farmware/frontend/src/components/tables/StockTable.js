@@ -90,22 +90,16 @@ function StockTable() {
         setVarieitesForProduceID(row.produce_id);
 
         //set the date values in the input fields:
-
-        // setSeededDateValue(dayjs(row.date_seeded).format('YYYY-MM-DD')); //set value for the date input field
-        // setPlantedDateValue(dayjs(row.date_planted).format('YYYY-MM-DD')); //set value for the date input field
-        // setPickedDateValue(dayjs(row.date_picked).format('YYYY-MM-DD')); //set value for the date input field
-        // setEHD(dayjs(row.ehd).format('YYYY-MM-DD')); //set value for the date input field
-
-        if (row.date_seeded != null && row.date_seeded!="") {
+        if (row.date_seeded != null && row.date_seeded != "") {
             setSeededDateValue(dayjs(row.date_seeded).format('YYYY-MM-DD'));
         }
-        if (row.date_planted != null && row.date_planted!="") {
+        if (row.date_planted != null && row.date_planted != "") {
             setPlantedDateValue(dayjs(row.date_planted).format('YYYY-MM-DD')); //set value for the date input field
         }
-        if (row.date_picked != null && row.date_picked!="") {
+        if (row.date_picked != null && row.date_picked != "") {
             setPickedDateValue(dayjs(row.date_picked).format('YYYY-MM-DD')); //set value for the date input field
         }
-        if (row.ehd != null && row.ehd!="") {
+        if (row.ehd != null && row.ehd != "") {
             setEHD(dayjs(row.ehd).format('YYYY-MM-DD')); //set value for the date input field
         }
 
@@ -121,6 +115,7 @@ function StockTable() {
             date_picked: row.date_picked,
             ehd: row.ehd,
             base_equivalent: row.base_equivalent,
+            quantity_available: row.quantity_available
         };
         setTemporaryStock({ ...formValues });
 
@@ -133,8 +128,23 @@ function StockTable() {
 
     const handleEditSubmit = (event) => {
         event.preventDefault();
-        console.log(temporaryStock);
-        console.log("Submit")
+
+        //VALIDATE INPUTS
+        let ret = createStockObjectAndValidateInputs();
+        if (ret == null) {
+            return; //alert already dislayed
+        }
+
+        //otherwise, send edit request
+        axiosInstance.put('stock/' + edittingStockID + '/', ret)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
+
+        setDisplayEditModal(false);
+
+        reloadStock();
+        sendNotification({ msg: 'Success: Stock Updated', variant: 'success' });
     };
 
     const handleDeleteClick = (event, row) => {
@@ -160,7 +170,8 @@ function StockTable() {
         date_planted: null,
         date_picked: null,
         ehd: null,
-        base_equivalent: ""
+        base_equivalent: "",
+        quantity_available: ""
     });
 
     const [produceSuffixes, setProduceSuffixes] = useState([]);
@@ -183,7 +194,8 @@ function StockTable() {
             date_planted: null,
             date_picked: null,
             ehd: null,
-            base_equivalent: ""
+            base_equivalent: "",
+            quantity_available: ""
         };
         setTemporaryStock({ ...formValues });
     };
@@ -196,6 +208,7 @@ function StockTable() {
         newFormData["variety_id"] = "";
         newFormData["quantity"] = "";
         newFormData["base_equivalent"] = "";
+        newFormData["quantity_available"] = "";
         setTemporaryStock({ ...newFormData });
 
         // Correct the displayed suffix and variety options, and clear any prior stored state.
@@ -203,8 +216,7 @@ function StockTable() {
         setVarieitesForProduceID(event.target.value);
     };
 
-
-    function setSuffixesForProduceID(produce_id){
+    function setSuffixesForProduceID(produce_id) {
         //remove all from the suffix state
         let len = produceSuffixes.length
         for (let i = 0; i < len; i++) {
@@ -225,7 +237,7 @@ function StockTable() {
             });
     }
 
-    function setVarieitesForProduceID(produce_id){
+    function setVarieitesForProduceID(produce_id) {
         let len_var = produceVarieties.length
         for (let i = 0; i < len_var; i++) {
             produceVarieties.pop();
@@ -269,27 +281,56 @@ function StockTable() {
         setTemporaryStock({ ...newFormData });
     };
 
-    const handleFormChange = (event) => {
+    const handleQuantityChange = (event) => {
         event.preventDefault();
-        if (event.target.value.length == 0) {
-            const newFormData = { ...temporaryStock };
-            newFormData["quantity"] = "";
-            setTemporaryStock({ ...newFormData });
-            return;
-        }
-        const parsed = parseInt(event.target.value, 10);
-        if (isNaN(parsed)) {
-            alert("Invalid quantity input.");
-        } else {
-            const newFormData = { ...temporaryStock };
-            newFormData["quantity"] = parsed;
-            setTemporaryStock({ ...newFormData });
-        }
+        // if (event.target.value.length == 0) {
+        //     const newFormData = { ...temporaryStock };
+        //     newFormData["quantity"] = "";
+        //     setTemporaryStock({ ...newFormData });
+        //     return;
+        // }
+        // const parsed = parseInt(event.target.value, 10);
+        // if (isNaN(parsed)) {
+        //     alert("Invalid quantity input.");
+        // } else {
+        //     const newFormData = { ...temporaryStock };
+        //     newFormData["quantity"] = parsed;
+        //     setTemporaryStock({ ...newFormData });
+        // }
+        const newFormData = { ...temporaryStock };
+        newFormData["quantity"] = event.target.value;
+        setTemporaryStock({ ...newFormData });
     };
 
-    const handleStockCreateSubmit = (event) => {
+    const handleQuantityAvailableChange = (event) => {
         event.preventDefault();
+        const newFormData = { ...temporaryStock };
+        newFormData["quantity_available"] = event.target.value;
+        setTemporaryStock({ ...newFormData });
 
+        // if (event.target.value.length == 0) {
+        //     const newFormData = { ...temporaryStock };
+        //     newFormData["quantity_available"] = "";
+        //     setTemporaryStock({ ...newFormData });
+        //     return;
+        // }
+        // const parsed = parseInt(event.target.value, 10);
+        // if (isNaN(parsed)) {
+        //     alert("Invalid quantity available input.");
+        // } else {
+        //     const newFormData = { ...temporaryStock };
+        //     newFormData["quantity_available"] = parsed;
+        //     setTemporaryStock({ ...newFormData });
+        // }
+
+        // if(parsed==0){
+        //     const newFormData = { ...temporaryStock };
+        //     newFormData["quantity_available"] = 0;
+        //     setTemporaryStock({ ...newFormData });
+        // }
+    };
+
+    function createStockObjectAndValidateInputs() {
         //send off the request
         var postObject = {
             produce_id: temporaryStock.produce_id,
@@ -299,18 +340,22 @@ function StockTable() {
             supplier_id: temporaryStock.supplier_id,
             area_code_id: temporaryStock.area_code_id,
         }
-        if (temporaryStock.date_seeded != null && temporaryStock.date_seeded!="") {
+        if (temporaryStock.date_seeded != null && temporaryStock.date_seeded != "") {
             postObject['date_seeded'] = temporaryStock.date_seeded;
         }
-        if (temporaryStock.date_picked != null && temporaryStock.date_picked!="") {
+        if (temporaryStock.date_picked != null && temporaryStock.date_picked != "") {
             postObject['date_picked'] = temporaryStock.date_picked;
         }
-        if (temporaryStock.date_planted != null && temporaryStock.date_planted!="") {
+        if (temporaryStock.date_planted != null && temporaryStock.date_planted != "") {
             postObject['date_planted'] = temporaryStock.date_planted;
         }
-        if (temporaryStock.ehd != null && temporaryStock.ehd!="") {
+        if (temporaryStock.ehd != null && temporaryStock.ehd != "") {
             postObject['ehd'] = temporaryStock.ehd;
         }
+        // if (temporaryStock.quantity_available != null && temporaryStock.quantity_available != "") {
+        //     postObject['quantity_available'] = temporaryStock.quantity_available;
+        //     console.log("set quant available");
+        // }
 
         //CHECKS FOR INPUT
         let temp_str = "Error! The following fields are required:\n"
@@ -337,10 +382,42 @@ function StockTable() {
         if (initial_len != temp_str.length) {
             //if missing fields, alert and return
             alert(temp_str.substring(0, temp_str.length - 2));
+            return null;
+        }
+
+        //validate quantity inputs
+        const parsed_quantity = parseInt(temporaryStock.quantity, 10);
+        if (isNaN(parsed_quantity)) {
+            console.log(parsed_quantity);
+            alert("Invalid quantity input.");
+            return null;
+        } else {
+            postObject['quantity'] = parsed_quantity;
+        }
+
+        if (temporaryStock.quantity_available != null && temporaryStock.quantity_available != "") {
+            const parsed_quantity_available = parseInt(temporaryStock.quantity_available, 10);
+            if (isNaN(parsed_quantity_available)) {
+                alert("Invalid quantity available input.");
+                return null;
+            } else {
+                postObject['quantity_available'] = parsed_quantity_available;
+            }
+        }
+
+        return postObject;
+    }
+
+    const handleStockCreateSubmit = (event) => {
+        event.preventDefault();
+
+        let ret = createStockObjectAndValidateInputs();
+        if (ret == null) {
             return;
         }
 
-        axiosInstance.post(`stock/`, postObject)
+        //send off the request
+        axiosInstance.post(`stock/`, ret)
             .catch((err) => {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
@@ -350,11 +427,6 @@ function StockTable() {
         setDisplayCreateModal(false);
 
         reloadStock();
-
-        // setPickedDateValue(null);
-        // setPlantedDateValue(null);
-        // setSeededDateValue(null);
-        // setEHD(null);
 
         sendNotification({ msg: 'Success: Stock Created', variant: 'success' });
     };
@@ -518,7 +590,7 @@ function StockTable() {
                                                 margin: "10px",
                                                 width: "90px",
                                             }}
-                                            onClick={(event) => {handleEditClick(event, row);}}
+                                            onClick={(event) => { handleEditClick(event, row); }}
                                         >Edit</Button>
 
                                         <Button variant="outlined" size="medium"
@@ -738,7 +810,7 @@ function StockTable() {
                                 autoComplete="produce_qty"
                                 size="small"
                                 value={temporaryStock.quantity}
-                                onChange={handleFormChange}
+                                onChange={handleQuantityChange}
                                 sx={{ width: "200px" }}
                                 variant="filled"
                             />
@@ -945,8 +1017,23 @@ function StockTable() {
                                 autoComplete="produce_qty"
                                 size="small"
                                 value={temporaryStock.quantity}
-                                onChange={handleFormChange}
+                                onChange={handleQuantityChange}
                                 sx={{ width: "200px" }}
+                                variant="filled"
+                            />
+                        </FormControl>
+                        <FormControl sx={{ width: "200px" }}>
+                            <TextField
+                                margin="normal"
+                                name="produce_qty_available"
+                                label="Available Quantity"
+                                type="produce_qty_available"
+                                id="produce_qty_available"
+                                autoComplete="produce_qty_available"
+                                size="small"
+                                value={temporaryStock.quantity_available}
+                                onChange={handleQuantityAvailableChange}
+                                sx={{ width: "200px", ml: 2 }}
                                 variant="filled"
                             />
                         </FormControl>
