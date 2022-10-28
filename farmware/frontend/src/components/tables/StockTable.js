@@ -8,6 +8,8 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
 
 function StockTable() {
     const [msg, sendNotification] = useNotification(); //for the success alerts
@@ -317,7 +319,7 @@ function StockTable() {
         if (temporaryStock.ehd != null && temporaryStock.ehd != "") {
             postObject['ehd'] = temporaryStock.ehd;
         }
-    
+
         //CHECKS FOR INPUT
         let temp_str = "Error! The following fields are required:\n"
         let initial_len = temp_str.length;
@@ -464,7 +466,7 @@ function StockTable() {
         ehd: "",
         date_completed: "",
     });
-    const handleDatesClick = (event, row) => {
+    function updateDates(row) {
         const newFormData = { ...tempDates };
         newFormData["date_picked"] = row.date_picked;
         newFormData["date_planted"] = row.date_planted;
@@ -472,12 +474,20 @@ function StockTable() {
         newFormData["ehd"] = row.ehd;
         newFormData["date_completed"] = row.date_completed;
         setTempDates({ ...newFormData });
+    }
+    const handleDatesClick = (event, row) => {
+        updateDates(row);
 
         setDisplayDatesModel(true);
     }
 
     const handleCompleteClick = (event, row) => {
-        alert("Completed for stock id: " + row.id);
+        axiosInstance.get('stock/' + row.id + '/toggle_date_completed/')
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
+        reloadStock();
+        sendNotification({ msg: 'Success: Stock Completed', variant: 'success' });
     }
 
     return (
@@ -515,11 +525,12 @@ function StockTable() {
                     <Table aria-label="simple table" style={{}}>
                         <colgroup>
                             <col style={{ width: '4%' }} />
-                            <col style={{ width: '14%' }} />
-                            <col style={{ width: '14%' }} />
-                            <col style={{ width: '14%' }} />
-                            <col style={{ width: '14%' }} />
-                            <col style={{ width: '15%' }} />
+                            <col style={{ width: '12%' }} />
+                            <col style={{ width: '12%' }} />
+                            <col style={{ width: '12%' }} />
+                            <col style={{ width: '12%' }} />
+                            <col style={{ width: '16%' }} />
+                            <col style={{ width: '7%' }} />
                             <col style={{ width: '22%' }} />
                         </colgroup>
                         <TableHead>
@@ -531,11 +542,12 @@ function StockTable() {
                                 }}
                             >
                                 <TableCell className="tableCell">ID</TableCell>
-                                <TableCell className="tableCell">Produce Name</TableCell>
-                                <TableCell className="tableCell">Produce Variety</TableCell>
-                                <TableCell className="tableCell">Produce Suffix</TableCell>
-                                <TableCell className="tableCell">Stock Quantity</TableCell>
+                                <TableCell className="tableCell">Produce</TableCell>
+                                <TableCell className="tableCell">Variety</TableCell>
+                                <TableCell className="tableCell">Suffix</TableCell>
+                                <TableCell className="tableCell">Quantity</TableCell>
                                 <TableCell className="tableCell">Quantity Available</TableCell>
+                                <TableCell className="tableCell">Completed</TableCell>
                                 <TableCell className="tableCell"></TableCell>
                             </TableRow>
                         </TableHead>
@@ -552,6 +564,17 @@ function StockTable() {
                                     <TableCell className="tableCell">{row.quantity_suffix_name}</TableCell>
                                     <TableCell className="tableCell">{row.quantity}</TableCell>
                                     <TableCell className="tableCell">{row.quantity_available}</TableCell>
+                                    {row.date_completed == null &&
+                                        <TableCell className="tableCell" sx={{ textAlign: "center" }}>
+                                            <PendingActionsIcon />
+                                        </TableCell>
+                                    }
+                                    {row.date_completed != null &&
+                                        <TableCell className="tableCell" sx={{ textAlign: "center" }}>
+                                            <CheckBoxIcon sx={{ color: "#028357" }} />
+                                        </TableCell>
+                                    }
+
                                     <TableCell className="tableCell">
 
                                         <Button variant="outlined" size="medium"
