@@ -179,7 +179,7 @@ function UsersTable() {
       });
 
     //reset values
-    clearState();
+    // clearState();
 
     reloadUsers();
 
