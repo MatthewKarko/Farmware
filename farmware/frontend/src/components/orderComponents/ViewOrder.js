@@ -34,12 +34,29 @@ function ViewOrder() {
         setDisplayViewAssignedStock(true);
     }
 
+    const [orderItemStock, setOrderItemStock] = useState([]);
+
     function handleAddStock(order_item) {
         setViewingOrderItemID(order_item.id);
+
+        //clear current
+        setOrderItemStock([]);
+
+        //make the request for orderItemsStockData
+        axiosInstance
+            .get('/order_item/' + order_item.id + '/get_available_stock/', {
+            })
+            .then((res) => {
+                console.log(res.data);
+                res.data.stock.map((data) => {
+                    setOrderItemStock(orderItemStock => [...orderItemStock, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting order item stock for id failed.");
+            });
+
         setDisplayAddStockModal(true);
-        // alert("This will show a list of stock with the produce id of the order item selected. From the stock list, the user can select a stock, input a quantity, and add it to the order. This is where the produce variety is chosen.")
-        // alert("Add stock clicked for produce_id: " + order_item.produce_id);
-        // navigate("/orders/view-order",{state:order});
     }
 
     function markAsComplete() {
@@ -209,7 +226,7 @@ function ViewOrder() {
         } else {
             postObject['quantity'] = parsed_quantity;
         }
-        
+
         return postObject;
     }
 
@@ -230,7 +247,7 @@ function ViewOrder() {
                 console.log(res.data.name);
             })
             .catch((err) => {
-                alert("ERROR: customer/{id}/ failed. NOTE: THIS IS ONLY FAILING BECAUSE OF MOCK ORDER DATA.");
+                alert("ERROR: customer/{id}/ failed.");
             });
 
         axiosInstance
@@ -244,7 +261,7 @@ function ViewOrder() {
                 alert("ERROR: order items request failed");
             });
 
-            axiosInstance
+        axiosInstance
             .get(`produce/`, {
             })
             .then((res) => {
@@ -279,6 +296,14 @@ function ViewOrder() {
     const handleRowQuantityChange = (event) => {
         event.preventDefault();
 
+        //try parse int
+        const parsed_quantity = parseInt(event.target.value, 10);
+        if (isNaN(parsed_quantity)) {
+            console.log(parsed_quantity);
+            alert("Invalid quantity input. Must be a positive integer.");
+            return null;
+        }
+
         //check stock_id if already exists in data
         let len_var = temporaryStockAdded.length
         let found = false
@@ -298,10 +323,14 @@ function ViewOrder() {
         if (!found) {
             const newFormData = {};
             newFormData["stock_id"] = event.target.id;
-            newFormData["quantity"] = event.target.value;
+            newFormData["quantity"] = parsed_quantity;
             temporaryStockAdded.push(newFormData);
         }
+        
+        setTemporaryStockAdded(temporaryStockAdded);
+        console.log("A");
         console.log(temporaryStockAdded);
+        console.log("B");
     }
 
     const clearTemporaryStockAdded = () => {
@@ -314,6 +343,9 @@ function ViewOrder() {
     const addStockToOrderItemSubmit = () => {
         //check all the quantity are valid
         let len_var = temporaryStockAdded.length
+        console.log("C");
+        console.log(temporaryStockAdded);
+        console.log("D");
         let found = false
         for (let i = 0; i < len_var; i++) {
             if (!isNaN(+temporaryStockAdded[i].quantity)) {
@@ -330,10 +362,37 @@ function ViewOrder() {
             }
         }
 
-        alert("SUCCESS: Make API call.");
-        clearTemporaryStockAdded();
+        var postObject = {
+            items: temporaryStockAdded
+        }
+        
+        //make call to add all the stock:
+        console.log("log: ");
+        console.log(temporaryStockAdded);
+        axiosInstance.post('order_item/'+viewingOrderItemID+'/bulk_add_stock/', postObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
+
+        // alert("SUCCESS: Make API call.");
+        // clearTemporaryStockAdded();
         setDisplayAddStockModal(false);
+
+        sendNotification({ msg: 'Success: Stock Added To Order', variant: 'success' });
     }
+
+
+    const handleOrderItemDeleteClick = (event, row) => {
+        event.preventDefault();
+        axiosInstance
+            .delete('order_item/' + row.id + '/', {
+            })
+            .catch((err) => {
+                alert("ERROR: Failed to delete stock");
+            });
+        reloadOrderItems();
+        sendNotification({ msg: 'Success: Order Item Deleted', variant: 'success' });
+    };
 
     return (
         <>
@@ -384,32 +443,42 @@ function ViewOrder() {
                         </colgroup> */}
                         <TableHead>
                             <TableRow>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>ID</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce ID</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Name</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Variety</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>QTY SUFFIX</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Order QTY</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Stock QTY Added</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Assigned Stock</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Add Stock</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {orderItems.map((order_item) => (
                                 <TableRow key={order_item.stock_id}>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.id}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.variety}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.SUFFIX}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.order_qty}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_variety_id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity_suffix_id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_qty_added}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
                                         <Button variant="outlined" size="medium" onClick={() => { handleViewAssignedStock(order_item) }}
                                         >View Stock</Button>
-                                    </TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>
-                                        <Button variant="outlined" size="medium" onClick={() => handleAddStock(order_item)}
+                                        <Button variant="outlined" size="medium"
+                                            sx={{ ml: 2 }}
+                                            onClick={() => handleAddStock(order_item)}
                                         >Add Stock</Button>
+                                        <Button variant="outlined" size="medium"
+                                            sx={{
+                                                color: "#FF0000",
+                                                borderColor: "#FF0000",
+                                                ml: 2,
+                                                width: "90px",
+                                            }}
+                                            onClick={(event) => handleOrderItemDeleteClick(event, order_item)}
+                                        >Delete</Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -672,12 +741,12 @@ function ViewOrder() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orderItemsStockData.map((order_item) => (
+                            {orderItemStock.map((order_item) => (
                                 <TableRow key={order_item.stock_id}>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_id}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.supplier_name}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_variety}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.supplier_id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.variety_id}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.suffix}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity}</TableCell>
 
@@ -688,7 +757,7 @@ function ViewOrder() {
                                             name="produce_qty_row"
                                             label="QTY"
                                             type="produce_qty_row"
-                                            id={order_item.stock_id}
+                                            id={order_item.id}
                                             autoComplete="produce_qty_row"
                                             size="small"
                                             // value={temporaryProduce.quantity}
