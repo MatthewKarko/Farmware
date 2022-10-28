@@ -36,13 +36,14 @@ function OrdersTable() {
       customer_id: -1,
       invoice_number: "",
       order_date: "",
-      // order_date: temporaryOrder.order_date, //Just keep prev date inputted
       completion_date: ""
     };
     setTemporaryOrder({ ...formValues });
   };
 
   const [displayCreateModal, setDisplayCreateModal] = useState(false);
+  const [displayEditModal, setDisplayEditModal] = useState(false);
+
   const [customersList, setCustomersList] = useState([]);
   const [ordersList, setOrdersList] = useState([]);
 
@@ -144,10 +145,6 @@ function OrdersTable() {
         alert("Error code: " + err.response.status + "\n" + err.response.data.error);
       });
 
-    // alert("Submitted an order creation:" +
-    //   "\nInvoice number: " + temporaryOrder.invoice_number +
-    //   "\nCustomer id: " + temporaryOrder.customer_id +
-    //   "\nDate: " + temporaryOrder.order_date);
     clearTemporaryOrderState();
     setDisplayCreateModal(false);
 
@@ -180,8 +177,28 @@ function OrdersTable() {
       });
   }, [reloadFlag]);
 
+  const [edittingOrderID, setEdittingOrderID] = useState(-1);
   const handleEditClick = (event, row) => {
     event.preventDefault();
+
+    setEdittingOrderID(row.id);
+
+    //empty first
+    clearTemporaryOrderState();
+
+    if (row.order_date != null && row.order_date != "") {
+      setDateValue(dayjs(row.order_date).format('YYYY-MM-DD'));
+    }
+
+    const formValues = {
+      customer_id: row.customer_id,
+      invoice_number: row.invoice_number,
+      order_date: row.order_date,
+      completion_date: row.completion_date
+    };
+    setTemporaryOrder({ ...formValues });
+
+    setDisplayEditModal(true);
   }
 
   const handleDeleteClick = (event, row) => {
@@ -195,6 +212,72 @@ function OrdersTable() {
     reloadOrders();
     sendNotification({ msg: 'Success: Order Deleted', variant: 'success' });
   };
+
+  const handleEditSubmit = (event) => {
+    event.preventDefault();
+
+    //VALIDATE INPUTS
+    let ret = createOrderObjectAndValidateInputs();
+    if (ret == null) {
+        return; //alert already dislayed
+    }
+
+    //otherwise, send edit request
+    axiosInstance.put('order/' + edittingOrderID + '/', ret)
+        .catch((err) => {
+            alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+        });
+
+    setDisplayEditModal(false);
+
+    clearTemporaryOrderState();
+
+    reloadOrders();
+    sendNotification({ msg: 'Success: Order Updated', variant: 'success' });
+};
+
+function createOrderObjectAndValidateInputs() {
+  //send off the request
+  var postObject = {
+      customer_id: temporaryOrder.customer_id,
+      order_date: temporaryOrder.order_date,
+  }
+  
+  if (temporaryOrder.invoice_number != null && temporaryOrder.invoice_number != "") {
+    if(temporaryOrder.invoice_number.length < 20){
+      postObject['invoice_number'] = temporaryOrder.invoice_number;
+    } else {
+      alert("Error! Invoice number must be less than 20 characters long.");
+      return;
+    }
+  }
+  if (temporaryOrder.completion_date != null && temporaryOrder.completion_date != "") {
+      postObject['completion_date'] = temporaryOrder.completion_date;
+  }
+
+  //CHECKS FOR INPUT
+  let temp_str = "Error! The following fields are required:\n"
+  let initial_len = temp_str.length;
+
+  if (temporaryOrder.customer_id == "") {
+      temp_str += "Customer, "
+  }
+  if (temporaryOrder.order_date == "" || temporaryOrder.order_date==null) {
+      temp_str += "Order Date, "
+  }
+  if (initial_len != temp_str.length) {
+      //if missing fields, alert and return
+      alert(temp_str.substring(0, temp_str.length - 2));
+      return null;
+  }
+
+  return postObject;
+}
+
+const handleCreateClick = () => {
+  clearTemporaryOrderState();
+  setDisplayCreateModal(true);
+}
 
   return (
     <>
@@ -218,7 +301,7 @@ function OrdersTable() {
                 borderColor: "#028357",
                 marginRight: "10px"
               }}
-                onClick={() => { setDisplayCreateModal(true); }}
+                onClick={() => { handleCreateClick(); }}
               >Create Order</Button>
             </Grid>
           </Grid>
@@ -252,7 +335,7 @@ function OrdersTable() {
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.id}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.customer_id}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.invoice_number}</TableCell>
-                  <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.order_date}</TableCell>
+                  <TableCell className="tableCell" sx={{ textAlign: "center" }}>{dayjs(order.order_date).format('DD/MM/YYYY')}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.completion_date}</TableCell>
                   {order.completion_date == null &&
                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
@@ -383,6 +466,92 @@ function OrdersTable() {
       <div
         className={`Overlay ${displayCreateModal ? "Show" : ""}`}
         onClick={() => { setDisplayCreateModal(!displayCreateModal); }}
+      />
+
+
+      <div className={`Modal Large ${displayEditModal ? "Show" : ""}`}>
+        <button
+          className="Close"
+          onClick={() => { setDisplayEditModal(!displayEditModal); }}
+        >
+          X
+        </button>
+
+        <Typography variant="h4" sx={{
+          fontFamily: 'Lato',
+          fontWeight: 'bold',
+          marginTop: "20px",
+          textAlign: "center"
+        }}>Edit Order</Typography>
+
+        <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <TextField
+            margin="dense"
+            id="invoice_number"
+            label="Invoice Number"
+            name="invoice_number"
+            autoComplete="invoice_number"
+            autoFocus
+            size="small"
+            value={temporaryOrder.invoice_number}
+            onChange={handleFormChange}
+            sx={{ width: "300px", mt: 3, mb: 3 }}
+            variant="filled"
+          />
+
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+              label="Date"
+              name="order_date"
+              inputFormat="DD/MM/YYYY"
+              value={dateValue || null}
+              // value={temporaryOrder.order_date}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} />}
+              sx={{ width: "300px", mt: 3 }}
+            />
+          </LocalizationProvider>
+
+          <Box noValidate>
+            <FormControl sx={{ width: "300px", mt: 3 }}>
+              <InputLabel id="demo-simple-select-label">Customers</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={temporaryOrder.customer_id}
+                label="Customer"
+                onChange={handleCustomerChange}
+              >
+                {
+                  customersList.map((customer) => {
+                    return (
+                      <MenuItem key={customer.id} value={customer.id}>
+                        <ListItemText primary={customer.name} />
+                      </MenuItem>
+                    )
+                  })
+                }
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Box noValidate>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Submit
+            </Button>
+          </Box>
+
+        </Box>
+      </div>
+
+      {/* Below snippet makes it so that if you click out of the modal it exits. */}
+      <div
+        className={`Overlay ${displayEditModal ? "Show" : ""}`}
+        onClick={() => { setDisplayEditModal(!displayEditModal); }}
       />
 
     </>
