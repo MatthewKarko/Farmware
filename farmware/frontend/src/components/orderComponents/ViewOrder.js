@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ListItemText, Checkbox, MenuItem, Select, InputLabel, FormControl, TextField, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
-import orderItemsData from "./mock-data/mock-order-items.json";
+// import orderItemsData from "./mock-data/mock-order-items.json";
 import axiosInstance from '../../axios';
 import produceData from "./mock-data/mock-produce.json";
 import produceSuffixData from "./mock-data/mock-produce-suffix.json";
@@ -11,10 +11,12 @@ import produceSuffixData2 from "./mock-data/mock-produce-suffix-2.json";
 import produceVarietyData from "./mock-data/mock-produce-variety.json";
 import produceVarietyData2 from "./mock-data/mock-produce-variety-2.json";
 import orderItemsStockData from "./mock-data/mock-order-items-stock.json";
+import useNotification from "../alert/UseNotification";
 
 function ViewOrder() {
     const navigate = useNavigate();
     const location = useLocation();
+    const [msg, sendNotification] = useNotification(); //for the success alerts
 
     const [customerName, setCustomerName] = useState("");
 
@@ -22,6 +24,8 @@ function ViewOrder() {
     const [displayAddStockModal, setDisplayAddStockModal] = useState(false);
 
     const [viewingOrderItemID, setViewingOrderItemID] = useState(-1);
+
+    const [produceList, setProduceList] = useState([]);
 
     function handleViewAssignedStock(order_item) {
         //OPEN MODAL TO VIEW ASSIGNED STOCK. HERE THEY CAN BE DELETED OR MODIFIED.
@@ -49,20 +53,20 @@ function ViewOrder() {
     }
 
     const [temporaryProduce, setTemporaryProduce] = useState({
-        produceSelected: -1,
-        suffixSelected: -1,
-        varietySelected: -1,
-        produceQuantity: 0,
+        produce_id: "",
+        quantity_suffix_id: "",
+        produce_variety_id: "",
+        quantity: "",
     });
 
     const [produceSuffixes, setProduceSuffixes] = useState([]);
 
     const clearTemporaryProduce = () => {
         const formValues = {
-            produceSelected: -1,
-            suffixSelected: -1,
-            varietySelected: -1,
-            produceQuantity: 0,
+            produce_id: "",
+            quantity_suffix_id: "",
+            produce_variety_id: "",
+            quantity: "",
         };
         setTemporaryProduce({ ...formValues });
     };
@@ -73,50 +77,61 @@ function ViewOrder() {
 
         //set new produce
         const newFormData = { ...temporaryProduce };
-        newFormData["produceSelected"] = event.target.value;
+        newFormData["produce_id"] = event.target.value;
+        newFormData["quantity_suffix_id"] = "";
+        newFormData["produce_variety_id"] = "";
+        newFormData["quantity"] = "";
         setTemporaryProduce({ ...newFormData });
 
         // Correct the displayed suffix and variety options, and clear any prior stored state.
+        setSuffixesForProduceID(event.target.value);
+        setVarieitesForProduceID(event.target.value);
+    };
 
+    function setSuffixesForProduceID(produce_id) {
         //remove all from the suffix state
         let len = produceSuffixes.length
         for (let i = 0; i < len; i++) {
             produceSuffixes.pop();
         }
 
-        //Temporarily, it will switch between two suffix lists to demonstrate functionality
-        if (len == 2) {
-            for (let i = 0; i < produceSuffixData2.length; i++) {
-                produceSuffixes.push(produceSuffixData2[i]);
-            }
-        } else {
-            for (let i = 0; i < produceSuffixData.length; i++) {
-                produceSuffixes.push(produceSuffixData[i]);
-            }
-        }
+        //get all the new suffix
+        axiosInstance
+            .get('/produce/' + produce_id + '/get_suffixes/', {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setProduceSuffixes(produceSuffixes => [...produceSuffixes, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting suffixes for produce id failed");
+            });
+    }
 
-        //now do same for varieties
-        //remove all from the suffix state
+    function setVarieitesForProduceID(produce_id) {
         let len_var = produceVarieties.length
         for (let i = 0; i < len_var; i++) {
             produceVarieties.pop();
         }
 
-        //Temporarily, it will switch between two varieties lists to demonstrate functionality
-        if (len_var == 2) {
-            for (let i = 0; i < produceVarietyData2.length; i++) {
-                produceVarieties.push(produceVarietyData2[i]);
-            }
-        } else {
-            for (let i = 0; i < produceVarietyData.length; i++) {
-                produceVarieties.push(produceVarietyData[i]);
-            }
-        }
-    };
+        //get all the new varieties
+        axiosInstance
+            .get('/produce/' + produce_id + '/get_varieties/', {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setProduceVarieties(produceVarieties => [...produceVarieties, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting suffixes for produce id failed");
+            });
+    }
 
     const handleSuffixChange = (event) => {
         const newFormData = { ...temporaryProduce };
-        newFormData["suffixSelected"] = event.target.value;
+        newFormData["quantity_suffix_id"] = event.target.value;
         setTemporaryProduce({ ...newFormData });
     };
 
@@ -124,14 +139,14 @@ function ViewOrder() {
 
     const handleVarietyChange = (event) => {
         const newFormData = { ...temporaryProduce };
-        newFormData["varietySelected"] = event.target.value;
+        newFormData["produce_variety_id"] = event.target.value;
         setTemporaryProduce({ ...newFormData });
     };
 
     const handleFormChange = (event) => {
         event.preventDefault();
         const newFormData = { ...temporaryProduce };
-        newFormData["produceQuantity"] = event.target.value;
+        newFormData["quantity"] = event.target.value;
         setTemporaryProduce({ ...newFormData });
     };
 
@@ -140,42 +155,71 @@ function ViewOrder() {
     const handleAddProduceSubmit = (event) => {
         event.preventDefault();
 
-        //TO DO: CHECKS FOR VALID INPUT
-        if (temporaryProduce.produceSelected < 0) {
-            alert("ERROR: Please select a produce.");
+        let postObject = createStockObjectAndValidateInputs();
+        if (postObject == null) {
             return;
         }
-        if (temporaryProduce.suffixSelected < 0) {
-            alert("ERROR: Please select a produce suffix.");
-            return;
-        }
-        if (temporaryProduce.varietySelected < 0) {
-            alert("ERROR: Please select a produce variety.");
-            return;
-        }
-        //check quantity is an integer
-        if (!isNaN(+temporaryProduce.produceQuantity)) {
-            //Is number
-            if (temporaryProduce.produceQuantity < 1) {
-                //error
-                alert("ERROR: Quantity must be greater than 0.");
-                return;
-            }
-        } else {
-            //not number: error
-            alert("ERROR: Quantity must numeric.");
-            return;
-        }
+        console.log(postObject);
+        //send off the request
+        axiosInstance.post(`order_item/`, postObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
 
-        //ASSUMING VALID INPUT:
-        alert("Submitted a produce add to order.\nProduce ID:" + temporaryProduce.produceSelected + "\nSuffix ID: " + temporaryProduce.suffixSelected + "\nVariety ID: " + temporaryProduce.varietySelected + "\nQuantity: " + temporaryProduce.produceQuantity)
-
-        //CLEAR PRODUCE SELECTED FIELDS
         clearTemporaryProduce();
+
         setDisplayAddProduceModal(false);
-        //reload page
-        window.location.reload();
+
+        reloadOrderItems();
+
+        sendNotification({ msg: 'Success: Order Item Created', variant: 'success' });
     };
+
+    function createStockObjectAndValidateInputs() {
+        //send off the request
+        var postObject = {
+            order_id: location.state.id,
+            produce_id: temporaryProduce.produce_id,
+            quantity_suffix_id: temporaryProduce.quantity_suffix_id,
+            produce_variety_id: temporaryProduce.produce_variety_id,
+            // quantity: temporaryProduce.quantity,
+            // quantity: 10
+        }
+
+        //TO DO: CHECKS FOR VALID INPUT
+        if (temporaryProduce.produce_id < 0) {
+            alert("ERROR: Please select a produce.");
+            return null;
+        }
+        if (temporaryProduce.quantity_suffix_id < 0) {
+            alert("ERROR: Please select a produce suffix.");
+            return null;
+        }
+        if (temporaryProduce.produce_variety_id < 0) {
+            alert("ERROR: Please select a produce variety.");
+            return null;
+        }
+
+        //validate quantity inputs
+        const parsed_quantity = parseInt(temporaryProduce.quantity, 10);
+        if (isNaN(parsed_quantity)) {
+            console.log(parsed_quantity);
+            alert("Invalid quantity input.");
+            return null;
+        } else {
+            postObject['quantity'] = parsed_quantity;
+        }
+        
+        return postObject;
+    }
+
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadOrderItems = () => {
+        setOrderItems([]);
+        setReloadFlag(!reloadFlag);
+    }
+
+    const [orderItems, setOrderItems] = useState([]);
 
     useEffect(() => {
         axiosInstance
@@ -188,7 +232,30 @@ function ViewOrder() {
             .catch((err) => {
                 alert("ERROR: customer/{id}/ failed. NOTE: THIS IS ONLY FAILING BECAUSE OF MOCK ORDER DATA.");
             });
-    }, []);
+
+        axiosInstance
+            .get('order/' + location.state.id + '/get_order_items/', {
+            })
+            .then((res) => {
+                setOrderItems(res.data.order_items);
+                console.log(res.data);
+            })
+            .catch((err) => {
+                alert("ERROR: order items request failed");
+            });
+
+            axiosInstance
+            .get(`produce/`, {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setProduceList(produceList => [...produceList, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting produce failed");
+            });
+    }, [reloadFlag]);
 
 
     //This is required to transfer the changes to produce suffix list to the Select menu
@@ -249,7 +316,7 @@ function ViewOrder() {
         let len_var = temporaryStockAdded.length
         let found = false
         for (let i = 0; i < len_var; i++) {
-            if(!isNaN(+temporaryStockAdded[i].quantity)){
+            if (!isNaN(+temporaryStockAdded[i].quantity)) {
                 //number
                 if (temporaryStockAdded[i].quantity < 1) {
                     //error
@@ -262,7 +329,7 @@ function ViewOrder() {
                 return;
             }
         }
-        
+
         alert("SUCCESS: Make API call.");
         clearTemporaryStockAdded();
         setDisplayAddStockModal(false);
@@ -328,7 +395,7 @@ function ViewOrder() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orderItemsData.map((order_item) => (
+                            {orderItems.map((order_item) => (
                                 <TableRow key={order_item.stock_id}>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
@@ -380,10 +447,10 @@ function ViewOrder() {
                                 // value={temporaryOrder.produce_id}
                                 label="Select a Produce"
                                 onChange={handleProduceChange}
-                                value={temporaryProduce.produceSelected}
+                                value={temporaryProduce.produce_id}
                             >
                                 {
-                                    produceData.map((produce) => {
+                                    produceList.map((produce) => {
                                         return (
                                             <MenuItem key={produce.id} value={produce.id}>
                                                 <ListItemText primary={produce.name} />
@@ -403,7 +470,7 @@ function ViewOrder() {
                                 id="demo-simple-select"
                                 label="Select a Suffix"
                                 onChange={handleSuffixChange}
-                                value={temporaryProduce.suffixSelected}
+                                value={temporaryProduce.quantity_suffix_id}
                             >
                                 {produceSuffixOptions}
                             </Select>
@@ -418,7 +485,7 @@ function ViewOrder() {
                                 id="demo-simple-select"
                                 label="Select a Variety"
                                 onChange={handleVarietyChange}
-                                value={temporaryProduce.varietySelected}
+                                value={temporaryProduce.produce_variety_id}
                             >
                                 {produceVarietyOptions}
                             </Select>
@@ -435,7 +502,7 @@ function ViewOrder() {
                         id="produce_qty"
                         autoComplete="produce_qty"
                         size="small"
-                        value={temporaryProduce.produceQuantity}
+                        value={temporaryProduce.quantity}
                         onChange={handleFormChange}
                         sx={{ width: "300px" }}
                         variant="filled"
@@ -624,7 +691,7 @@ function ViewOrder() {
                                             id={order_item.stock_id}
                                             autoComplete="produce_qty_row"
                                             size="small"
-                                            // value={temporaryProduce.produceQuantity}
+                                            // value={temporaryProduce.quantity}
                                             onChange={handleRowQuantityChange}
                                             sx={{ width: "100px", height: "30px", mt: 0 }}
                                             variant="filled"

@@ -49,6 +49,7 @@ function OrdersTable() {
 
   function handleViewOrderClick(order) {
     //get customer name based on id
+    console.log(order);
     navigate("/view-order", { state: order });
   }
 
@@ -372,7 +373,7 @@ const handleCreateClick = () => {
                         margin: "10px",
                         width: "130px",
                       }}
-                      onClick={() => handleViewOrderClick(event, order)}
+                      onClick={() => handleViewOrderClick(order)}
                     >View Order</Button>
                   </TableCell>
                 </TableRow>
