@@ -287,7 +287,7 @@ function StockTable() {
         setPlantedDateValue(null);
         setSeededDateValue(null);
         setEHD(null);
-        
+
         sendNotification({ msg: 'Success: Stock Created', variant: 'success' });
     };
 
@@ -389,12 +389,13 @@ function StockTable() {
                 <TableContainer component={Paper} style={{}}>
                     <Table aria-label="simple table" style={{}}>
                         <colgroup>
-                            <col style={{ width: '8%' }} />
-                            <col style={{ width: '18%' }} />
-                            <col style={{ width: '18%' }} />
-                            <col style={{ width: '18%' }} />
-                            <col style={{ width: '18%' }} />
-                            <col style={{ width: '20%' }} />
+                            <col style={{ width: '4%' }} />
+                            <col style={{ width: '14%' }} />
+                            <col style={{ width: '14%' }} />
+                            <col style={{ width: '14%' }} />
+                            <col style={{ width: '14%' }} />
+                            <col style={{ width: '15%' }} />
+                            <col style={{ width: '22%' }} />
                         </colgroup>
                         <TableHead>
                             <TableRow sx={{
@@ -407,6 +408,7 @@ function StockTable() {
                                 <TableCell className="tableCell">Produce Variety</TableCell>
                                 <TableCell className="tableCell">Produce Suffix</TableCell>
                                 <TableCell className="tableCell">Stock Quantity</TableCell>
+                                <TableCell className="tableCell">Quantity Available</TableCell>
                                 <TableCell className="tableCell"></TableCell>
                             </TableRow>
                         </TableHead>
@@ -422,11 +424,21 @@ function StockTable() {
                                     <TableCell className="tableCell">{row.variety_name}</TableCell>
                                     <TableCell className="tableCell">{row.quantity_suffix_name}</TableCell>
                                     <TableCell className="tableCell">{row.quantity}</TableCell>
+                                    <TableCell className="tableCell">{row.quantity_available}</TableCell>
                                     <TableCell className="tableCell">
+
+                                    <Button variant="outlined" size="medium"
+                                            style={{
+                                                margin: "10px",
+                                                width: "90px",
+                                            }}
+                                            onClick={(event) => handleDatesClick(event, row)}
+                                        >Dates</Button>
+
                                         <Button variant="outlined" size="medium"
                                             style={{
                                                 margin: "10px",
-                                                width: "80px",
+                                                width: "90px",
                                             }}
                                             onClick={(event) => handleEditClick(event, row)}
                                         >Edit</Button>
@@ -436,12 +448,22 @@ function StockTable() {
                                                 color: "#FF0000",
                                                 borderColor: "#FF0000",
                                                 margin: "10px",
-                                                width: "80px",
+                                                width: "90px",
                                             }}
                                             onClick={(event) => handleDeleteClick(event, row)}
                                         >Delete</Button>
-                                    </TableCell>
 
+                                        <Button variant="outlined" size="medium"
+                                            style={{
+                                                color: "#028357",
+                                                borderColor: "#028357",
+                                                width: "90px",
+                                                margin: "10px",
+                                            }}
+                                            onClick={(event) => handleCompleteClick(event,row)}
+                                        >Complete</Button>
+
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -471,7 +493,7 @@ function StockTable() {
                 <Box component="form" onSubmit={handleStockCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
                     <Box noValidate>
-                        <FormControl sx={{ width: "200px", mt: 2 }}>
+                        <FormControl sx={{ width: "200px", mt: 2 }} required>
                             <InputLabel id="demo-simple-select-label">Supplier</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -494,7 +516,7 @@ function StockTable() {
                             </Select>
                         </FormControl>
 
-                        <FormControl sx={{ width: "200px", mt: 2, ml: 2 }}>
+                        <FormControl sx={{ width: "200px", mt: 2, ml: 2 }} required>
                             <InputLabel id="demo-simple-select-label">Area Code</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -568,7 +590,7 @@ function StockTable() {
 
 
                     <Box noValidate>
-                        <FormControl sx={{ width: "200px", mt: 2 }}>
+                        <FormControl sx={{ width: "200px", mt: 2 }} required>
                             <InputLabel id="demo-simple-select-label">Produce</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -591,7 +613,7 @@ function StockTable() {
                             </Select>
                         </FormControl>
 
-                        <FormControl sx={{ width: "200px", mt: 2, ml: 2 }}>
+                        <FormControl sx={{ width: "200px", mt: 2, ml: 2 }} required>
                             <InputLabel id="demo-simple-select-label">Produce Suffix</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -605,7 +627,7 @@ function StockTable() {
                             </Select>
                         </FormControl>
 
-                        <FormControl sx={{ width: "200px", mt: 2, ml: 2 }}>
+                        <FormControl sx={{ width: "200px", mt: 2, ml: 2 }} required>
                             <InputLabel id="demo-simple-select-label">Produce Variety</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -620,7 +642,7 @@ function StockTable() {
                         </FormControl>
                     </Box>
 
-                    <Typography sx={{mt:2}}>Base Equivalent: {temporaryStock.base_equivalent}</Typography>
+                    <Typography sx={{ mt: 2 }}>Base Equivalent: {temporaryStock.base_equivalent}</Typography>
 
                     <Box noValidate>
                         {/* <FormControl sx={{ width: "200px", mt: 5 }}>
