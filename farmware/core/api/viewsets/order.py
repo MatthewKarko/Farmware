@@ -104,11 +104,6 @@ class OrderViewSet(ModelViewSet):
     def get_order_items(self, request, pk=None):
         order = self.get_object()
 
-        data: QueryDict = request.data
-
-        serialiser = self.get_serializer(data=data)
-        serialiser.is_valid(raise_exception=True)
-
         order_items = OrderItemSerialiser(
             OrderItem.objects.all().filter(order_id=order.id),
             many=True
