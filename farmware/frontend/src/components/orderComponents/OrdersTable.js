@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { ListItemText, Checkbox, MenuItem, Select, InputLabel, FormControl, TextField, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
-import ordersData from "./mock-data/mock-orders.json";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import axiosInstance from '../../axios';
@@ -11,9 +10,18 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import useNotification from "../alert/UseNotification";
 
 function OrdersTable() {
   const navigate = useNavigate();
+  const [msg, sendNotification] = useNotification(); //for the success alerts
+
+  const [reloadFlag, setReloadFlag] = useState(false);
+  const reloadOrders = () => {
+    setOrdersList([]);
+    setCustomersList([]);
+    setReloadFlag(!reloadFlag);
+  }
 
   const [temporaryOrder, setTemporaryOrder] = useState({
     customer_id: -1,
@@ -26,15 +34,16 @@ function OrdersTable() {
     const formValues = {
       customer_id: -1,
       invoice_number: "",
-      order_date: temporaryOrder.order_date, //Just keep prev date inputted
+      order_date: "",
+      // order_date: temporaryOrder.order_date, //Just keep prev date inputted
       completion_date: ""
     };
     setTemporaryOrder({ ...formValues });
   };
 
   const [displayCreateModal, setDisplayCreateModal] = useState(false);
-  const [meState, setMeState] = useState([]); //for organisation id if required
   const [customersList, setCustomersList] = useState([]);
+  const [ordersList, setOrdersList] = useState([]);
 
   function handleViewOrderClick(order) {
     //get customer name based on id
@@ -58,8 +67,9 @@ function OrdersTable() {
 
   const handleDateChange = (newValue) => {
     setDateValue(newValue); //set value for the date input field
+    setDateValue(dayjs(newValue).format('YYYY-MM-DD'));
     const newFormData = { ...temporaryOrder };
-    newFormData["order_date"] = dayjs(newValue).format('DD/MM/YYYY'); //set value for temporaryOrder
+    newFormData["order_date"] = dayjs(newValue).format('YYYY-MM-DD'); //set value for temporaryOrder
     setTemporaryOrder({ ...newFormData });
   };
 
@@ -101,29 +111,51 @@ function OrdersTable() {
       return;
     }
 
+    let temp_str = "Error! The following fields are required:\n"
+    let initial_len = temp_str.length;
+
+    if (temporaryOrder.customer_id == "") {
+      temp_str += "Supplier, "
+    }
+    if (temporaryOrder.order_date == "") {
+      temp_str += "Area Code, "
+    }
+    if (initial_len != temp_str.length) {
+      //if missing fields, alert and return
+      alert(temp_str.substring(0, temp_str.length - 2));
+      return null;
+    }
+
     //IF MADE IT HERE, IS VALID INPUT:
-    alert("Submitted an order creation:" +
-      "\nInvoice number: " + temporaryOrder.invoice_number +
-      "\nCustomer id: " + temporaryOrder.customer_id +
-      "\nDate: " + temporaryOrder.order_date);
+    var postObject = {
+      order_date: temporaryOrder.order_date,
+      customer_id: temporaryOrder.customer_id
+    }
+    if (temporaryOrder.completion_date != null && temporaryOrder.completion_date != "") {
+      postObject['completion_date'] = temporaryOrder.completion_date;
+    }
+    if (temporaryOrder.invoice_number != null && temporaryOrder.invoice_number != "") {
+      postObject['invoice_number'] = temporaryOrder.invoice_number;
+    }
+
+    axiosInstance.post(`order/`, postObject)
+      .catch((err) => {
+        alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+      });
+
+    // alert("Submitted an order creation:" +
+    //   "\nInvoice number: " + temporaryOrder.invoice_number +
+    //   "\nCustomer id: " + temporaryOrder.customer_id +
+    //   "\nDate: " + temporaryOrder.order_date);
     clearTemporaryOrderState();
     setDisplayCreateModal(false);
 
     //reload the data on page
+    reloadOrders();
+    sendNotification({ msg: 'Success: Order Created', variant: 'success' });
   };
 
   useEffect(() => {
-    axiosInstance
-      .get(`user/me/`, {
-      })
-      .then((res) => {
-        setMeState(res.data);
-        console.log(res.data);
-      })
-      .catch((err) => {
-        alert("ERROR: user/me failed");
-      });
-
     axiosInstance
       .get(`customer/`, {
       })
@@ -134,7 +166,18 @@ function OrdersTable() {
       .catch((err) => {
         alert("ERROR: customer/ failed");
       });
-  }, []);
+
+    axiosInstance
+      .get(`order/`, {
+      })
+      .then((res) => {
+        setOrdersList(res.data);
+        console.log(res.data);
+      })
+      .catch((err) => {
+        alert("ERROR: order/ failed");
+      });
+  }, [reloadFlag]);
 
   return (
     <>
@@ -187,19 +230,19 @@ function OrdersTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {ordersData.map((order) => (
+              {ordersList.map((order) => (
                 <TableRow key={order.order_id} >
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.id}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.customer_id}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.invoice_number}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.order_date}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.completion_date}</TableCell>
-                  {order.completion_date == "" &&
+                  {order.completion_date == null &&
                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
                       <PendingActionsIcon />
                     </TableCell>
                   }
-                  {order.completion_date != "" &&
+                  {order.completion_date != null &&
                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
                       <CheckBoxIcon sx={{ color: "#028357" }} />
                     </TableCell>
@@ -233,7 +276,6 @@ function OrdersTable() {
 
         <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <TextField
-            required
             margin="dense"
             id="invoice_number"
             label="Invoice Number"
@@ -252,7 +294,7 @@ function OrdersTable() {
               label="Date"
               name="order_date"
               inputFormat="DD/MM/YYYY"
-              value={dateValue}
+              value={dateValue || null}
               // value={temporaryOrder.order_date}
               onChange={handleDateChange}
               renderInput={(params) => <TextField {...params} />}
