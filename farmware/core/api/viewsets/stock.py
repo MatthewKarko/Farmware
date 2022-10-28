@@ -135,7 +135,9 @@ class StockViewSet(ModelViewSet):
         super().destroy(request, *args, **kwargs)
         return self.responses.DELETION_SUCCESS
 
-    @action(detail=True, methods=['post'])
+    # TODO: change to make RESTful: 
+    # https://stackoverflow.com/questions/3266292/best-way-to-implement-a-restful-toggle-action 
+    @action(detail=True, methods=['get'])
     def toggle_date_completed(self, request, *args, **kwargs):
         stock: Stock = self.get_object()
 
@@ -146,7 +148,7 @@ class StockViewSet(ModelViewSet):
         if stock.date_completed is None:
             # toggle to today
             stock.date_completed = datetime.now()
-            response = True
+            response['completed'] = True
         else:
             stock.date_completed = None
         

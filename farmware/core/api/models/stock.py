@@ -15,7 +15,7 @@ class Stock(models.Model):
     supplier_id = models.ForeignKey('core_api.Supplier', on_delete=models.DO_NOTHING)
     date_seeded = models.DateField(null=True, blank=True)
     date_planted = models.DateField(null=True, blank=True)
-    date_picked = models.DateField(null=True, blank=True)
+    date_picked = models.DateField(null=True, blank=True) # TODO: Change to datetime
     ehd = models.DateField(null=True, blank=True) # Earliest Harvest Date
     date_completed = models.DateField(null=True, blank=True)
     area_code_id = models.ForeignKey('core_api.AreaCode', on_delete=models.DO_NOTHING)
@@ -44,7 +44,8 @@ class Stock(models.Model):
     def __str__(self) -> str:
         return (f'{self.quantity_available:.2f} (/{self.quantity:.2f}) '
         + f'{self.produce_id} {self.quantity_suffix_id} {self.supplier_id} ' 
-        + f'[{self.date_picked.date()}]'    #type: ignore
+        + (f'[{self.date_picked}]'    #type: ignore
+            if (self.date_picked is not None) else '')
         )
 class StockPickers(models.Model):
     stock_id = models.ManyToManyField(Stock)
