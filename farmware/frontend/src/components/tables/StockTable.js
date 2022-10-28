@@ -283,20 +283,6 @@ function StockTable() {
 
     const handleQuantityChange = (event) => {
         event.preventDefault();
-        // if (event.target.value.length == 0) {
-        //     const newFormData = { ...temporaryStock };
-        //     newFormData["quantity"] = "";
-        //     setTemporaryStock({ ...newFormData });
-        //     return;
-        // }
-        // const parsed = parseInt(event.target.value, 10);
-        // if (isNaN(parsed)) {
-        //     alert("Invalid quantity input.");
-        // } else {
-        //     const newFormData = { ...temporaryStock };
-        //     newFormData["quantity"] = parsed;
-        //     setTemporaryStock({ ...newFormData });
-        // }
         const newFormData = { ...temporaryStock };
         newFormData["quantity"] = event.target.value;
         setTemporaryStock({ ...newFormData });
@@ -307,27 +293,6 @@ function StockTable() {
         const newFormData = { ...temporaryStock };
         newFormData["quantity_available"] = event.target.value;
         setTemporaryStock({ ...newFormData });
-
-        // if (event.target.value.length == 0) {
-        //     const newFormData = { ...temporaryStock };
-        //     newFormData["quantity_available"] = "";
-        //     setTemporaryStock({ ...newFormData });
-        //     return;
-        // }
-        // const parsed = parseInt(event.target.value, 10);
-        // if (isNaN(parsed)) {
-        //     alert("Invalid quantity available input.");
-        // } else {
-        //     const newFormData = { ...temporaryStock };
-        //     newFormData["quantity_available"] = parsed;
-        //     setTemporaryStock({ ...newFormData });
-        // }
-
-        // if(parsed==0){
-        //     const newFormData = { ...temporaryStock };
-        //     newFormData["quantity_available"] = 0;
-        //     setTemporaryStock({ ...newFormData });
-        // }
     };
 
     function createStockObjectAndValidateInputs() {
@@ -494,9 +459,25 @@ function StockTable() {
         setTemporaryStock({ ...newFormData });
     };
 
+
+    const [displayDatesModel, setDisplayDatesModel] = useState(false);
+    const [tempDates, setTempDates] = useState({
+        date_picked: "",
+        date_planted: "",
+        date_seeded: "",
+        ehd: "",
+        date_completed: "",
+    });
     const handleDatesClick = (event, row) => {
-        console.log(row);
-        alert("Date picked: " + row.date_picked + "\nDate planted: " + row.date_planted + "\nDate seeded: " + row.date_seeded + "\nEarliest Harvest Date: " + row.ehd + "\nDate Completed: " + row.date_completed);
+        const newFormData = { ...tempDates };
+        newFormData["date_picked"] = row.date_picked;
+        newFormData["date_planted"] = row.date_planted;
+        newFormData["date_seeded"] = row.date_seeded;
+        newFormData["ehd"] = row.ehd;
+        newFormData["date_completed"] = row.date_completed;
+        setTempDates({ ...newFormData });
+
+        setDisplayDatesModel(true);
     }
 
     const handleCompleteClick = (event, row) => {
@@ -1055,6 +1036,47 @@ function StockTable() {
             <div
                 className={`Overlay ${displayEditModal ? "Show" : ""}`}
                 onClick={() => { setDisplayEditModal(!displayEditModal); clearTemporaryStock(); }}
+            />
+
+
+
+
+            <div className={`Modal Medium ${displayDatesModel ? "Show" : ""}`}>
+                <button
+                    className="Close"
+                    onClick={() => { setDisplayDatesModel(!displayDatesModel); }}
+                >
+                    X
+                </button>
+
+                <Typography variant="h4" sx={{
+                    fontFamily: 'Lato',
+                    fontWeight: 'bold',
+                    mt: 2,
+                    textAlign: 'center'
+                }}>Stock Dates</Typography>
+                <Typography fontSize="18px" sx={{ mt: 2, textAlign: 'center' }}> Date Seeded: {tempDates.date_seeded} </Typography>
+                <Typography fontSize="18px" sx={{ mt: 2, textAlign: 'center' }}> Date Planted: {tempDates.date_planted} </Typography>
+                <Typography fontSize="18px" sx={{ mt: 2, textAlign: 'center' }}> Date Picked: {tempDates.date_picked} </Typography>
+                <Typography fontSize="18px" sx={{ mt: 2, textAlign: 'center' }}> Earliest Harvest Date: {tempDates.ehd} </Typography>
+                <Typography fontSize="18px" sx={{ mt: 2, textAlign: 'center' }}> Date Completed: {tempDates.date_completed} </Typography>
+
+                <Box textAlign='center'>
+                    <Button
+                        type="normal"
+                        variant="contained"
+                        sx={{ mt: 1, mb: 2, textAlign: 'center' }}
+                        onClick={() => setDisplayDatesModel(false)}
+                    >
+                        Close
+                    </Button>
+                </Box>
+
+            </div>
+
+            <div
+                className={`Overlay ${displayDatesModel ? "Show" : ""}`}
+                onClick={() => { setDisplayDatesModel(!displayDatesModel); clearTemporaryStock(); }}
             />
 
         </React.Fragment>
