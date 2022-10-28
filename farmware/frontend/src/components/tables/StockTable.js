@@ -317,11 +317,7 @@ function StockTable() {
         if (temporaryStock.ehd != null && temporaryStock.ehd != "") {
             postObject['ehd'] = temporaryStock.ehd;
         }
-        // if (temporaryStock.quantity_available != null && temporaryStock.quantity_available != "") {
-        //     postObject['quantity_available'] = temporaryStock.quantity_available;
-        //     console.log("set quant available");
-        // }
-
+    
         //CHECKS FOR INPUT
         let temp_str = "Error! The following fields are required:\n"
         let initial_len = temp_str.length;
@@ -630,7 +626,6 @@ function StockTable() {
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                // value={temporaryOrder.produce_id}
                                 label="Select a Supplier"
                                 onChange={handleSupplierChange}
                                 value={temporaryStock.supplier_id}
@@ -727,7 +722,6 @@ function StockTable() {
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                // value={temporaryOrder.produce_id}
                                 label="Select a Produce"
                                 onChange={handleProduceChange}
                                 value={temporaryStock.produce_id}
@@ -777,9 +771,6 @@ function StockTable() {
                     <Typography sx={{ mt: 2 }}>Base Equivalent: {temporaryStock.base_equivalent}</Typography>
 
                     <Box noValidate>
-                        {/* <FormControl sx={{ width: "200px", mt: 5 }}>
-                        </FormControl> */}
-
                         <FormControl sx={{ width: "200px" }}>
                             <TextField
                                 required
