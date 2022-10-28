@@ -133,11 +133,7 @@ class OrderItemViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         """Get the serialiser class for the appropriate action."""
-        if self.action == 'create': return OrderCreationSerialiser
-        if self.action == 'retrieve': return OrderFullSerialiser
         if self.action == 'bulk_add_stock': return BulkAddStockSerialiser
-
-        if 'update' in self.action: return OrderUpdateSerialiser
 
         return super().get_serializer_class()
 
