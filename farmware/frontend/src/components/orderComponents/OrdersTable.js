@@ -31,6 +31,7 @@ function OrdersTable() {
   });
 
   const clearTemporaryOrderState = () => {
+    setDateValue(null);
     const formValues = {
       customer_id: -1,
       invoice_number: "",
@@ -179,6 +180,22 @@ function OrdersTable() {
       });
   }, [reloadFlag]);
 
+  const handleEditClick = (event, row) => {
+    event.preventDefault();
+  }
+
+  const handleDeleteClick = (event, row) => {
+    event.preventDefault();
+    axiosInstance
+      .delete('order/' + row.id + '/', {
+      })
+      .catch((err) => {
+        alert("ERROR: Failed to delete order");
+      });
+    reloadOrders();
+    sendNotification({ msg: 'Success: Order Deleted', variant: 'success' });
+  };
+
   return (
     <>
       <div className="main-content">
@@ -210,17 +227,17 @@ function OrdersTable() {
         <TableContainer component={Paper} className="table" style={{ margin: "auto" }}>
           <Table aria-label="simple table" style={{ margin: "auto" }}>
             <colgroup>
-              <col style={{ width: '8%' }} />
-              <col style={{ width: '12%' }} />
-              <col style={{ width: '16%' }} />
-              <col style={{ width: '20%' }} />
-              <col style={{ width: '20%' }} />
-              <col style={{ width: '10%' }} />
+              <col style={{ width: '4%' }} />
               <col style={{ width: '14%' }} />
+              <col style={{ width: '14%' }} />
+              <col style={{ width: '14%' }} />
+              <col style={{ width: '14%' }} />
+              <col style={{ width: '4%' }} />
+              <col style={{ width: '25%' }} />
             </colgroup>
             <TableHead>
               <TableRow>
-                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Order ID</TableCell>
+                <TableCell className="tableCell" sx={{ textAlign: "center" }}>ID</TableCell>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Customer Name (is id atm)</TableCell>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Invoice Number</TableCell>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Date Created</TableCell>
@@ -248,7 +265,31 @@ function OrdersTable() {
                     </TableCell>
                   }
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>
-                    <Button variant="outlined" size="medium" onClick={() => handleViewOrderClick(order)}
+
+                    <Button variant="outlined" size="medium"
+                      style={{
+                        margin: "10px",
+                        width: "90px",
+                      }}
+                      onClick={(event) => { handleEditClick(event, order); }}
+                    >Edit</Button>
+
+                    <Button variant="outlined" size="medium"
+                      style={{
+                        color: "#FF0000",
+                        borderColor: "#FF0000",
+                        margin: "10px",
+                        width: "90px",
+                      }}
+                      onClick={(event) => handleDeleteClick(event, order)}
+                    >Delete</Button>
+
+                    <Button variant="outlined" size="medium"
+                      style={{
+                        margin: "10px",
+                        width: "130px",
+                      }}
+                      onClick={() => handleViewOrderClick(event, order)}
                     >View Order</Button>
                   </TableCell>
                 </TableRow>
