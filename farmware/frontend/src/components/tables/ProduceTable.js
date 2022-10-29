@@ -3,6 +3,16 @@ import { Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, Tabl
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import { useNavigate } from "react-router-dom";
 
 function ProduceTable() {
 
@@ -14,10 +24,15 @@ function ProduceTable() {
     const [displayVarietyModal, setDisplayVarietyModal] = useState(false);
     const [produceObj, setProduceObj] = useState([]);
     const [editProduceSuffix, setEditProduceSuffix] = useState([]);
-    const [productName, setProductName] = useState("");
+    const [produceName, setProduceName] = useState("");
     const [currentProduceId, setCurrentProduceId] = useState(-1);
     const [produceSuffix, setProduceSuffix] = useState("");
     const [produceVarieties, setProduceVarieties] = useState([[]]);
+    const [produceSuffixEquivalent, setProduceSuffixEquivalent] = useState();
+    const [editModal, setEditModal] = useState(false);
+    const [editRow, setEditRow] = useState();
+    const [editView, setEditView] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         axiosInstance
@@ -29,15 +44,40 @@ function ProduceTable() {
                     // console.log(res.data)
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting users failed");
-            });
-
     }, []);
 
-    const handleProductNameChange = (event) => {
+    const handleEditViewChange = (event) => {
+        setEditView(event.target.value);
+      };
+
+    const handleEditView = (event) => {
         event.preventDefault();
-        setProductName(event.target.value)
+        if(editView == 0){
+            setDisplayEditModal(!displayEditModal);
+        }else if (editView == 1){
+            
+            navigate('/edit-produce-suffix', {state: editRow});
+        }else{
+            navigate('/edit-produce-varieties', {state: editRow}); 
+        }
+        setEditModal(false);
+      };
+
+    const handleClickCloseEditModal = (event) => {
+        event.preventDefault();
+        setEditModal(false);
+        setEditRow();
+      };
+
+    const handleClickOpenEditModal = (event, row) => {
+        event.preventDefault();
+        setEditModal(true);
+        setEditRow(row);
+      };
+
+    const handleProduceNameChange = (event) => {
+        event.preventDefault();
+        setProduceName(event.target.value)
     };
     const handleProduceSuffixChange = (event) => {
         event.preventDefault();
@@ -48,7 +88,8 @@ function ProduceTable() {
         event.preventDefault();
         const inputdata = [...produceVarieties];
         inputdata[i] = event.target.value;
-        setProduceVarieties(inputdata);
+        setProduceVarieties(inputdata.toString());
+        
     };
     const handleVarietyAdd = (event) => {
         event.preventDefault();
@@ -102,14 +143,29 @@ function ProduceTable() {
     const handleCreateSubmit = (event) => {
         event.preventDefault();
 
-        setDisplayCreateModal(!displayCreateModal);
-        setDisplaySuffixModal(!displayEditModal);
+        
+
+        
         
         var postObject = {
-            name: productName,
+            name: produceName,
         };
 
-        axiosInstance.post(`/produce/`, postObject).then((res) => setCurrentProduceId(res.data.id)).catch((err)=> console.log(err));
+        axiosInstance
+            .post(`/produce/`, postObject)
+            .then((res) => {
+                setCurrentProduceId(res.data.id);
+                setDisplayCreateModal(!displayCreateModal);
+                setDisplaySuffixModal(!displaySuffixModal);
+            })
+            .catch((err)=> {
+                console.log(err);
+                alert(err.response.data.name);
+                
+                 });
+        ;
+        
+        
 
 
 
@@ -117,9 +173,20 @@ function ProduceTable() {
 
     const handleVarietySubmit = (event) => {
         event.preventDefault();
-        console.log(produceVarieties);
+        console.log(produceVarieties, currentProduceId);
+        
+        var postObject = {
+            id: currentProduceId,
+            name: produceVarieties,
+
+        };
+        
+        axiosInstance
+                .post(`produce/${currentProduceId}/create_varieties/`, postObject)
+                .catch((err) =>{console.log(err)})
+
         setDisplayVarietyModal(!displayVarietyModal);
-       setProduceVarieties([[]]);
+        setProduceVarieties([[]]);
 
     }
 
@@ -127,14 +194,16 @@ function ProduceTable() {
         event.preventDefault();
         setDisplaySuffixModal(!displaySuffixModal);
         setDisplayVarietyModal(!displayVarietyModal);
-
+        console.log(produceVarieties);
         var postObject = {
             produce_id: currentProduceId,
             suffix: produceSuffix,
-            base_equivalent, produceSuffix,
+            base_equivalent: produceSuffixEquivalent,
         };
 
         axiosInstance.post(`produce_quantity_suffix/`, postObject).then((res) => console.log(res.data)).catch((err)=> console.log(err));
+
+        
     };
     const handleFormChange = (event) => {
         event.preventDefault();
@@ -210,18 +279,17 @@ function ProduceTable() {
                                     <TableCell className="tableCell">{row.name}</TableCell>
                                     <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
-                                            style={{
-                                                margin: "10px",
-                                                width: "150px",
+                                            style={{                                              
+                                                width: "100px",
                                             }}
-                                            onClick={(event) => handleEditClick(event, row)}
+                                            onClick={(event) => handleClickOpenEditModal(event, row)}
                                         >Edit Name</Button>
                                     </TableCell>
                                     <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
                                             style={{
-                                                margin: "10px",
-                                                width: "150px",
+                                           
+                                                width: "100px",
                                             }}
                                             onClick={(event) => handleEditClick(event, row)}
                                         >Edit Varieties</Button>
@@ -229,8 +297,8 @@ function ProduceTable() {
                                     <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
                                             style={{
-                                                margin: "10px",
-                                                width: "150px",
+                                    
+                                                width: "100px",
                                             }}
                                             onClick={(event) => handleEditClick(event, row)}
                                         >Edit Suffixes</Button>
@@ -240,7 +308,7 @@ function ProduceTable() {
                                             style={{
                                                 color: "#FF0000",
                                                 borderColor: "#FF0000",
-                                                margin: "10px",
+                                                margin: "5px",
                                                 width: "80px",
                                             }}
                                             onClick={(event) => handleDeleteClick(event, row)}
@@ -255,8 +323,32 @@ function ProduceTable() {
 
             </div>
 
+            <Dialog open={editModal} onClose={handleClickCloseEditModal} >
+        <DialogTitle>Select Option to Edit</DialogTitle>
+        <DialogContent sx={{display: 'flex', flexDirection: 'column'}}>
+            <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Options</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={editView}
+                label="Edit Option"
+                onChange={handleEditViewChange}
+                >
+                <MenuItem value={0}>Name</MenuItem>
+                <MenuItem value={1}>Quantity Suffix</MenuItem>
+                <MenuItem value={2}>Varieties</MenuItem>
+                </Select>
+            </FormControl>
+          
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClickCloseEditModal}>Cancel</Button>
+          <Button onClick={handleEditView}>Edit</Button>
+        </DialogActions>
+      </Dialog>
 
-            {/*Editing the produce  */}
+            {/*Editing the produce */}
             <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
                 <button
                     className="Close"
@@ -318,7 +410,7 @@ function ProduceTable() {
             <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
                 <button
                     className="Close"
-                    onClick={() => { setDisplayCreateModal(!displayCreateModal); setProductName(""); }}
+                    onClick={() => { setDisplayCreateModal(!displayCreateModal); setProduceName(""); }}
                 >
                     X
                 </button>
@@ -337,12 +429,12 @@ function ProduceTable() {
                         margin="dense"
                         id="product_name"
                         label="Product Name"
-                        name="productName"
+                        name="produceName"
                         autoComplete="product_name"
                         autoFocus
                         size="small"
-                        value={productName}
-                        onChange={handleProductNameChange}
+                        value={produceName}
+                        onChange={handleProduceNameChange}
                         variant="filled"
 
                     />   
@@ -357,7 +449,7 @@ function ProduceTable() {
                 </Box>             
             </div>
 
-            {/* Creating the Produce Suffix */}
+            {/* Creating the Produce Suffix/Base Equivalent */}
             <div className={`Modal ${displaySuffixModal ? "Show" : ""}`}>
                 <button
                     className="Close"
@@ -387,6 +479,24 @@ function ProduceTable() {
                         value={produceSuffix}
                         onChange={handleProduceSuffixChange}
                         variant="filled"
+
+                    /> 
+                    <TextField
+                        xs
+                        required
+                        InputProps={{ inputProps: { min: 1, max:100 } }}
+                        margin="dense"
+                        id="produce_suffix"
+                        label="Suffix base equivalent"
+                        name="produceSuffixEquivalent"
+                        autoComplete="produceSuffixEquivalent"
+                        autoFocus
+                        size="medium"
+                        type="number"
+                        value={produceSuffixEquivalent}
+                        onChange={(e) =>{setProduceSuffixEquivalent(parseInt(e.target.value))}}
+                        variant="filled"
+                        sx={{width: "150px"}}
 
                     />   
 
@@ -474,7 +584,7 @@ function ProduceTable() {
             <div className={`Modal ${displayDeleteModal ? "Show" : ""}`}>
                 <button
                     className="Close"
-                    onClick={() => { setDisplayDeleteModal(!displayEditModal); setProductName(""); }}
+                    onClick={() => { setDisplayDeleteModal(!displayEditModal); setProduceName(""); }}
                 >X</button>
 
                 <Typography variant="h5" sx={{
