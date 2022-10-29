@@ -5,7 +5,6 @@ import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import useNotification from "../alert/UseNotification";
-import orderItemsStockData from "./mock-data/mock-order-items-stock.json";
 
 function ViewOrder() {
     const navigate = useNavigate();
@@ -25,6 +24,30 @@ function ViewOrder() {
         //OPEN MODAL TO VIEW ASSIGNED STOCK. HERE THEY CAN BE DELETED OR MODIFIED.
         setViewingOrderItemID(order_item.id);
         //Using this order_item.id, can make a call to get all the order_items if necessary.
+        // setDisplayViewAssignedStock(true);
+
+        // setViewingOrderItemID(order_item.id);
+
+        //clear current
+        setOrderItemStock([]);
+
+        //make the request for orderItemsStockData
+        axiosInstance
+            .get('/order_item/' + order_item.id + '/get_assigned_stock/', {
+            })
+            .then((res) => {
+                console.log(res.data);
+                res.data.stock.map((data) => {
+                    setOrderItemStock(orderItemStock => [...orderItemStock, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: GET /api/order_item/{id}/get_assigned_stock/ failed");
+            });
+
+        //clear temporary
+        clearTemporaryStockAdded();
+
         setDisplayViewAssignedStock(true);
     }
 
@@ -47,7 +70,7 @@ function ViewOrder() {
                 })
             })
             .catch((err) => {
-                alert("ERROR: Getting order item stock for id failed.");
+                alert("ERROR: GET /api/order_item/{id}/get_available_stock/ failed.");
             });
 
         //clear temporary
@@ -673,7 +696,7 @@ function ViewOrder() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orderItemsStockData.map((order_item) => (
+                            {orderItemStock.map((order_item) => (
                                 <TableRow key={order_item.stock_id}>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_id}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.supplier_name}</TableCell>
