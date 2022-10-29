@@ -1,12 +1,25 @@
 from rest_framework.permissions import BasePermission
 
 from .models import User
+from ..api.models.order import OrderItemStockLink
 
 class IsInOrganisation(BasePermission):
+
+    mappings = {
+        OrderItemStockLink: 'stock_id'
+    }
+
     # for object level permissions
-    def has_object_permission(self, request, view, user_obj):
-        return request.user and (
-            request.user.organisation == user_obj.organisation)
+    def has_object_permission(self, request, view, obj):
+        if request.user is None: return False
+
+        mapping_item = self.mappings.get( type(obj), None )
+        if mapping_item is not None:
+            organisation = getattr(obj, mapping_item).organisation
+        else:
+            organisation = obj.organisation
+
+        return request.user.organisation == organisation
 
 class UserHierarchy(BasePermission):
     """
