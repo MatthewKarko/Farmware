@@ -49,7 +49,6 @@ function OrdersTable() {
 
   function handleViewOrderClick(order) {
     //get customer name based on id
-    console.log(order);
     navigate("/view-order", { state: order });
   }
 
@@ -77,7 +76,6 @@ function OrdersTable() {
   };
 
   const handleCustomerChange = (event) => {
-    console.log('val:' + event.target.value)
     const newFormData = { ...temporaryOrder };
     newFormData["customer_id"] = event.target.value;
     setTemporaryOrder({ ...newFormData });
@@ -160,7 +158,6 @@ function OrdersTable() {
       })
       .then((res) => {
         setCustomersList(res.data);
-        console.log(res.data);
       })
       .catch((err) => {
         alert("ERROR: customer/ failed");
@@ -171,7 +168,6 @@ function OrdersTable() {
       })
       .then((res) => {
         setOrdersList(res.data);
-        console.log(res.data);
       })
       .catch((err) => {
         alert("ERROR: order/ failed");

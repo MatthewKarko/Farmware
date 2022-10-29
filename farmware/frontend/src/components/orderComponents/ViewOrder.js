@@ -21,13 +21,8 @@ function ViewOrder() {
     const [produceList, setProduceList] = useState([]);
 
     function handleViewAssignedStock(order_item) {
-        //OPEN MODAL TO VIEW ASSIGNED STOCK. HERE THEY CAN BE DELETED OR MODIFIED.
+        //OPEN MODAL TO VIEW ASSIGNED STOCK. HERE THEY CAN BE DELETED.
         setViewingOrderItemID(order_item.id);
-        //Using this order_item.id, can make a call to get all the order_items if necessary.
-        // setDisplayViewAssignedStock(true);
-
-        // setViewingOrderItemID(order_item.id);
-
         //clear current
         setOrderItemStock([]);
 
@@ -36,7 +31,6 @@ function ViewOrder() {
             .get('/order_item/' + order_item.id + '/get_assigned_stock/', {
             })
             .then((res) => {
-                console.log(res.data);
                 res.data.stock.map((data) => {
                     setOrderItemStock(orderItemStock => [...orderItemStock, data])
                 })
@@ -48,9 +42,6 @@ function ViewOrder() {
         //clear temporary
         clearTemporaryStockAdded();
         
-        console.log("here:");
-        console.log(orderItemStock);
-
         setDisplayViewAssignedStock(true);
     }
 
@@ -67,7 +58,6 @@ function ViewOrder() {
             .get('/order_item/' + order_item.id + '/get_available_stock/', {
             })
             .then((res) => {
-                console.log(res.data);
                 res.data.stock.map((data) => {
                     setOrderItemStock(orderItemStock => [...orderItemStock, data])
                 })
@@ -214,7 +204,6 @@ function ViewOrder() {
         if (postObject == null) {
             return;
         }
-        console.log(postObject);
         //send off the request
         axiosInstance.post(`order_item/`, postObject)
             .catch((err) => {
@@ -258,7 +247,6 @@ function ViewOrder() {
         //validate quantity inputs
         const parsed_quantity = parseInt(temporaryProduce.quantity, 10);
         if (isNaN(parsed_quantity)) {
-            console.log(parsed_quantity);
             alert("Invalid quantity input.");
             return null;
         } else {
@@ -282,7 +270,6 @@ function ViewOrder() {
             })
             .then((res) => {
                 setCustomerName(res.data.name);
-                console.log(res.data.name);
             })
             .catch((err) => {
                 alert("ERROR: customer/{id}/ failed.");
@@ -293,7 +280,6 @@ function ViewOrder() {
             })
             .then((res) => {
                 setOrderItems(res.data.order_items);
-                console.log(res.data);
             })
             .catch((err) => {
                 alert("ERROR: order items request failed");
@@ -339,7 +325,6 @@ function ViewOrder() {
         if (event.target.value != "") { //if it's empty, just leave it as 0
             const parsed_quantity = parseInt(event.target.value, 10);
             if (isNaN(parsed_quantity)) {
-                console.log(parsed_quantity);
                 alert("Invalid quantity input. Must be a positive integer.");
                 return null;
             }
@@ -350,11 +335,9 @@ function ViewOrder() {
         const parsed_id = parseInt(event.target.id, 10);
 
         //find the id of quantity_suffix
-        // console.log(orderItemStock);
         let qty_suf_id = -1;
         for (let i = 0; i < orderItemStock.length; i++) {
             if(orderItemStock[i].id == parsed_id){
-                // console.log("FOUND: " + orderItemStock[i].quantity_suffix_id);
                 qty_suf_id = orderItemStock[i].quantity_suffix_id
                 break;
             }
@@ -369,7 +352,6 @@ function ViewOrder() {
                 if (quant_var == 0) {
                     //remove it
                     temporaryStockAdded.splice(i, 1);
-                    console.log("its zero");
                 } else {
                     temporaryStockAdded[i].quantity = quant_var;
                 }
@@ -395,10 +377,6 @@ function ViewOrder() {
 
     const addStockToOrderItemSubmit = () => {
         // //check all the quantity are valid
-        // let len_var = temporaryStockAdded.length
-        // // console.log("C");
-        // // console.log(temporaryStockAdded);
-        // // console.log("D");
         let found = false
         for (let i = 0; i < temporaryStockAdded.length; i++) {
             if (!isNaN(+temporaryStockAdded[i].quantity)) {
@@ -420,7 +398,6 @@ function ViewOrder() {
         }
 
         //make call to add all the stock:
-        console.log(postObject);
         axiosInstance.post('order_item/' + viewingOrderItemID + '/bulk_add_stock/', postObject)
             .catch((err) => {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
@@ -468,7 +445,6 @@ function ViewOrder() {
             .get('/order_item/' + viewingOrderItemID + '/get_assigned_stock/', {
             })
             .then((res) => {
-                console.log(res.data);
                 res.data.stock.map((data) => {
                     setOrderItemStock(orderItemStock => [...orderItemStock, data])
                 })
