@@ -47,7 +47,8 @@ function ViewOrder() {
 
         //clear temporary
         clearTemporaryStockAdded();
-
+        
+        console.log("here:");
         console.log(orderItemStock);
 
         setDisplayViewAssignedStock(true);
@@ -446,8 +447,35 @@ function ViewOrder() {
     };
 
     const handleOrderItemStockDelete = (stock_link_id) => {
-
+        //HERETODO
+        // event.preventDefault();
+        axiosInstance
+            .delete('order_item_stock_link/' + stock_link_id + '/', {
+            })
+            .catch((err) => {
+                alert("ERROR: Failed to delete stock link id");
+            });
+        // reloadOrderItems();
+        sendNotification({ msg: 'Success: Deleted Stock From Order', variant: 'success' });
         ///api/order_item_stock_link/{id}/
+
+        //need to reload the orderItemStock
+        //clear current
+        setOrderItemStock([]);
+
+        //make the request for orderItemsStockData
+        axiosInstance
+            .get('/order_item/' + viewingOrderItemID + '/get_assigned_stock/', {
+            })
+            .then((res) => {
+                console.log(res.data);
+                res.data.stock.map((data) => {
+                    setOrderItemStock(orderItemStock => [...orderItemStock, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: GET /api/order_item/{id}/get_assigned_stock/ failed");
+            });
     };
 
     return (
@@ -528,8 +556,10 @@ function ViewOrder() {
                                         >Add Stock</Button>
                                         <Button variant="outlined" size="medium"
                                             sx={{
-                                                color: "#FF0000",
-                                                borderColor: "#FF0000",
+                                                borderColor: "#FF0000", color: "#FF0000", ':hover': {
+                                                    bgcolor: "#fff0f0",
+                                                    borderColor: "#FF0000"
+                                                },
                                                 ml: 2,
                                                 width: "90px",
                                             }}
@@ -700,7 +730,7 @@ function ViewOrder() {
                         </colgroup> */}
                         <TableHead>
                             <TableRow>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Stock ID</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>ID</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Supplier</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Variety</TableCell>
@@ -712,7 +742,7 @@ function ViewOrder() {
                         <TableBody>
                             {orderItemStock.map((order_item) => (
                                 <TableRow key={order_item.stock_id}>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.id}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.supplier_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_variety}</TableCell>
@@ -721,11 +751,11 @@ function ViewOrder() {
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
                                         <Button variant="outlined" size="medium" sx={{
                                             borderColor: "#FF0000", color: "#FF0000", ':hover': {
-                                                bgcolor: "#FFCCCB",
+                                                bgcolor: "#fff0f0",
                                                 borderColor: "#FF0000"
                                             },
                                         }}
-                                            onClick={() => handleOrderItemStockDelete(order_item.stock_id)}
+                                            onClick={() => handleOrderItemStockDelete(order_item.id)}
                                         >Delete</Button>
                                     </TableCell>
                                 </TableRow>
