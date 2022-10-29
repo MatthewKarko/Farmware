@@ -22,7 +22,9 @@ from ..serialisers.order import (
     OrderCreationSerialiser,
     OrderFullSerialiser,
     OrderItemSerialiser,
+    OrderItemDetailedSerialiser,
     OrderItemStockLinkSerialiser,
+    OrderItemStockLinkAssignedStockSerialiser,
     OrderUpdateSerialiser
     )
 from ..serialisers.stock import (
@@ -92,7 +94,6 @@ class OrderViewSet(ModelViewSet):
 
     def get_queryset(self, **kwargs):
         """Get all orders in the user's organisation."""
-        print(self.serializer_class.Meta.model)
         user: User = self.request.user  # type: ignore
         return Order.objects.all().filter(
             organisation=user.organisation, **kwargs)
@@ -160,7 +161,7 @@ class OrderViewSet(ModelViewSet):
     def get_order_items(self, request, pk=None):
         order = self.get_object()
         user: User = request.user
-        order_items = OrderItemSerialiser(
+        order_items = OrderItemDetailedSerialiser(
             OrderItem.objects.all().filter(order_id=order.id),
             many=True
             ).data
@@ -190,7 +191,6 @@ class OrderItemViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        print(data)
 
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
@@ -237,6 +237,18 @@ class OrderItemViewSet(ModelViewSet):
         response = {'stock':data}
         return Response(response, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['get'])
+    def get_assigned_stock(self, request, pk=None):
+        order_item: OrderItem = self.get_object()
+
+        data = OrderItemStockLinkAssignedStockSerialiser(OrderItemStockLink.objects.all().filter(
+            order_item_id=order_item.pk
+            ), many=True
+        ).data
+        # append_foreign_tables(user, data)
+        response = {'stock':data}
+        return Response(response, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['post'])
     def bulk_add_stock(self, request, pk=None):
         order_item: OrderItem = self.get_object()
@@ -248,7 +260,7 @@ class OrderItemViewSet(ModelViewSet):
             # Create new order item stock link (OrderItemStockLink)
             OrderItemStockLink.objects.create(
                 order_item_id=order_item.pk,
-                stock_id = stock_item.id,
+                stock_id = stock_item.stock_id,
                 quantity = stock_item.quantity,
                 quantity_suffix_id = stock_item.quantity_suffix_id
             )
