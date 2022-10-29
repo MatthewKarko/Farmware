@@ -77,11 +77,20 @@ class OrderItemDetailedSerialiser(serializers.ModelSerializer):
             F('quantity') *  F('quantity_suffix_id__base_equivalent')
             ))['quantity_used']
 
+        # TODO: see if there is an easier way to reference the current instance 
+        #       rather than querying.
+        order_item: OrderItem = OrderItem.objects.get(id=data['id'])
+
         # Convert to relative form
-        base_equivalent = OrderItem.objects.get(id=data['id']).quantity_suffix_id.base_equivalent
+        quantity_suffix: ProduceQuantitySuffix = order_item.quantity_suffix_id
+        base_equivalent = quantity_suffix.base_equivalent
         quantity_used = quantity_used / base_equivalent
 
         data['quantity_used'] = quantity_used
+
+        # Add variety_name
+        variety: ProduceVariety = order_item.produce_variety_id
+        data['variety_name'] = variety.variety
 
         return data
 
