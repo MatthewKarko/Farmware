@@ -3,15 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ListItemText, Checkbox, MenuItem, Select, InputLabel, FormControl, TextField, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
-// import orderItemsData from "./mock-data/mock-order-items.json";
 import axiosInstance from '../../axios';
-import produceData from "./mock-data/mock-produce.json";
-import produceSuffixData from "./mock-data/mock-produce-suffix.json";
-import produceSuffixData2 from "./mock-data/mock-produce-suffix-2.json";
-import produceVarietyData from "./mock-data/mock-produce-variety.json";
-import produceVarietyData2 from "./mock-data/mock-produce-variety-2.json";
-import orderItemsStockData from "./mock-data/mock-order-items-stock.json";
 import useNotification from "../alert/UseNotification";
+import orderItemsStockData from "./mock-data/mock-order-items-stock.json";
 
 function ViewOrder() {
     const navigate = useNavigate();
@@ -348,18 +342,10 @@ function ViewOrder() {
         }
         if (!found) {
             const newFormData = {};
-
             newFormData["stock_id"] = parsed_id;
-            // newFormData["quantity"] = parsed_quantity;
-            // newFormData["stock_id"] = 2;
             newFormData["quantity"] = quant_var;
             temporaryStockAdded.push(newFormData);
         }
-
-        // setTemporaryStockAdded(temporaryStockAdded);
-        // console.log("A");
-        console.log(temporaryStockAdded);
-        console.log("B");
     }
 
     const clearTemporaryStockAdded = () => {
