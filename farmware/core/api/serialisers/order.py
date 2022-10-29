@@ -1,3 +1,5 @@
+from django.db.models import F, Sum
+
 from rest_framework import serializers
 
 from ..models.customer import Customer
@@ -60,6 +62,30 @@ class OrderItemSerialiser(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class OrderItemDetailedSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super(OrderItemDetailedSerialiser, self).to_representation(instance)
+
+        # Get sum all quantity in base equivalent form
+        quantity_used = OrderItemStockLink.objects.filter(
+            order_item_id=data['id']
+        ).aggregate(quantity_used=Sum( 
+            F('quantity') *  F('quantity_suffix_id__base_equivalent')
+            ))['quantity_used']
+
+        # Convert to relative form
+        base_equivalent = OrderItem.objects.get(id=data['id']).quantity_suffix_id.base_equivalent
+        quantity_used = quantity_used / base_equivalent
+
+        data['quantity_used'] = quantity_used
+
+        return data
+
+
 class OrderItemListSerialiser(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
@@ -89,6 +115,6 @@ class OrderItemStockLinkAssignedStockSerialiser(serializers.ModelSerializer):
         data['produce_name'] = produce.name
         data['produce_variety'] = variety.variety
         data['quantity_suffix'] = ProduceQuantitySuffix.objects.get(id=data['quantity_suffix_id']).suffix
-        
+
         return data
 ###############################################################################

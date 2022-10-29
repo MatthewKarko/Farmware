@@ -22,6 +22,7 @@ from ..serialisers.order import (
     OrderCreationSerialiser,
     OrderFullSerialiser,
     OrderItemSerialiser,
+    OrderItemDetailedSerialiser,
     OrderItemStockLinkSerialiser,
     OrderItemStockLinkAssignedStockSerialiser,
     OrderUpdateSerialiser
@@ -93,7 +94,6 @@ class OrderViewSet(ModelViewSet):
 
     def get_queryset(self, **kwargs):
         """Get all orders in the user's organisation."""
-        print(self.serializer_class.Meta.model)
         user: User = self.request.user  # type: ignore
         return Order.objects.all().filter(
             organisation=user.organisation, **kwargs)
@@ -161,7 +161,7 @@ class OrderViewSet(ModelViewSet):
     def get_order_items(self, request, pk=None):
         order = self.get_object()
         user: User = request.user
-        order_items = OrderItemSerialiser(
+        order_items = OrderItemDetailedSerialiser(
             OrderItem.objects.all().filter(order_id=order.id),
             many=True
             ).data
@@ -191,7 +191,6 @@ class OrderItemViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        print(data)
 
         serialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
