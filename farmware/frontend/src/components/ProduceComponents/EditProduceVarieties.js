@@ -35,7 +35,6 @@ export const EditProduceVarieties = () => {
 
     const handleCreateClick = (event) => {
         event.preventDefault();
-        setCurrentVariety([]);
         setDisplayCreateModal(!displayCreateModal);
     }
     const handleEditClick = (event, row) => {
@@ -60,6 +59,7 @@ export const EditProduceVarieties = () => {
     }
     const handleDeleteClick = (event, row) => {
         event.preventDefault();
+        
         axiosInstance.delete(`produce_variety/${row.id}/`)
         reloadVarieties();
         
@@ -270,6 +270,15 @@ export const EditProduceVarieties = () => {
                     </Button>
                 </Box>             
             </div>
+
+            <div
+                className={`Overlay ${displayEditModal ? "Show" : ""}`}
+                onClick={() => { setDisplayEditModal(!displayEditModal); }}
+            />
+            <div
+                className={`Overlay ${displayCreateModal ? "Show" : ""}`}
+                onClick={() => { setDisplayCreateModal(!displayCreateModal); }}
+            />
 
         </React.Fragment>
     )
