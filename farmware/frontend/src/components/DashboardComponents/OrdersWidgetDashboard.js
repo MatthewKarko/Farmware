@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Grid, Typography, Button, Box } from '@mui/material';
 import CustomPieChart from "./CustomPieChart";
+import axiosInstance from '../../axios';
 
 function OrdersWidgetDashboard() {
 
@@ -19,27 +20,49 @@ function OrdersWidgetDashboard() {
         navigate("/customers");
     }
 
-    const data = [
-        { name: 'Group A', value: 400 },
-        { name: 'Group B', value: 300 },
-        { name: 'Group C', value: 300 },
-        { name: 'Group D', value: 200 },
-    ];
+    const [stockList, setStockList] = useState([]);
+    const [customerList, setCustomerList] = useState([]);
+    const [orderList, setOrderList] = useState([]);
 
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+    const [reloadFlag, setReloadFlag] = useState([]);
 
-    const RADIAN = Math.PI / 180;
-    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-        const x = cx + radius * Math.cos(-midAngle * RADIAN);
-        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    useEffect(() => {
+        axiosInstance
+            .get(`customer/`, {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setCustomerList(customerList => [...customerList, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: customers failed.");
+            });
 
-        return (
-            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-                {`${(percent * 100).toFixed(0)}%`}
-            </text>
-        );
-    };
+        axiosInstance
+            .get(`stock/`, {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setStockList(stockList => [...stockList, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting stock failed");
+            });
+
+        axiosInstance
+            .get(`order/`, {
+            })
+            .then((res) => {
+                res.data.map((data) => {
+                    setOrderList(orderList => [...orderList, data])
+                })
+            })
+            .catch((err) => {
+                alert("ERROR: Getting orders failed");
+            });
+    }, [reloadFlag]);
 
     return (
         <>
@@ -53,16 +76,16 @@ function OrdersWidgetDashboard() {
                                 component="h2"
                                 sx={{
                                     fontSize: '20px',
-                                    textAlign: 'left',
+                                    textAlign: 'center',
                                 }}
                             >
                                 Open Orders
                             </Typography>
-                            <Typography variant="p" color="#" component="h3" sx={{
-                                textAlign: 'left',
+                            <Typography variant="p" color="#" component="h2" sx={{
+                                textAlign: 'center',
                                 mt: 1,
                             }}>
-                                11
+                                {orderList.length}
                             </Typography>
 
                             <Box textAlign='center'>
@@ -89,23 +112,23 @@ function OrdersWidgetDashboard() {
                                 component="h2"
                                 sx={{
                                     fontSize: '20px',
-                                    textAlign: 'left',
+                                    textAlign: 'center',
                                 }}
                             >
                                 Available Stock
                             </Typography>
-                            <Typography variant="p" color="#" component="h3" sx={{
-                                textAlign: 'left',
-                                mt: 1,
+                            <Typography variant="p" color="#" component="h2" sx={{
+                                textAlign: 'center',
+                                mt: 1.5,
                             }}>
-                                11
+                                {stockList.length}
                             </Typography>
 
                             <Box textAlign='center'>
                                 <Button variant="text" size="large" style={{
                                     color: "#028357",
                                     borderColor: "#028357",
-                                    mt: 1,
+                                    mt: 1.5,
                                 }} onClick={() => handleViewStockClick()}>
                                     View All Stock
                                 </Button>
@@ -124,23 +147,23 @@ function OrdersWidgetDashboard() {
                                 component="h2"
                                 sx={{
                                     fontSize: '20px',
-                                    textAlign: 'left',
+                                    textAlign: 'center',
                                 }}
                             >
-                                Customers
+                                Current Customers
                             </Typography>
-                            <Typography variant="p" color="#" component="h3" sx={{
-                                textAlign: 'left',
-                                mt: 1,
+                            <Typography variant="p" color="#" component="h2" sx={{
+                                textAlign: 'center',
+                                mt: 1.5,
                             }}>
-                                3
+                                {customerList.length}
                             </Typography>
 
                             <Box textAlign='center'>
                                 <Button variant="text" size="large" style={{
                                     color: "#028357",
                                     borderColor: "#028357",
-                                    mt: 1,
+                                    mt: 2,
                                 }} onClick={() => handleViewCustomersClick()}>
                                     View All Customers
                                 </Button>
@@ -151,7 +174,7 @@ function OrdersWidgetDashboard() {
                 </Grid>
             </Grid>
 
-            <CustomPieChart/>
+            <CustomPieChart />
         </>
     )
 }
