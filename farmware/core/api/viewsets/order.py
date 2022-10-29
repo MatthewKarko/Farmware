@@ -237,6 +237,19 @@ class OrderItemViewSet(ModelViewSet):
         response = {'stock':data}
         return Response(response, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['get'])
+    def get_assigned_stock(self, request, pk=None):
+        user: User = request.user
+        order_item: OrderItem = self.get_object()
+
+        data = OrderItemStockLinkSerialiser(OrderItemStockLink.objects.all().filter(
+            order_item_id=order_item.pk
+            ), many=True
+        ).data
+        # append_foreign_tables(user, data)
+        response = {'stock':data}
+        return Response(response, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['post'])
     def bulk_add_stock(self, request, pk=None):
         order_item: OrderItem = self.get_object()
