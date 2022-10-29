@@ -82,9 +82,12 @@ class OrderItemDetailedSerialiser(serializers.ModelSerializer):
         order_item: OrderItem = OrderItem.objects.get(id=data['id'])
 
         # Convert to relative form
-        quantity_suffix: ProduceQuantitySuffix = order_item.quantity_suffix_id
-        base_equivalent = quantity_suffix.base_equivalent
-        quantity_used = quantity_used / base_equivalent
+        if quantity_used is not None:
+            quantity_suffix: ProduceQuantitySuffix = order_item.quantity_suffix_id
+            base_equivalent = quantity_suffix.base_equivalent
+            quantity_used = quantity_used / base_equivalent
+        else:
+            quantity_used = 0
 
         data['quantity_used'] = quantity_used
 
