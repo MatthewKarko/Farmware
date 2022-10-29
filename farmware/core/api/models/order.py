@@ -35,13 +35,13 @@ class OrderItem(models.Model):
     """An produce item within an order."""
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     produce_id = models.ForeignKey(
-        'core_api.Produce', on_delete=models.DO_NOTHING
+        'core_api.Produce', on_delete=models.CASCADE
         )
     produce_variety_id = models.ForeignKey(
-        'core_api.ProduceVariety', on_delete=models.DO_NOTHING
+        'core_api.ProduceVariety', on_delete=models.CASCADE
     )
     quantity_suffix_id = models.ForeignKey(
-        'core_api.ProduceQuantitySuffix', on_delete=models.DO_NOTHING
+        'core_api.ProduceQuantitySuffix', on_delete=models.CASCADE
         )
     quantity = models.FloatField()
 
