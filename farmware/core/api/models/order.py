@@ -10,7 +10,7 @@ class Order(models.Model):
         on_delete=models.CASCADE
         )
     customer_id = models.ForeignKey(
-        'core_api.Customer', on_delete=models.DO_NOTHING
+        'core_api.Customer', on_delete=models.CASCADE
         )
     invoice_number = models.TextField(max_length=20, blank=True, null=True)
 
@@ -63,7 +63,7 @@ class OrderItemStockLink(models.Model):
     stock_id = models.ForeignKey('core_api.Stock', on_delete=models.CASCADE)
     quantity = models.FloatField()
     quantity_suffix_id = models.ForeignKey(
-        'core_api.ProduceQuantitySuffix', on_delete=models.DO_NOTHING)
+        'core_api.ProduceQuantitySuffix', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "order item stock link"

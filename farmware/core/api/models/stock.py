@@ -49,4 +49,4 @@ class Stock(models.Model):
         )
 class StockPickers(models.Model):
     stock_id = models.ManyToManyField(Stock)
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
