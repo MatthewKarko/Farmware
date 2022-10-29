@@ -88,7 +88,7 @@ function ProduceTable() {
         event.preventDefault();
         const inputdata = [...produceVarieties];
         inputdata[i] = event.target.value;
-        setProduceVarieties(inputdata.toString());
+        setProduceVarieties(inputdata);
         
     };
     const handleVarietyAdd = (event) => {
@@ -142,10 +142,6 @@ function ProduceTable() {
 
     const handleCreateSubmit = (event) => {
         event.preventDefault();
-
-        
-
-        
         
         var postObject = {
             name: produceName,
@@ -173,11 +169,15 @@ function ProduceTable() {
 
     const handleVarietySubmit = (event) => {
         event.preventDefault();
-        console.log(produceVarieties, currentProduceId);
+        var varietyResult = "[";
+        varietyResult = varietyResult + produceVarieties.map(d => `"${d}"`).join(',');
+        varietyResult = varietyResult + "]"
+        console.log(varietyResult);
+        // console.log(pr, currentProduceId);
         
         var postObject = {
             id: currentProduceId,
-            name: produceVarieties,
+            name: varietyResult,
 
         };
         
@@ -283,25 +283,7 @@ function ProduceTable() {
                                                 width: "100px",
                                             }}
                                             onClick={(event) => handleClickOpenEditModal(event, row)}
-                                        >Edit Name</Button>
-                                    </TableCell>
-                                    <TableCell className="tableCell">
-                                        <Button variant="outlined" size="medium"
-                                            style={{
-                                           
-                                                width: "100px",
-                                            }}
-                                            onClick={(event) => handleEditClick(event, row)}
-                                        >Edit Varieties</Button>
-                                    </TableCell>
-                                    <TableCell className="tableCell">
-                                        <Button variant="outlined" size="medium"
-                                            style={{
-                                    
-                                                width: "100px",
-                                            }}
-                                            onClick={(event) => handleEditClick(event, row)}
-                                        >Edit Suffixes</Button>
+                                        >Edit Produce</Button>
                                     </TableCell>
                                     <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
@@ -324,29 +306,29 @@ function ProduceTable() {
             </div>
 
             <Dialog open={editModal} onClose={handleClickCloseEditModal} >
-        <DialogTitle>Select Option to Edit</DialogTitle>
-        <DialogContent sx={{display: 'flex', flexDirection: 'column'}}>
-            <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Options</InputLabel>
-                <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={editView}
-                label="Edit Option"
-                onChange={handleEditViewChange}
-                >
-                <MenuItem value={0}>Name</MenuItem>
-                <MenuItem value={1}>Quantity Suffix</MenuItem>
-                <MenuItem value={2}>Varieties</MenuItem>
-                </Select>
-            </FormControl>
-          
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClickCloseEditModal}>Cancel</Button>
-          <Button onClick={handleEditView}>Edit</Button>
-        </DialogActions>
-      </Dialog>
+                <DialogTitle>Select Option to Edit</DialogTitle>
+                <DialogContent sx={{display: 'flex', flexDirection: 'column'}}>
+                    <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Options</InputLabel>
+                        <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={editView}
+                        label="Edit Option"
+                        onChange={handleEditViewChange}
+                        >
+                        <MenuItem value={0}>Name</MenuItem>
+                        <MenuItem value={1}>Quantity Suffix</MenuItem>
+                        <MenuItem value={2}>Varieties</MenuItem>
+                        </Select>
+                    </FormControl>
+                
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleClickCloseEditModal}>Cancel</Button>
+                <Button onClick={handleEditView}>Edit</Button>
+                </DialogActions>
+            </Dialog>
 
             {/*Editing the produce */}
             <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
