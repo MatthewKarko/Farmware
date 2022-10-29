@@ -23,6 +23,7 @@ from ..serialisers.order import (
     OrderFullSerialiser,
     OrderItemSerialiser,
     OrderItemStockLinkSerialiser,
+    OrderItemStockLinkAssignedStockSerialiser,
     OrderUpdateSerialiser
     )
 from ..serialisers.stock import (
@@ -239,10 +240,9 @@ class OrderItemViewSet(ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def get_assigned_stock(self, request, pk=None):
-        user: User = request.user
         order_item: OrderItem = self.get_object()
 
-        data = OrderItemStockLinkSerialiser(OrderItemStockLink.objects.all().filter(
+        data = OrderItemStockLinkAssignedStockSerialiser(OrderItemStockLink.objects.all().filter(
             order_item_id=order_item.pk
             ), many=True
         ).data

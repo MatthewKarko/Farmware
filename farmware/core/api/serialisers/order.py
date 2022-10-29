@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
 from ..models.customer import Customer
+from ..models.produce import Produce, ProduceQuantitySuffix, ProduceVariety
 from ..models.order import Order, OrderItem, OrderItemStockLink
+from ..models.stock import Stock
 
 ### ORDER #####################################################################
 class OrderSerialiser(serializers.ModelSerializer):
@@ -61,7 +63,7 @@ class OrderItemSerialiser(serializers.ModelSerializer):
 class OrderItemListSerialiser(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = '__all__'#['quantity', 'quantity_suffix_id']
+        fields = '__all__'
 ###############################################################################
 
 
@@ -70,4 +72,23 @@ class OrderItemStockLinkSerialiser(serializers.ModelSerializer):
     class Meta:
         model = OrderItemStockLink
         fields = '__all__'
+
+
+class OrderItemStockLinkAssignedStockSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItemStockLink
+        fields = ['quantity', 'stock_id', 'quantity_suffix_id']
+
+    def to_representation(self, data):
+        data = super(OrderItemStockLinkAssignedStockSerialiser, self).to_representation(data)
+
+        stock: Stock = Stock.objects.get(id=data['stock_id'])
+        produce: Produce = stock.produce_id
+        variety: ProduceVariety = stock.variety_id
+        
+        data['produce_name'] = produce.name
+        data['produce_variety'] = variety.variety
+        data['quantity_suffix'] = ProduceQuantitySuffix.objects.get(id=data['quantity_suffix_id']).suffix
+        
+        return data
 ###############################################################################
