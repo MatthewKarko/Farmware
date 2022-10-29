@@ -356,13 +356,13 @@ function ViewOrder() {
     };
 
     const addStockToOrderItemSubmit = () => {
-        //check all the quantity are valid
-        let len_var = temporaryStockAdded.length
-        console.log("C");
-        console.log(temporaryStockAdded);
-        console.log("D");
+        // //check all the quantity are valid
+        // let len_var = temporaryStockAdded.length
+        // // console.log("C");
+        // // console.log(temporaryStockAdded);
+        // // console.log("D");
         let found = false
-        for (let i = 0; i < len_var; i++) {
+        for (let i = 0; i < temporaryStockAdded.length; i++) {
             if (!isNaN(+temporaryStockAdded[i].quantity)) {
                 //number
                 if (temporaryStockAdded[i].quantity < 1) {
@@ -382,12 +382,13 @@ function ViewOrder() {
         }
 
         //make call to add all the stock:
-        console.log("log: ");
         console.log(postObject);
         axiosInstance.post('order_item/' + viewingOrderItemID + '/bulk_add_stock/', postObject)
             .catch((err) => {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
+
+        reloadOrderItems();
 
         setDisplayAddStockModal(false);
 
@@ -405,6 +406,11 @@ function ViewOrder() {
             });
         reloadOrderItems();
         sendNotification({ msg: 'Success: Order Item Deleted', variant: 'success' });
+    };
+
+    const handleOrderItemStockDelete = (stock_link_id) => {
+
+        ///api/order_item_stock_link/{id}/
     };
 
     return (
@@ -682,7 +688,7 @@ function ViewOrder() {
                                                 borderColor: "#FF0000"
                                             },
                                         }}
-                                            onClick={() => alert("delete stock_id: " + order_item.stock_id)}
+                                            onClick={() => handleOrderItemStockDelete(order_item.stock_id)}
                                         >Delete</Button>
                                     </TableCell>
                                 </TableRow>
