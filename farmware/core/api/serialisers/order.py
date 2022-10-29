@@ -115,7 +115,7 @@ class OrderItemStockLinkSerialiser(serializers.ModelSerializer):
 class OrderItemStockLinkAssignedStockSerialiser(serializers.ModelSerializer):
     class Meta:
         model = OrderItemStockLink
-        fields = ['quantity', 'stock_id', 'quantity_suffix_id']
+        fields = ['id', 'quantity', 'stock_id', 'quantity_suffix_id']
 
     def to_representation(self, data):
         data = super(OrderItemStockLinkAssignedStockSerialiser, self).to_representation(data)
