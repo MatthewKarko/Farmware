@@ -2,10 +2,13 @@ from django.db import IntegrityError
 from django.http import QueryDict
 from django.core.exceptions import ObjectDoesNotExist
 
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
+
+from datetime import datetime
 
 from core.api.responses import DefaultResponses
 
@@ -28,7 +31,7 @@ class StockViewSet(ModelViewSet):
         return StockSerialiser
 
     def get_queryset(self, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         objects = Stock.objects.all().filter(organisation=user.organisation, **kwargs)
         if self.action == 'list_filtered':
             data: QueryDict = self.request.data
@@ -86,13 +89,13 @@ class StockViewSet(ModelViewSet):
                 item['produce_name'] = "Unknown"
 
             variety = ProduceVariety.objects.all().filter(id=item['variety_id']).first()
-            if variety != None and variety.produce_id.id == item['produce_id']:
+            if variety != None and variety.produce_id.pk == item['produce_id']:
                 item['variety_name'] = variety.variety
             else:
                 item['variety_name'] = "Unknown"
 
             quantity_suffix = ProduceQuantitySuffix.objects.all().filter(id=item['quantity_suffix_id']).first()
-            if quantity_suffix != None and quantity_suffix.produce_id.id == item['produce_id']:
+            if quantity_suffix != None and quantity_suffix.produce_id.pk == item['produce_id']:
                 item['quantity_suffix_name'] = quantity_suffix.suffix
                 item['base_equivalent'] = quantity_suffix.base_equivalent
             else:
@@ -123,7 +126,7 @@ class StockViewSet(ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def list_filtered(self, request, *args, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         serialiser = StockSerialiser(self.get_queryset(), many=True)
         self.append_foreign_tables(user, serialiser.data)
         return Response(serialiser.data)
@@ -131,6 +134,28 @@ class StockViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
         return self.responses.DELETION_SUCCESS
+
+    # TODO: change to make RESTful: 
+    # https://stackoverflow.com/questions/3266292/best-way-to-implement-a-restful-toggle-action 
+    @action(detail=True, methods=['get'])
+    def toggle_date_completed(self, request, *args, **kwargs):
+        stock: Stock = self.get_object()
+
+        if stock is None: return self.responses.BAD_REQUEST
+
+        response = {'completed': False}
+
+        if stock.date_completed is None:
+            # toggle to today
+            stock.date_completed = datetime.now()
+            response['completed'] = True
+        else:
+            stock.date_completed = None
+        
+        stock.save()
+        
+        return Response(response, status=status.HTTP_200_OK)
+
 
 # depreciated?
 class StockPickersViewSet(ModelViewSet):
@@ -140,7 +165,7 @@ class StockPickersViewSet(ModelViewSet):
     responses = DefaultResponses('Stock Pickers')
 
     def get_queryset(self, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         return StockPickers.objects.all().filter(stock_id__organisation=user.organisation, **kwargs)
 
     def valid_organisation(self, request, data):

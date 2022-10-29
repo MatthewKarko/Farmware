@@ -25,6 +25,12 @@ class OrderCreationSerialiser(serializers.ModelSerializer):
         return super().update(instance=instance, validated_data=validated_data)
 
 
+class OrderUpdateSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['customer_id', 'invoice_number']
+
+
 class OrderFullSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Order
@@ -36,7 +42,7 @@ class OrderFullSerialiser(serializers.ModelSerializer):
         data['customer_name'] = Customer.objects.get(
             id=data['customer_id']).name
 
-        # TODO: fix
+        # TODO: fix?
         data['order_items'] = OrderItemListSerialiser(
             OrderItem.objects.all().filter(order_id=data.get('id')), 
             many=True

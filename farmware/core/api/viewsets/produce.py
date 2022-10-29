@@ -56,7 +56,7 @@ class ProduceViewSet(ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def get_varieties(self, request, *args, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         prod = (Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation)).first()
         if (prod == None):
             return self.responses.DOES_NOT_EXIST
@@ -66,7 +66,7 @@ class ProduceViewSet(ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def get_suffixes(self, request, *args, **kwargs):
-        user: User = self.request.user
+        user: User = self.request.user  # type: ignore
         prod = (Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation)).first()
         if (prod == None):
             return self.responses.DOES_NOT_EXIST
@@ -77,8 +77,8 @@ class ProduceViewSet(ModelViewSet):
     @action(detail=True, methods=['post'])
     def create_varieties(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        user: User = self.request.user
-        varieties = json.loads(data['name'])
+        user: User = self.request.user  # type: ignore
+        varieties = json.loads(data['name'].replace("\'", "\""))
         if (len(varieties) == 0):
             return self.responses.BAD_REQUEST
         
@@ -163,7 +163,8 @@ class ProduceVarietyViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        serialiser = self.get_serializer(data=data)
+        is_list = isinstance(data, list)
+        serialiser = self.get_serializer(data=data, many=is_list)
         serialiser.is_valid(raise_exception=True)
         item = None
         try:
@@ -172,6 +173,8 @@ class ProduceVarietyViewSet(ModelViewSet):
             if 'UNIQUE constraint' in e.args[0]:
                 return self.responses.ITEM_ALREADY_EXISTS
             return self.responses.RESPONSE_FORBIDDEN
+        if is_list:
+            return self.responses.list_json(item)
         return self.responses.json(item)
 
     def retrieve(self, request, *args, **kwargs):
@@ -217,7 +220,8 @@ class ProduceQuantitySuffixViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data: QueryDict = request.data
-        serialiser = self.get_serializer(data=data)
+        is_list = isinstance(data, list)
+        serialiser = self.get_serializer(data=data, many=is_list)
         serialiser.is_valid(raise_exception=True)
         item = None
         try:
@@ -226,6 +230,8 @@ class ProduceQuantitySuffixViewSet(ModelViewSet):
             if 'UNIQUE constraint' in e.args[0]:
                 return self.responses.ITEM_ALREADY_EXISTS
             return self.responses.RESPONSE_FORBIDDEN
+        if is_list:
+            return self.responses.list_json(item)
         return self.responses.json(item)
 
     def retrieve(self, request, *args, **kwargs):

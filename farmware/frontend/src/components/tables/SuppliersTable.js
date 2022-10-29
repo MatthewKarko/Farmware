@@ -181,7 +181,7 @@ function SuppliersPage() {
             phone_number: temporarySupplier.phone_number,
             organisation: organisationCode,
         }
-
+        console.log(postObject);
         axiosInstance.post(`supplier/`, postObject)
             .catch((err) => {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);

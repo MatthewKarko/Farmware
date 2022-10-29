@@ -34,7 +34,7 @@ class ProduceVariety(models.Model):
      - produce_id: 1
      - variety: Red Coral
     """
-    produce_id = models.ForeignKey(Produce, on_delete=models.DO_NOTHING)
+    produce_id = models.ForeignKey(Produce, on_delete=models.CASCADE)
     variety = models.TextField(max_length=100)
 
     class Meta:
@@ -57,7 +57,7 @@ class ProduceQuantitySuffix(models.Model):
      - Another suffix is Boxes
      - base_equivalent would be 10.0, i.e., there are 10 Heads in a Box
     """
-    produce_id = models.ForeignKey(Produce, on_delete=models.DO_NOTHING)
+    produce_id = models.ForeignKey(Produce, on_delete=models.CASCADE)
     suffix = models.TextField(max_length=20)
     base_equivalent = models.FloatField()
 

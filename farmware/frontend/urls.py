@@ -19,6 +19,7 @@ urlpatterns = [
     path('suppliers',index),
     path('teams',index),
     path('area_codes',index),
+    path('stock',index),
     path('docs/',include_docs_urls(title='FarmwareAPI')),
     path('schema', get_schema_view(
         title='FarmwareAPI',
