@@ -48,6 +48,8 @@ function ViewOrder() {
         //clear temporary
         clearTemporaryStockAdded();
 
+        console.log(orderItemStock);
+
         setDisplayViewAssignedStock(true);
     }
 
@@ -346,6 +348,17 @@ function ViewOrder() {
         //parse the id to int
         const parsed_id = parseInt(event.target.id, 10);
 
+        //find the id of quantity_suffix
+        // console.log(orderItemStock);
+        let qty_suf_id = -1;
+        for (let i = 0; i < orderItemStock.length; i++) {
+            if(orderItemStock[i].id == parsed_id){
+                // console.log("FOUND: " + orderItemStock[i].quantity_suffix_id);
+                qty_suf_id = orderItemStock[i].quantity_suffix_id
+                break;
+            }
+        }
+
         //check stock_id if already exists in data
         let len_var = temporaryStockAdded.length
         let found = false
@@ -367,6 +380,7 @@ function ViewOrder() {
             const newFormData = {};
             newFormData["stock_id"] = parsed_id;
             newFormData["quantity"] = quant_var;
+            newFormData["quantity_suffix_id"] = qty_suf_id;
             temporaryStockAdded.push(newFormData);
         }
     }
@@ -504,7 +518,7 @@ function ViewOrder() {
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.variety_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity_suffix_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_qty_added}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity_used}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
                                         <Button variant="outlined" size="medium" onClick={() => { handleViewAssignedStock(order_item) }}
                                         >View Stock</Button>
@@ -702,7 +716,7 @@ function ViewOrder() {
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.supplier_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_variety}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.suffix}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity_suffix}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
                                         <Button variant="outlined" size="medium" sx={{
@@ -792,7 +806,7 @@ function ViewOrder() {
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.variety_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity_suffix_name}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity_available}</TableCell>
 
                                     <TableCell className="tableCell" sx={{ textAlign: "center", alignSelf: "center" }}>
                                         <TextField
