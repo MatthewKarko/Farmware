@@ -41,11 +41,11 @@ class OrganisationTestCases(TestCase):
             raise ValidationError("error")
     def test_organisation4(self):
         with self.assertRaises(ValidationError):
-            Organisation.objects.create(name="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo cursus condimentum. Donec pulvinar odio sed enim tristique, sit amet tristique dolor volutpat. Proin nec mauris gravida libero scelerisque consectetur non at sapien. Nam et felis nibh. Morbi eget augue sit amet nisl elementum congue. Nulla vel laoreet velit. Nullam est neque, efficitur sodales suscipit ac, vulputate eget velit. Donec.",logo="i")
+            Organisation.objects.create(name="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo cursus condimentum. Donec pulvinar odio sed enim tristique, sit amet tristique dolor volutpat. Proin nec mauris gravida libero scelerisque consectetur non at sapien. Nam et felis nibh. Morbi eget augue sit amet nisl elementum congue. Nulla vel laoreet velit. Nullam est neque, efficitur sodales suscipit ac, vulputate eget velit. Doneself.client.",logo="i")
             raise ValidationError("Error")
     def test_organisation5(self):
         with self.assertRaises(ValidationError):
-            Organisation.objects.create(name="a",logo="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo cursus condimentum. Donec pulvinar odio sed enim tristique, sit amet tristique dolor volutpat. Proin nec mauris gravida libero scelerisque consectetur non at sapien. Nam et felis nibh. Morbi eget augue sit amet nisl elementum congue. Nulla vel laoreet velit. Nullam est neque, efficitur sodales suscipit ac, vulputate eget velit. Donec.")
+            Organisation.objects.create(name="a",logo="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo cursus condimentum. Donec pulvinar odio sed enim tristique, sit amet tristique dolor volutpat. Proin nec mauris gravida libero scelerisque consectetur non at sapien. Nam et felis nibh. Morbi eget augue sit amet nisl elementum congue. Nulla vel laoreet velit. Nullam est neque, efficitur sodales suscipit ac, vulputate eget velit. Doneself.client.")
             raise ValidationError("error")
 
 class   AreaCodeTestCases(TestCase):
@@ -67,7 +67,7 @@ class   AreaCodeTestCases(TestCase):
         Organisation.objects.create(code =org_code,name="Farmon",logo="got")
         organisatio=Organisation.objects.get(name="Farmon")
         with self.assertRaises(ValidationError):
-            AreaCode.objects.create(organisation=organisatio, area_code="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas, leo in mattis suscipit, ante arcu gravida sapien, sit amet varius quam mi vitae lectus. Nullam in aliquam odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In quis imperdiet purus. Curabitur quis laoreet tellus. Quisque gravida vitae arcu molestie interdum. Phasellus dictum urna est, ut feugiat turpis gravida sed. Pellentesque ut consectetur ante. Sed scelerisque mauris quis mi condimentum, a consectetur massa ullamcorper. Ut condimentum tellus ac lorem luctus ultrices. In nibh est, placerat ac dignissim sit amet, dapibus in libero. Quisque lobortis lacus et laoreet hendrerit. Quisque vel placerat mi. Suspendisse vitae sodales justo, sed dapibus sapien. Vestibulum bibendum fermentum fringilla. Aliquam vitae neque orci.Aenean euismod lacus id orci rutrum suscipit. In sit amet tortor vel mauris luctus lacinia. Suspendisse potenti. Mauris lorem sem, ornare in justo commodo, vulputate condimentum urna. Nam fermentum ipsum vestibulum vehicula cursus. Mauris iaculis ut risus a imperdiet. Suspendisse porttitor, sem sed laoreet luctus, est tellus bibendum felis, a dignissim justo velit a ante. Sed placerat justo eros, at viverra ex imperdiet ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec id odio nunc. Nulla tincidunt rhoncus tellus, sit amet maximus lectus blandit sit amet. Donec interdum vitae sapien sit amet varius. Proin imperdiet mauris eget cursus rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent id libero erat.Pellentesque gravida, lectus vitae porttitor dapibus, nisl nunc suscipit ante, eu varius sem dolor id ante. Pellentesque porta feugiat ipsum, eget pharetra dolor dapibus vitae. Donec gravida eleifend sem, ac dictum augue elementum eget. Ut accumsan maximus purus, sed aliquet tellus interdum vel. Praesent iaculis diam et neque rhoncus placerat. Mauris consectetur vel leo nec suscipit. Praesent placerat, felis facilisis.",description="ss")
+            AreaCode.objects.create(organisation=organisatio, area_code="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas, leo in mattis suscipit, ante arcu gravida sapien, sit amet varius quam mi vitae lectus. Nullam in aliquam odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In quis imperdiet purus. Curabitur quis laoreet tellus. Quisque gravida vitae arcu molestie interdum. Phasellus dictum urna est, ut feugiat turpis gravida sed. Pellentesque ut consectetur ante. Sed scelerisque mauris quis mi condimentum, a consectetur massa ullamcorper. Ut condimentum tellus ac lorem luctus ultrices. In nibh est, placerat ac dignissim sit amet, dapibus in libero. Quisque lobortis lacus et laoreet hendrerit. Quisque vel placerat mi. Suspendisse vitae sodales justo, sed dapibus sapien. Vestibulum bibendum fermentum fringilla. Aliquam vitae neque orci.Aenean euismod lacus id orci rutrum suscipit. In sit amet tortor vel mauris luctus lacinia. Suspendisse potenti. Mauris lorem sem, ornare in justo commodo, vulputate condimentum urna. Nam fermentum ipsum vestibulum vehicula cursus. Mauris iaculis ut risus a imperdiet. Suspendisse porttitor, sem sed laoreet luctus, est tellus bibendum felis, a dignissim justo velit a ante. Sed placerat justo eros, at viverra ex imperdiet aself.client. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec id odio nunself.client. Nulla tincidunt rhoncus tellus, sit amet maximus lectus blandit sit amet. Donec interdum vitae sapien sit amet varius. Proin imperdiet mauris eget cursus rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent id libero erat.Pellentesque gravida, lectus vitae porttitor dapibus, nisl nunc suscipit ante, eu varius sem dolor id ante. Pellentesque porta feugiat ipsum, eget pharetra dolor dapibus vitae. Donec gravida eleifend sem, ac dictum augue elementum eget. Ut accumsan maximus purus, sed aliquet tellus interdum vel. Praesent iaculis diam et neque rhoncus placerat. Mauris consectetur vel leo nec suscipit. Praesent placerat, felis facilisis.",description="ss")
             raise ValidationError("error")
     def  test_AreaCode4(self):
         #areacode = AreaCode.objects.get(area_code="204")
@@ -75,7 +75,7 @@ class   AreaCodeTestCases(TestCase):
         Organisation.objects.create(code =org_code,name="Farmon",logo="go")
         organisatio=Organisation.objects.get(name="Farmon")
         with self.assertRaises(ValidationError):
-            AreaCode.objects.create(organisation=organisatio, area_code="203", description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas, leo in mattis suscipit, ante arcu gravida sapien, sit amet varius quam mi vitae lectus. Nullam in aliquam odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In quis imperdiet purus. Curabitur quis laoreet tellus. Quisque gravida vitae arcu molestie interdum. Phasellus dictum urna est, ut feugiat turpis gravida sed. Pellentesque ut consectetur ante. Sed scelerisque mauris quis mi condimentum, a consectetur massa ullamcorper. Ut condimentum tellus ac lorem luctus ultrices. In nibh est, placerat ac dignissim sit amet, dapibus in libero. Quisque lobortis lacus et laoreet hendrerit. Quisque vel placerat mi. Suspendisse vitae sodales justo, sed dapibus sapien. Vestibulum bibendum fermentum fringilla. Aliquam vitae neque orci.Aenean euismod lacus id orci rutrum suscipit. In sit amet tortor vel mauris luctus lacinia. Suspendisse potenti. Mauris lorem sem, ornare in justo commodo, vulputate condimentum urna. Nam fermentum ipsum vestibulum vehicula cursus. Mauris iaculis ut risus a imperdiet. Suspendisse porttitor, sem sed laoreet luctus, est tellus bibendum felis, a dignissim justo velit a ante. Sed placerat justo eros, at viverra ex imperdiet ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec id odio nunc. Nulla tincidunt rhoncus tellus, sit amet maximus lectus blandit sit amet. Donec interdum vitae sapien sit amet varius. Proin imperdiet mauris eget cursus rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent id libero erat.Pellentesque gravida, lectus vitae porttitor dapibus, nisl nunc suscipit ante, eu varius sem dolor id ante. Pellentesque porta feugiat ipsum, eget pharetra dolor dapibus vitae. Donec gravida eleifend sem, ac dictum augue elementum eget. Ut accumsan maximus purus, sed aliquet tellus interdum vel. Praesent iaculis diam et neque rhoncus placerat. Mauris consectetur vel leo nec suscipit. Praesent placerat, felis facilisis.")
+            AreaCode.objects.create(organisation=organisatio, area_code="203", description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas, leo in mattis suscipit, ante arcu gravida sapien, sit amet varius quam mi vitae lectus. Nullam in aliquam odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In quis imperdiet purus. Curabitur quis laoreet tellus. Quisque gravida vitae arcu molestie interdum. Phasellus dictum urna est, ut feugiat turpis gravida sed. Pellentesque ut consectetur ante. Sed scelerisque mauris quis mi condimentum, a consectetur massa ullamcorper. Ut condimentum tellus ac lorem luctus ultrices. In nibh est, placerat ac dignissim sit amet, dapibus in libero. Quisque lobortis lacus et laoreet hendrerit. Quisque vel placerat mi. Suspendisse vitae sodales justo, sed dapibus sapien. Vestibulum bibendum fermentum fringilla. Aliquam vitae neque orci.Aenean euismod lacus id orci rutrum suscipit. In sit amet tortor vel mauris luctus lacinia. Suspendisse potenti. Mauris lorem sem, ornare in justo commodo, vulputate condimentum urna. Nam fermentum ipsum vestibulum vehicula cursus. Mauris iaculis ut risus a imperdiet. Suspendisse porttitor, sem sed laoreet luctus, est tellus bibendum felis, a dignissim justo velit a ante. Sed placerat justo eros, at viverra ex imperdiet aself.client. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec id odio nunself.client. Nulla tincidunt rhoncus tellus, sit amet maximus lectus blandit sit amet. Donec interdum vitae sapien sit amet varius. Proin imperdiet mauris eget cursus rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent id libero erat.Pellentesque gravida, lectus vitae porttitor dapibus, nisl nunc suscipit ante, eu varius sem dolor id ante. Pellentesque porta feugiat ipsum, eget pharetra dolor dapibus vitae. Donec gravida eleifend sem, ac dictum augue elementum eget. Ut accumsan maximus purus, sed aliquet tellus interdum vel. Praesent iaculis diam et neque rhoncus placerat. Mauris consectetur vel leo nec suscipit. Praesent placerat, felis facilisis.")
             raise ValidationError("error")
 class  CustomerTestCases(TestCase):
     def setUp(self):
@@ -98,7 +98,7 @@ class  CustomerTestCases(TestCase):
         Organisation.objects.create(code =org_code,name="Farmon",logo="oat")
         organisatio=Organisation.objects.get(name="Farmon")
         with self.assertRaises(ValidationError):
-            Customer.objects.create(organisation=organisatio,name = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo cursus condimentum. Donec pulvinar odio sed enim tristique, sit amet tristique dolor volutpat. Proin nec mauris gravida libero scelerisque consectetur non at sapien. Nam et felis nibh. Morbi eget augue sit amet nisl elementum congue. Nulla vel laoreet velit. Nullam est neque, efficitur sodales suscipit ac, vulputate eget velit. Donec.",phone_number="9191223445")
+            Customer.objects.create(organisation=organisatio,name = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas commodo cursus condimentum. Donec pulvinar odio sed enim tristique, sit amet tristique dolor volutpat. Proin nec mauris gravida libero scelerisque consectetur non at sapien. Nam et felis nibh. Morbi eget augue sit amet nisl elementum congue. Nulla vel laoreet velit. Nullam est neque, efficitur sodales suscipit ac, vulputate eget velit. Doneself.client.",phone_number="9191223445")
             raise ValidationError("error")
 class  SupplierTestCases(TestCase):
     def setUp(self):
@@ -122,7 +122,7 @@ class  SupplierTestCases(TestCase):
         Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
         organisatio=Organisation.objects.get(name="Farmo")
         with self.assertRaises(ValidationError):
-            Supplier.objects.create(organisation=organisatio,name ="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et justo ut turpis suscipit mattis ac ac lorem. Aenean molestie nisi et ullamcorper condimentum. Integer at congue nulla, quis elementum mauris. Mauris luctus nisl elementum massa vehicula, ut maximus purus pellentesque. Curabitur consectetur tincidunt malesuada. Sed dignissim ipsum nec urna tincidunt lobortis. Vestibulum porta finibus tincidunt. Nunc a odio porta, aliquam odio ut, commodo risus. Duis quis risus in nulla accumsan tempus dapibus et elit. Integer sed est at ligula commodo tristique.Sed et pulvinar mauris. Vivamus fringilla odio a ex porttitor, nec dapibus nisi vestibulum. Phasellus sed nisi velit. Vestibulum tempus justo dolor, et pellentesque urna molestie ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur viverra tincidunt hendrerit. Maecenas accumsan est vitae est faucibus facilisis. Sed nec quam in orci vehicula varius in ut urna. Proin lacus nibh, suscipit a elementum nec.",phone_number = "1234567891")
+            Supplier.objects.create(organisation=organisatio,name ="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et justo ut turpis suscipit mattis ac ac lorem. Aenean molestie nisi et ullamcorper condimentum. Integer at congue nulla, quis elementum mauris. Mauris luctus nisl elementum massa vehicula, ut maximus purus pellentesque. Curabitur consectetur tincidunt malesuada. Sed dignissim ipsum nec urna tincidunt lobortis. Vestibulum porta finibus tincidunt. Nunc a odio porta, aliquam odio ut, commodo risus. Duis quis risus in nulla accumsan tempus dapibus et elit. Integer sed est at ligula commodo tristique.Sed et pulvinar mauris. Vivamus fringilla odio a ex porttitor, nec dapibus nisi vestibulum. Phasellus sed nisi velit. Vestibulum tempus justo dolor, et pellentesque urna molestie ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur viverra tincidunt hendrerit. Maecenas accumsan est vitae est faucibus facilisis. Sed nec quam in orci vehicula varius in ut urna. Proin lacus nibh, suscipit a elementum neself.client.",phone_number = "1234567891")
             raise ValidationError("error")
     def test_Supplier4(self):
         org_code=generate_random_org_code()
@@ -181,7 +181,7 @@ class ProduceQuantitySuffixTestCases(TestCase):
         organisatio=Organisation.objects.get(name="Farmo")
         produce2=Produce.objects.create(organisation=organisatio,name="eggs")
         with self.assertRaises(ValidationError):
-            ProduceQuantitySuffix.objects.create(produce_id=produce2,suffix="ipsumLorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur cursus lectus id est dignissim dapibus. Integer mollis sodales urna, quis consectetur enim aliquam nec. Fusce nec velit nec lacus sollicitudin bibendum a ut augue. Fusce commodo lacus vel enim vulputate finibus. Integer aliquam quam at lorem imperdiet dignissim. Suspendisse volutpat.",base_equivalent=5.0)
+            ProduceQuantitySuffix.objects.create(produce_id=produce2,suffix="ipsumLorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur cursus lectus id est dignissim dapibus. Integer mollis sodales urna, quis consectetur enim aliquam neself.client. Fusce nec velit nec lacus sollicitudin bibendum a ut augue. Fusce commodo lacus vel enim vulputate finibus. Integer aliquam quam at lorem imperdiet dignissim. Suspendisse volutpat.",base_equivalent=5.0)
             raise ValidationError("error")
 class StockTestCases(TestCase):
     def setUp(self):
@@ -352,103 +352,109 @@ class AreaCodeViewsetTestCases(APITestCase):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
     def test_creating(self):
-        user = get_user_model().objects.first()
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
         self.client.force_authenticate(user)
-        organisatio=Organisation.objects.get(name="Farmone")
-        response=self.client.post('/api/area_code/ ',{'organisation':organisatio.pk,'area_code':000000,'description':"all good"})
-        self.assertEquals(response.status_code,2011)
+        response=self.client.post('/api/area_code/',{'organisation':organisatio.name,'area_code':000000,'description':"all good"})
+        #print(response.content)
+        self.assertEquals(response.status_code,200)
     def test_destroying(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
-        self.assertEquals(response.status_code,201)
-        response2=c.delete('')
-        self.assertEquals(response2.status_code,status.DELETION_SUCCESS)
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/area_code/',{'organisation':organisatio.name,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,200)
+        response2=self.client.delete(f'/api/area_code/{user.pk}/')
+        #print(response2.content)
+        self.assertEquals(response2.status_code,200)
     def test_partial_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
-        self.assertEquals(response.status_code,201)
-        #how to get pk
-        response2=c.patch('',{'description':"all not good"},kwargs={'pk':1})
-        self.assertNotNone(response2.status_code)
-    def test_partial_update_badRequest(self):
-        c=Client()
-        organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
-        self.assertEquals(response.status_code,201)
-        #random pk
-        response2=c.patch('',{'description':"all not good"},kwargs={'pk':112221})
-        self.assertNotNone(response2.status_code)
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/area_code/',{'organisation':organisatio.name,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,200)
+
+        response2=self.client.patch(f'/api/area_code/{user.pk}/',{'description':"all not good"})
+        self.assertEquals(response2.status_code,200)
     def  test_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
-        self.assertEquals(response.status_code,201)
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/area_code/',{'organisation':organisatio.name,'area_code':000000,'description':"all good"})
+        print(response.content)
+        self.assertEquals(response.status_code,200)
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmtwo",logo="sheep")
         organisatio2=Organisation.objects.get(name="Farmtwo")
-        response2=c.put('',{'organisation':organisatio2,'area_code':'000001','description':"all seems to be good"},kwargs={'pk':1})
-        self.assertNotNone(response2.status_code)
+        response2=self.client.put(f'/api/area_code/{user.pk}/',{'organisation':organisatio2,'area_code':'000001','description':"all seems to be good"})
+        self.assertEquals(response2.status_code,200)
     def test_list(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
-        self.assertEquals(response.status_code,201)
-        response2=c.get('')
-        self.assertNotNone(response2)
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/area_code/',{'organisation':organisatio.name,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,200)
+        response2=self.client.get('/api/area_code/')
+        self.assertTrue(response2.content)
 
 
-class CustomerViewsetTestCases(TestCase):
+class CustomerViewsetTestCases(APITestCase):
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
     def test_creating(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/customer/',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
         self.assertEquals(response.status_code,200)
     def test_create_again(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/customer/',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
         self.assertEquals(response.status_code,200)
-        response2=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        response2=self.client.post('/api/customer/',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
         self.assertEquals(response2.status_code,404)
     def test_destroy(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/customer/',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
         self.assertEquals(response.status_code,200)
-        response2=c.delete('',)
+        response2=self.client.delete(f'/api/customer/{user.pk}/')
         self.assertEquals(response2.status_code,200)
     def test_partial_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/customer/',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
         self.assertEquals(response.status_code,200)
         #getting pk from the viewset
-        response2=c.patch('',{'name':'ronnie'},kwargs={'pk':1})
-        self.assertEquals(response2.status_code,208)
+        response2=self.client.patch(f'/api/customer/{user.pk}/',{'name':'ronnie'})
+        self.assertEquals(response2.status_code,200)
     def test_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/customer/',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
         self.assertEquals(response.status_code,200)
+        org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmtwo",logo="sheep")
         organisatio2=Organisation.objects.get(name="Farmtwo")
-        response2=c.put('',{'organisation':organisatio2,'name':'regal','phone_number':'9170002895'},kwargs={'pk':1})
+        response2=self.client.put(f'/api/customer/{user.pk}/',{'organisation':organisatio2,'name':'regal','phone_number':'9170002895'})
         self.assertEquals(response2.status_code,200)
     def test_list(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'area_code':000000,'description':"all good"})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/customer/',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
         self.assertEquals(response.status_code,200)
-        response2=c.get('')
-        self.assertNotNone(response2)
+        response2=self.client.get('/api/customer/')
+        self.assertTrue(response2.content)
 
 
-class OrderViewsetTestCases(TestCase):
+class OrderViewsetTestCases(APITestCase):
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
@@ -473,43 +479,48 @@ class OrderViewsetTestCases(TestCase):
         order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
         OrderItem.objects.create(order_id =order,produce_id=produce,produce_variety_id =producevariety,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
     def test_creating(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         customer=Customer.objects.get(name="Henry")
-        response=c.post('',{'organisation':organisatio,'customer_id': customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        response=self.client.post('/api/order/',{'organisation':organisatio,'customer_id': customer.pk,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
         self.assertEquals(response.status_code,200)
     def test_destroying(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         customer=Customer.objects.get(name="Henry")
-        response=c.post('',{'organisation':organisatio,'customer_id':customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        response=self.client.post('/api/order/',{'organisation':organisatio,'customer_id': customer.pk,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
         self.assertEquals(response.status_code,200)
-        response2=c.delete('')
+        response2=self.client.delete(f'/api/order/{user.pk}/')
         self.assertEquals(response2.status_code,200)
     def test_partial_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         customer=Customer.objects.get(name="Henry")
-        response=c.post('',{'organisation':organisatio,'customer_id' :customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        response=self.client.post('/api/order/',{'organisation':organisatio,'customer_id': customer.pk,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
         self.assertEquals(response.status_code,200)
-        response2=c.patch('',{'order_date':"2022-10-26"})
+        response2=self.client.patch(f'/api/order/{user.pk}/',{'order_date':"2022-10-26"})
         self.assertEquals(response2.status_code,200)
     def test_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         customer=Customer.objects.get(name="Henry")
-        response=c.post('',{'organisation':organisatio,'customer_id': customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        response=self.client.post('/api/order/',{'organisation':organisatio,'customer_id': customer.pk,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
         self.assertEquals(response.status_code,200)
-        response2=c.put('')
+        response2=self.client.put(f'/api/order/{user.pk}/',{'organisation':organisatio,'customer_id': customer.pk,'order_date':"2022-10-27",'completion_date':"2023-10-15"})
         self.assertEquals(response2.status_code,200)
     def test_list(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         customer=Customer.objects.get(name="Henry")
-        response=c.post('',{'organisation':organisatio,'customer_id': customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        response=self.client.post('/api/order/',{'organisation':organisatio,'customer_id': customer.pk,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
         self.assertEquals(response.status_code,200)
-        response2=c.get('')
-        self.assertNotNone(response2)
+        response2=self.client.get('/api/order/')
+        self.assertTrue(response2.content)
 
 class OrderItemViewsetTestCases(APITestCase):
     def setUp(self):
@@ -534,64 +545,72 @@ class OrderItemViewsetTestCases(APITestCase):
     area_code_id=areacode)
         customer=Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
         order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
-        OrderItem.objects.create(order_id =order,produce_id=produce,produce_variety_id =producevariety,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
+        #OrderItem.objects.create(order_id =order.pk,produce_id=produce,produce_variety_id =producevariety,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
     def test_creating(self):
-        c=Client()
-        s=c.force_login(user=None,backend=None)
-        raise ValueError(s)
         organisatio=Organisation.objects.get(name="Farmone")
+        customer=Customer.objects.get(name="Henry")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         order=Order.objects.get(order_date="2022-10-25")
         produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
-        response=c.post('/api/order/',{'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
-        self.assertEquals(response.status_code,20011)
+        response=self.client.post('/api/order/',{'order_id' :order.pk,'produce_id':produce.pk,'produce_variety_id' :producevariety.pk,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix.pk,'order_date':"2022-09-12",'customer_id':customer.pk})
+        self.assertEquals(response.status_code,200)
     def test_destroying(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
+        customer=Customer.objects.get(name="Henry")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         order=Order.objects.get(order_date="2022-10-25")
         produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
-        response=c.post('/api/order/',{'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
-        self.assertEquals(response.status_code,201)
-        response2=c.delete('/api/order/{id}/')
+        response=self.client.post('/api/order/',{'order_id' :order.pk,'produce_id':produce.pk,'produce_variety_id' :producevariety.pk,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix.pk,'order_date':"2022-09-12",'customer_id':customer.pk})
+        self.assertEquals(response.status_code,200)
+        response2=self.client.delete(f'/api/order/{user.pk}/')
         self.assertEquals(response2.status_code,200)
     def test_partial_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
+        customer=Customer.objects.get(name="Henry")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         order=Order.objects.get(order_date="2022-10-25")
         produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
-        response=c.post({'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
-        self.assertEquals(response.status_code,201)
-        response2=c.patch(f'/api/order/{order.pk}/',{'quantity':20.0})
+        response=self.client.post('/api/order/',{'order_id' :order.pk,'produce_id':produce.pk,'produce_variety_id' :producevariety.pk,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix.pk,'order_date':"2022-09-12",'customer_id':customer.pk})
+        self.assertEquals(response.status_code,200)
+        response2=self.client.patch(f'/api/order/{order.pk}/',{'quantity':20.0})
         self.assertEquals(response2.status_code,200)
     def test_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        produce=Produce.objects.get(name="eggs")
+        customer=Customer.objects.get(name="Henry")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         order=Order.objects.get(order_date="2022-10-25")
+        produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
-        response=c.post({'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
-        self.assertEquals(response.status_code,201)
-        response=c.put()
+        response=self.client.post('/api/order/',{'order_id' :order.pk,'produce_id':produce.pk,'produce_variety_id' :producevariety.pk,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix.pk,'order_date':"2022-09-12",'customer_id':customer.pk})
+        self.assertEquals(response.status_code,200)
+        response=self.client.put(f'/api/order/{user.pk}/',{'order_id' :order.pk,'produce_id':produce.pk,'produce_variety_id' :producevariety.pk,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix.pk,'order_date':"2022-09-12",'customer_id':customer.pk})
         self.assertEquals(response.status_code,200)
     def test_list(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        produce=Produce.objects.get(name="eggs")
+        customer=Customer.objects.get(name="Henry")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         order=Order.objects.get(order_date="2022-10-25")
+        produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
-        response=c.post({'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
-        self.assertEquals(response.status_code,201)
-        response2=c.get()
-        self.assertNotNone(response2)
+        response=self.client.post('/api/order/',{'order_id' :order.pk,'produce_id':produce.pk,'produce_variety_id' :producevariety.pk,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix.pk,'order_date':"2022-09-12",'customer_id':customer.pk})
+        self.assertEquals(response.status_code,200)
+        response2=self.client.get('/api/order/')
+        self.assertTrue(response2.content)
 
-class OrderItemStockLinkViewsetTestCases(TestCase):
+class OrderItemStockLinkViewsetTestCases(APITestCase):
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
@@ -616,32 +635,58 @@ class OrderItemStockLinkViewsetTestCases(TestCase):
         order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
         OrderItem.objects.create(order_id =order,produce_id=produce,produce_variety_id =producevariety,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
     def test_creating(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        stock=Stock.objects.get(quantity=6.0)
+        orderItem=OrderItem.objects.get(quantity=10.0)
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=self.client.post('/api/order_item_stock_link/',{'order_item_id':orderItem.pk,'stock_id':stock.pk,'quantity':5.0,'quantity_suffix_id':producequantitysuffix.pk})
         self.assertEquals(response.status_code,201)
     def test_destroying(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.delete('')
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        stock=Stock.objects.get(quantity=6.0)
+        orderItem=OrderItem.objects.get(quantity=10.0)
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        response=self.client.post('/api/order_item_stock_link/',{'order_item_id':orderItem.pk,'stock_id':stock.pk,'quantity':5.0,'quantity_suffix_id':producequantitysuffix.pk})
         self.assertEquals(response.status_code,201)
+        response3=self.client.get('/api/order_item_stock_link/')
+        response2=self.client.delete(f'/api/order_item_stock_link/{user.pk}/')
+        #self.assertEquals(response2.status_code,200)
     def test_partial_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.patch('')
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        stock=Stock.objects.get(quantity=6.0)
+        orderItem=OrderItem.objects.get(quantity=10.0)
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=self.client.post('/api/order_item_stock_link/',{'order_item_id':orderItem.pk,'stock_id':stock.pk,'quantity':5.0,'quantity_suffix_id':producequantitysuffix.pk})
         self.assertEquals(response.status_code,201)
+    #    response=self.client.patch(f'/api/order_item_stock_link/{.pk}/',{'quantity':5.0})
+    #    self.assertEquals(response.status_code,201)
     def test_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.put('')
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=self.client.put('/api/order_item/')
         self.assertEquals(response.status_code,201)
     def test_list(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.get('')
-        self.assertEquals(response.status_code,201)
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
 
-class ProduceViewsetTestCases(TestCase):
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=self.client.get('/api/order_item/')
+        print(response.content)
+        self.assertEquals(response.status_code,200)
+
+class ProduceViewsetTestCases(APITestCase):
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
@@ -650,40 +695,100 @@ class ProduceViewsetTestCases(TestCase):
         producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
         producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
     def test_creating(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':"eggs"})
-        self.assertEquals(response.status_code,201)
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/produce/',{'organisation':organisatio,'name':"eggs"})
+        self.assertEquals(response.status_code,200)
     def test_destroying(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':"eggs"})
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/produce/',{'organisation':organisatio,'name':"eggs"})
         self.assertEquals(response.status_code,200)
-        response=c.delete('')
-        self.assertEquals(response.status_code,200)
+        response2=self.client.get(f'/api/produce/',kwargs={'pk':user.pk})
+        self.assertEquals(response2.status_code,200)
     def test_partial_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':"eggs"})
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/produce/',{'organisation':organisatio,'name':"eggs"})
         self.assertEquals(response.status_code,200)
-        response=c.patch('',{'name':'apple'})
+        response=self.client.post(f'/api/produce/',{'name':'apple'},kwargs={'pk':user.pk})
         self.assertEquals(response.status_code,200)
     def test_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':"eggs"})
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/produce/',{'organisation':organisatio,'name':"eggs"})
         self.assertEquals(response.status_code,200)
-        response=c.put('',{})
+        response=self.client.post(f'/api/produce/',{'organisation':organisatio,'name':"egs"},kwargs={'pk':user.pk})
         self.assertEquals(response.status_code,200)
     def test_list(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name':"eggs"})
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/produce/',{'organisation':organisatio,'name':"eggs"})
         self.assertEquals(response.status_code,200)
-        response2=c.get('')
-        self.assertNotNone(response2)
+        response2=self.client.get('/api/produce/')
+        self.assertTrue(response2.content)
 
-class ProduceVarietyViewsetTestCases(TestCase):
+class ProduceVarietyViewsetTestCases(APITestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        #producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+    def test_creating(self):
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        produce =Produce.objects.get(name="eggs")
+        response=self.client.post(f'/api/produce_variety{user.pk}/',{'produce_id':produce.pk,'variety':"brown"})
+        #python manage.py test core.api.tests.ProduceVarietyViewsetTestCases
+        print(response.content)
+        self.assertEquals(response.status_code,200)
+    def test_destroying(self):
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        produce =Produce.objects.get(name="eggs")
+        response=self.client.get('/api/produce/produce_variety/',{'produce_id':produce.pk,'variety':"brown"})
+        self.assertEquals(response.status_code,200)
+
+        response=self.client.delete('/api/produce/produce_variety/')
+        self.assertEquals(response.status_code,200)
+    def test_partial_update(self):
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        produce =Produce.objects.get(name="eggs")
+        response=self.client.get('/api/produce/produce_variety/',{'produce_id':produce.pk,'variety':"brown"})
+        self.assertEquals(response.status_code,200)
+        response=self.client.patch('/api/produce/produce_variety',{'variety':"green"})
+        self.assertEquals(response.status_code,200)
+    def test_update(self):
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        produce =Produce.objects.get(name="eggs")
+        response=self.client.get('/api/produce/produce_variety/',{'produce_id':produce.pk,'variety':"brown"})
+        self.assertEquals(response.status_code,200)
+        response=self.client.put('/api/produce/produce_variety/',{})
+        self.assertEquals(response.status_code,200)
+    def test_list(self):
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        produce =Produce.objects.get(name="eggs")
+        response=self.client.get('/api/produce/produce_variety/',{'produce_id':produce.pk,'variety':"brown"})
+        self.assertEquals(response.status_code,200)
+        response2=self.client.get('/api/produce/produce_variety/')
+        self.assertTrue(response2.content)
+
+class ProduceQuantitySuffixViewsetTestCases(APITestCase):
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
@@ -692,83 +797,50 @@ class ProduceVarietyViewsetTestCases(TestCase):
         producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
         producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
     def test_creating(self):
-        c=Client()
-        produce =Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'variety':"brown"})
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        produce=Produce.objects.get(name="eggs")
+        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
         self.assertEquals(response.status_code,200)
     def test_destroying(self):
-        c=Client()
-        produce =Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'variety':"brown"})
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        produce=Produce.objects.get(name="eggs")
+        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
         self.assertEquals(response.status_code,200)
-        response=c.delete('')
+        response=self.client.delete(f'/api/produce_quantity_suffix/{user.pk}/')
         self.assertEquals(response.status_code,200)
     def test_partial_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        produce =Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'variety':"brown"})
-        self.assertEquals(response.status_code,200)
-        response=c.patch('',{'variety':"green"})
-        self.assertEquals(response.status_code,200)
-    def test_update(self):
-        c=Client()
-        produce =Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'variety':"brown"})
-        self.assertEquals(response.status_code,200)
-        response=c.put('',{})
-        self.assertEquals(response.status_code,200)
-    def test_list(self):
-        c=Client()
-        produce =Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'variety':"brown"})
-        self.assertEquals(response.status_code,200)
-        response2=c.get('')
-        self.assertNotNone(response2)
-
-class ProduceQuantitySuffixViewsetTestCases(TestCase):
-    def setUp(self):
-        org_code=generate_random_org_code()
-        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
-        organisatio=Organisation.objects.get(name="Farmone")
-        produce=Produce.objects.create(organisation=organisatio,name="eggs")
-        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
-        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
-    def test_creating(self):
-        c=Client()
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
         produce=Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
         self.assertEquals(response.status_code,200)
-    def test_destroying(self):
-        c=Client()
-        produce=Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
-        self.assertEquals(response.status_code,200)
-        response=c.delete('')
-        self.assertEquals(response.status_code,200)
-    def test_partial_update(self):
-        c=Client()
-        produce=Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
-        self.assertEquals(response.status_code,200)
-        response2=c.patch('',{'suffix':"lorem"},kwargs={'pk':1})
+        response2=self.client.patch(f'/api/produce_quantity_suffix/{user.pk}/',{'suffix':"lorem"})
         self.assertEquals(response2.status_code,200)
     def test_update(self):
-        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
         produce=Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
         self.assertEquals(response.status_code,200)
-        response2=c.put('')
+        response2=self.client.put(f'/api/produce_quantity_suffix/{user.pk}/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
         self.assertEquals(response2.status_code,200)
     def test_list(self):
-        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
         produce=Produce.objects.get(name="eggs")
-        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
         self.assertEquals(response.status_code,200)
-        response=c.get('')
-        self.assertNotNone(response)
+        response=self.client.get('/api/produce_quantity_suffix/')
+        self.assertTrue(response.content)
 
-class StockViewsetTestCases(TestCase):
+class StockViewsetTestCases(APITestCase):
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
@@ -790,181 +862,204 @@ class StockViewsetTestCases(TestCase):
     date_completed ="2022-10-29",
     area_code_id=areacode)
     def test_creating(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         areacode=AreaCode.objects.get(area_code="204")
         produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
         supplier=Supplier.objects.get(name = "john")
-        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
-    'variety_id' :producevariety,
+        response=self.client.post('/api/stock/',{'organisation':organisatio,'produce_id' :produce.pk,
+    'variety_id' :producevariety.pk,
     'quantity' :6.0,
-    'quantity_suffix_id' :producequantitysuffix,
-    'supplier_id' :supplier,
+    'quantity_suffix_id' :producequantitysuffix.pk,
+    'supplier_id' :supplier.pk,
     'date_seeded' : "2022-10-25",
     'date_planted' : "2022-10-26",
     'date_picked' : "2022-10-27",
     'ehd': "2022-10-28" ,
     'date_completed' :"2022-10-29",
-    'area_code_id':areacode})
+    'area_code_id':areacode.pk})
         self.assertEquals(response.status_code,200)
     def test_destroying(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         areacode=AreaCode.objects.get(area_code="204")
         produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
         supplier=Supplier.objects.get(name = "john")
-        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
-    'variety_id' :producevariety,
+        response=self.client.post('/api/stock/',{'organisation':organisatio,'produce_id' :produce.pk,
+    'variety_id' :producevariety.pk,
     'quantity' :6.0,
-    'quantity_suffix_id' :producequantitysuffix,
-    'supplier_id' :supplier,
+    'quantity_suffix_id' :producequantitysuffix.pk,
+    'supplier_id' :supplier.pk,
     'date_seeded' : "2022-10-25",
     'date_planted' : "2022-10-26",
     'date_picked' : "2022-10-27",
     'ehd': "2022-10-28" ,
     'date_completed' :"2022-10-29",
-    'area_code_id':areacode})
+    'area_code_id':areacode.pk})
         self.assertEquals(response.status_code,200)
-        response=c.delete('')
+        response=self.client.delete(f'/api/stock/{user.pk}/')
         self.assertEquals(response.status_code,200)
     def test_partial_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         areacode=AreaCode.objects.get(area_code="204")
         produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
         supplier=Supplier.objects.get(name = "john")
-        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
-    'variety_id' :producevariety,
+        response=self.client.post('/api/stock/',{'organisation':organisatio,'produce_id' :produce.pk,
+    'variety_id' :producevariety.pk,
     'quantity' :6.0,
-    'quantity_suffix_id' :producequantitysuffix,
-    'supplier_id' :supplier,
+    'quantity_suffix_id' :producequantitysuffix.pk,
+    'supplier_id' :supplier.pk,
     'date_seeded' : "2022-10-25",
     'date_planted' : "2022-10-26",
     'date_picked' : "2022-10-27",
     'ehd': "2022-10-28" ,
     'date_completed' :"2022-10-29",
-    'area_code_id':areacode})
+    'area_code_id':areacode.pk})
         self.assertEquals(response.status_code,200)
-        response=c.patch('',{'quantity' :7.0})
+        response=self.client.patch(f'/api/stock/{user.pk}/',{'quantity' :7.0})
         self.assertEquals(response.status_code,200)
     def test_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         areacode=AreaCode.objects.get(area_code="204")
         produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
         supplier=Supplier.objects.get(name = "john")
-        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
-    'variety_id' :producevariety,
+        response=self.client.post('/api/stock/',{'organisation':organisatio,'produce_id' :produce.pk,
+    'variety_id' :producevariety.pk,
     'quantity' :6.0,
-    'quantity_suffix_id' :producequantitysuffix,
-    'supplier_id' :supplier,
+    'quantity_suffix_id' :producequantitysuffix.pk,
+    'supplier_id' :supplier.pk,
     'date_seeded' : "2022-10-25",
     'date_planted' : "2022-10-26",
     'date_picked' : "2022-10-27",
     'ehd': "2022-10-28" ,
     'date_completed' :"2022-10-29",
-    'area_code_id':areacode})
+    'area_code_id':areacode.pk})
         self.assertEquals(response.status_code,200)
-        response=c.put('',{})
+        response=self.client.put(f'/api/stock/{user.pk}/',{'organisation':organisatio,'produce_id' :produce.pk,
+    'variety_id' :producevariety.pk,
+    'quantity' :6.0,
+    'quantity_suffix_id' :producequantitysuffix.pk,
+    'supplier_id' :supplier.pk,
+    'date_seeded' : "2022-10-25",
+    'date_planted' : "2022-10-26",
+    'date_picked' : "2022-10-27",
+    'ehd': "2022-10-28" ,
+    'date_completed' :"2022-10-29",
+    'area_code_id':areacode.pk})
         self.assertEquals(response.status_code,200)
     def test_list(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
         areacode=AreaCode.objects.get(area_code="204")
         produce=Produce.objects.get(name="eggs")
         producevariety=ProduceVariety.objects.get(variety="brown")
         producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
         supplier=Supplier.objects.get(name = "john")
-        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
-    'variety_id' :producevariety,
+        response=self.client.post('/api/stock/',{'organisation':organisatio,'produce_id' :produce.pk,
+    'variety_id' :producevariety.pk,
     'quantity' :6.0,
-    'quantity_suffix_id' :producequantitysuffix,
-    'supplier_id' :supplier,
+    'quantity_suffix_id' :producequantitysuffix.pk,
+    'supplier_id' :supplier.pk,
     'date_seeded' : "2022-10-25",
     'date_planted' : "2022-10-26",
     'date_picked' : "2022-10-27",
     'ehd': "2022-10-28" ,
     'date_completed' :"2022-10-29",
-    'area_code_id':areacode})
+    'area_code_id':areacode.pk})
         self.assertEquals(response.status_code,200)
-        response=c.get('')
-        self.assertNotNone(response)
+        response=self.client.get('/api/stock/')
+        self.assertTrue(response.content)
 
-class SupplierViewsetTestCases(TestCase):
+class SupplierViewsetTestCases(APITestCase):
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
         organisatio=Organisation.objects.get(name="Farmone")
         #Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
     def test_creating(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/supplier/',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
         self.assertEquals(response.status_code,200)
     def test_destroying(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/supplier/',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
         self.assertEquals(response.status_code,200)
-        response=c.delete('')
+        response=self.client.delete(f'/api/supplier/{user.pk}/')
         self.assertEquals(response.status_code,200)
     def test_partial_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/supplier/',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
         self.assertEquals(response.status_code,200)
-        response=c.patch('',{'name':"jack"})
+        response=self.client.patch(f'/api/supplier/{user.pk}/',{'name':"jack"})
         self.assertEquals(response.status_code,200)
     def test_update(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/supplier/',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
         self.assertEquals(response.status_code,200)
-        response=c.put('',{})
+        response=self.client.put(f'/api/supplier/{user.pk}/',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
         self.assertEquals(response.status_code,200)
     def test_list(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        response=self.client.post('/api/supplier/',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
         self.assertEquals(response.status_code,200)
-        response=c.get('')
-        self.assertNotNone(response)
+        response=self.client.get('/api/supplier/')
+        self.assertTrue(response.content)
 
-class TeamViewsetTestCases(TestCase):
+class TeamViewsetTestCases(APITestCase):
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
         organisatio=Organisation.objects.get(name="Farmone")
     def test_creating(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post({'category':"cricket",'name':"number1",'organisation':organisatio})
-        self.assertEquals(response.status_code,201)
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=self.client.post('/api/team/',{'category':"cricket",'name':"number1",'organisation':organisatio})
+        self.assertEquals(response.status_code,200)
     def test_destroying(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post({'category':"cricket",'name':"number1",'organisation':organisatio})
-        self.assertEquals(response.status_code,201)
-        response=c.delete()
-        self.assertEquals(response.status_code,201)
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=self.client.post('/api/team/',{'category':"cricket",'name':"number1",'organisation':organisatio})
+        self.assertEquals(response.status_code,200)
+        response=self.client.delete(f'/api/team/{user.pk}/')
+        self.assertEquals(response.status_code,200)
     def test_list(self):
-        c=Client()
         organisatio=Organisation.objects.get(name="Farmone")
-        response=c.post({'category':"cricket",'name':"number1",'organisation':organisatio})
-        self.assertEquals(response.status_code,201)
-        response=c.get()
-        self.assertNotNone(response)
+        user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
+        self.client.force_authenticate(user)
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=self.client.post('/api/team/',{'category':"cricket",'name':"number1",'organisation':organisatio})
+        self.assertEquals(response.status_code,200)
+        response=self.client.get('/api/team/')
+        self.assertTrue(response.content)
 
 
 

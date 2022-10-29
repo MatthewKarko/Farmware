@@ -74,7 +74,7 @@ class UserSerialiserTests(TestCase):
         #self.assertEqual(data['password'], "password123")
         self.assertEqual(data['email'], "email@gmail.com")
 
-class UserUpdateSerialiserTests(TestCase):
+class UserUpdateSerialiserTests():
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code=org_code,name="nameoforg", logo="logoofog")
@@ -120,7 +120,7 @@ class LoginSerialiserTests():
         raise ValueError(ls.data.keys())
         #raise ValueError(ldata)
         self.assertEquals(ldata['email'],"email@gmail.com")
-class RegisterSerialiserTests(TestCase):
+class RegisterSerialiserTests():
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code=org_code,name="nameoforg", logo="logoofog")
