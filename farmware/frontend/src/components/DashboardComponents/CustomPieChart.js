@@ -65,13 +65,19 @@ export default function CustomPieChart() {
       }
     }
 
+    if(orderList.length==0){
+      let data_temp = [
+        { name: "No Order Data", value: 1 },
+      ];
+      setData(data_temp);
+      return;
+    }
+
     let data_temp = [
       { name: "New Open Orders", value: openNew },
       { name: "Old Open Orders", value: openOld },
       { name: "Completed Orders", value: completed },
     ];
-
-    console.log(data_temp);
 
     setData(data_temp);
   }
