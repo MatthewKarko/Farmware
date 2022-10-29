@@ -87,6 +87,7 @@ export const EditProduceSuffix = () => {
             base_equivalent: parseInt(produceSuffixObj.base_equivalent),
         };
         setDisplayCreateModal(!displayCreateModal);
+        reloadSuffixes();
         axiosInstance.post(`produce_quantity_suffix/`, postObject).then((res) => console.log(res.data)).catch((err)=> console.log(err));
     }
 

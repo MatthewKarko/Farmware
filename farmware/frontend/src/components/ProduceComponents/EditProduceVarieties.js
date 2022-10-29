@@ -9,7 +9,16 @@ export const EditProduceVarieties = () => {
     const produce = location.state;
     
     const [varietyList, setVarietyList] = useState([]);
-    
+    const [currentVariety, setCurrentVariety] = useState([]);
+    const [displayEditModal, setDisplayEditModal] = useState(false);
+    const [displayCreateModal, setDisplayCreateModal] = useState(false);
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadVarieties = () => {
+      setVarietyList([]);
+      setCurrentVariety([]);
+      setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
+
     useEffect(()=>{
         console.log(produce);
        
@@ -22,26 +31,67 @@ export const EditProduceVarieties = () => {
                 })
             })
      
-    }, [])
+    }, [reloadFlag])
 
+    const handleCreateClick = (event) => {
+        event.preventDefault();
+        setCurrentVariety([]);
+        setDisplayCreateModal(!displayCreateModal);
+    }
     const handleEditClick = (event, row) => {
         event.preventDefault();
-        // setDisplayEditModal(!displayEditModal);
+        setDisplayEditModal(!displayEditModal);
 
-        // axiosInstance.get(`produce/${row.id}`)
-        //     .then((res) => {
-        //         console.log(res.data);
-        //         setProduceObj(res.data);
-        //         console.log(JSON.parse(res.data.quantity_suffixes));
-        //         setEditProduceSuffix(JSON.parse(res.data.quantity_suffixes));
-        //     })
+        axiosInstance.get(`produce_variety/${row.id}/`)
+            .then((res) => {
+                console.log(res.data);
+                setCurrentVariety(res.data);
+            })
     };
 
+    const handleFormChange = (evt) => {
+        evt.preventDefault();
+        const value = evt.target.value;
+        setCurrentVariety({
+          ...currentVariety,
+          [evt.target.name]: value
+    });
+    
+    }
     const handleDeleteClick = (event, row) => {
         event.preventDefault();
-        // axiosInstance.delete(`produce_quantity_suffix/${row.id}/`)
-
+        axiosInstance.delete(`produce_variety/${row.id}/`)
+        reloadVarieties();
         
+    }
+
+    const handleVarietyCreateSubmit = (event) => {
+        event.preventDefault();
+
+        var postObject = {
+            variety: currentVariety.variety,
+            produce_id: produce.id,
+        }
+
+        axiosInstance
+            .post(`produce_variety/`, postObject)
+            .catch((err) => console.log(err));
+        reloadVarieties();
+    }
+
+    const handleVarietyEditSubmit = (event) =>{
+        event.preventDefault();
+
+        var postObject = {
+            variety: currentVariety.variety,
+        }
+
+        axiosInstance
+            .patch(`produce_variety/${currentVariety.id}/`, postObject)
+            .catch((err) => console.log(err));
+
+        setDisplayEditModal(!displayEditModal);
+        reloadVarieties();
     }
 
 
@@ -60,6 +110,17 @@ export const EditProduceVarieties = () => {
                                 paddingBottom: '20px',
                             }}>{produce.name} varieties</Typography>
 
+                        </Grid>
+                        <Grid item xs={6} sx={{ textAlign: "right" }}>
+                            {/* <Box textAlign='center'> */}
+                            <Button variant="outlined" size="large"
+                                style={{
+                                    color: "#028357",
+                                    borderColor: "#028357",
+                                    marginTop: "20px",
+                                }}
+                                onClick={(event) => handleCreateClick(event)}
+                            >Create Variety</Button>
                         </Grid>
 
                         
@@ -101,7 +162,7 @@ export const EditProduceVarieties = () => {
                                                 width: "100px",
                                             }}
                                             onClick={(event) => handleEditClick(event, row)}
-                                        >Edit QS</Button>
+                                        >Edit Variety</Button>
                                     </TableCell>
                                     <TableCell className="tableCell">
                                         <Button variant="outlined" size="medium"
@@ -121,6 +182,93 @@ export const EditProduceVarieties = () => {
                     </Table>
                 </TableContainer>
 
+            </div>
+
+            <div className={`Modal ${displayEditModal ? "Show" : ""}`}>
+                <button
+                    className="Close"
+                    onClick={() => { setDisplayEditModal(!displayEditModal); }}
+                >
+                    X
+                </button>
+
+                <Typography variant="h4" sx={{
+                    fontFamily: 'Lato',
+                    fontWeight: 'bold',
+                    mt: 2,
+                    textAlign: 'center'
+                }}>Produce Variety</Typography>
+                <Box component="form" onSubmit={handleVarietyEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                    <TextField
+                        InputLabelProps={{ shrink: !! currentVariety.variety }}
+                        xs
+                        required
+                        margin="dense"
+                        id="variety"
+                        label="Produce Variety"
+                        name="variety"
+                        autoComplete="variety"
+                        autoFocus
+                        size="small"
+                        value={currentVariety.variety}
+                        onChange={handleFormChange}
+                        variant="filled"
+
+                    /> 
+                   
+
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                    >
+                        Submit
+                    </Button>
+                </Box>             
+            </div>
+            <div className={`Modal ${displayCreateModal ? "Show" : ""}`}>
+                <button
+                    className="Close"
+                    onClick={() => { setDisplayCreateModal(!displayCreateModal); }}
+                >
+                    X
+                </button>
+
+                <Typography variant="h4" sx={{
+                    fontFamily: 'Lato',
+                    fontWeight: 'bold',
+                    mt: 2,
+                    textAlign: 'center'
+                }}>Produce Variety</Typography>
+                <Box component="form" onSubmit={handleVarietyCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                    <TextField
+                        InputLabelProps={{ shrink: !! currentVariety.variety }}
+                        xs
+                        required
+                        margin="dense"
+                        id="variety"
+                        label="Produce Variety"
+                        name="variety"
+                        autoComplete="variety"
+                        autoFocus
+                        size="small"
+                        value={currentVariety.variety}
+                        onChange={handleFormChange}
+                        variant="filled"
+
+                    /> 
+                   
+
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, bgcolor: 'green' }}
+                    >
+                        Submit
+                    </Button>
+                </Box>             
             </div>
 
         </React.Fragment>
