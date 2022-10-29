@@ -42,7 +42,7 @@ class OrderFullSerialiser(serializers.ModelSerializer):
         data['customer_name'] = Customer.objects.get(
             id=data['customer_id']).name
 
-        # TODO: fix
+        # TODO: fix?
         data['order_items'] = OrderItemListSerialiser(
             OrderItem.objects.all().filter(order_id=data.get('id')), 
             many=True
