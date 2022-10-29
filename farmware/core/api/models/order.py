@@ -37,7 +37,7 @@ class OrderItem(models.Model):
     produce_id = models.ForeignKey(
         'core_api.Produce', on_delete=models.CASCADE
         )
-    produce_variety_id = models.ForeignKey(
+    variety_id = models.ForeignKey(
         'core_api.ProduceVariety', on_delete=models.CASCADE
     )
     quantity_suffix_id = models.ForeignKey(
