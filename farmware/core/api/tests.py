@@ -1,5 +1,7 @@
 from django.test import TestCase
 #from . import models
+#from user import
+from django.contrib.auth import get_user_model
 from .models.organisation import *
 from .models.team import *
 from .models.areacode import *
@@ -15,6 +17,8 @@ from django.db import migrations, models
 from core.api.migrations import *
 from .urls import * #0001_initial,0002_initial,0003_auto_20221018_0824,0004_auto_20221018_1055,0005_auto_20221018_1132
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
+from django.test import Client
+from rest_framework.test import APITestCase
 
 # Create your tests here.
 class OrganisationTestCases(TestCase):
@@ -188,7 +192,7 @@ class StockTestCases(TestCase):
         producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
         producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
         supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
-        areacode=AreaCode.objects.create( organisation=organisatio,area_code=204,description="just another area code")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code="204",description="just another area code")
         Stock.objects.create(organisation=organisatio,produce_id =produce,
     variety_id =producevariety,
     quantity = 6.0,
@@ -213,7 +217,7 @@ class  OrderStockTestCases(TestCase):
         producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
         producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
         supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
-        areacode=AreaCode.objects.create( organisation=organisatio,area_code=204,description="just another area code")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code="204",description="just another area code")
         stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
     variety_id =producevariety,
     quantity = 6.0,
@@ -290,7 +294,7 @@ class TestDirectMigration():
         producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
         producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
         supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
-        areacode=AreaCode.objects.create( organisation=organisatio,area_code=204,description="just another area code")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code="204",description="just another area code")
         stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
         variety_id =producevariety,
         quantity = 6.0,
@@ -324,7 +328,7 @@ class TestDirectMigration():
         producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
         producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
         supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
-        areacode=AreaCode.objects.create( organisation=organisatio,area_code=204,description="just another area code")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code="204",description="just another area code")
         stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
         variety_id =producevariety,
         quantity = 6.0,
@@ -343,9 +347,625 @@ class TestDirectMigration():
         self.assertEquals(new_state.apps.get_model('core_api', 'OrderItem'),"not found")
         migrator.reset()
 
-class AreaCodeViewsetTestCases(TestCase):
+class AreaCodeViewsetTestCases(APITestCase):
     def setUp(self):
-        pass
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+    def test_creating(self):
+        user = get_user_model().objects.first()
+        self.client.force_authenticate(user)
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=self.client.post('/api/area_code/ ',{'organisation':organisatio.pk,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,2011)
+    def test_destroying(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,201)
+        response2=c.delete('')
+        self.assertEquals(response2.status_code,status.DELETION_SUCCESS)
+    def test_partial_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,201)
+        #how to get pk
+        response2=c.patch('',{'description':"all not good"},kwargs={'pk':1})
+        self.assertNotNone(response2.status_code)
+    def test_partial_update_badRequest(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,201)
+        #random pk
+        response2=c.patch('',{'description':"all not good"},kwargs={'pk':112221})
+        self.assertNotNone(response2.status_code)
+    def  test_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,201)
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmtwo",logo="sheep")
+        organisatio2=Organisation.objects.get(name="Farmtwo")
+        response2=c.put('',{'organisation':organisatio2,'area_code':'000001','description':"all seems to be good"},kwargs={'pk':1})
+        self.assertNotNone(response2.status_code)
+    def test_list(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post(' ',{'organisation':organisatio,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,201)
+        response2=c.get('')
+        self.assertNotNone(response2)
+
+
+class CustomerViewsetTestCases(TestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+    def test_creating(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        self.assertEquals(response.status_code,200)
+    def test_create_again(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        self.assertEquals(response.status_code,200)
+        response2=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        self.assertEquals(response2.status_code,404)
+    def test_destroy(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        self.assertEquals(response.status_code,200)
+        response2=c.delete('',)
+        self.assertEquals(response2.status_code,200)
+    def test_partial_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        self.assertEquals(response.status_code,200)
+        #getting pk from the viewset
+        response2=c.patch('',{'name':'ronnie'},kwargs={'pk':1})
+        self.assertEquals(response2.status_code,208)
+    def test_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':'ralph','phone_number':'9170002894'})
+        self.assertEquals(response.status_code,200)
+        Organisation.objects.create(code =org_code,name="Farmtwo",logo="sheep")
+        organisatio2=Organisation.objects.get(name="Farmtwo")
+        response2=c.put('',{'organisation':organisatio2,'name':'regal','phone_number':'9170002895'},kwargs={'pk':1})
+        self.assertEquals(response2.status_code,200)
+    def test_list(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'area_code':000000,'description':"all good"})
+        self.assertEquals(response.status_code,200)
+        response2=c.get('')
+        self.assertNotNone(response2)
+
+
+class OrderViewsetTestCases(TestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+        supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code="204",description="just another area code")
+        stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
+    variety_id =producevariety,
+    quantity = 6.0,
+    quantity_suffix_id =producequantitysuffix,
+    supplier_id =supplier,
+    date_seeded = "2022-10-25",
+    date_planted = "2022-10-26",
+    date_picked = "2022-10-27",
+    ehd = "2022-10-28" ,
+    date_completed ="2022-10-29",
+    area_code_id=areacode)
+        customer=Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
+        order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
+        OrderItem.objects.create(order_id =order,produce_id=produce,produce_variety_id =producevariety,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
+    def test_creating(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        customer=Customer.objects.get(name="Henry")
+        response=c.post('',{'organisation':organisatio,'customer_id': customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        self.assertEquals(response.status_code,200)
+    def test_destroying(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        customer=Customer.objects.get(name="Henry")
+        response=c.post('',{'organisation':organisatio,'customer_id':customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        self.assertEquals(response.status_code,200)
+        response2=c.delete('')
+        self.assertEquals(response2.status_code,200)
+    def test_partial_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        customer=Customer.objects.get(name="Henry")
+        response=c.post('',{'organisation':organisatio,'customer_id' :customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        self.assertEquals(response.status_code,200)
+        response2=c.patch('',{'order_date':"2022-10-26"})
+        self.assertEquals(response2.status_code,200)
+    def test_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        customer=Customer.objects.get(name="Henry")
+        response=c.post('',{'organisation':organisatio,'customer_id': customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        self.assertEquals(response.status_code,200)
+        response2=c.put('')
+        self.assertEquals(response2.status_code,200)
+    def test_list(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        customer=Customer.objects.get(name="Henry")
+        response=c.post('',{'organisation':organisatio,'customer_id': customer,'order_date':"2022-10-25",'completion_date':"2023-10-25"})
+        self.assertEquals(response.status_code,200)
+        response2=c.get('')
+        self.assertNotNone(response2)
+
+class OrderItemViewsetTestCases(APITestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+        supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code="204",description="just another area code")
+        stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
+    variety_id =producevariety,
+    quantity = 6.0,
+    quantity_suffix_id =producequantitysuffix,
+    supplier_id =supplier,
+    date_seeded = "2022-10-25",
+    date_planted = "2022-10-26",
+    date_picked = "2022-10-27",
+    ehd = "2022-10-28" ,
+    date_completed ="2022-10-29",
+    area_code_id=areacode)
+        customer=Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
+        order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
+        OrderItem.objects.create(order_id =order,produce_id=produce,produce_variety_id =producevariety,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
+    def test_creating(self):
+        c=Client()
+        s=c.force_login(user=None,backend=None)
+        raise ValueError(s)
+        organisatio=Organisation.objects.get(name="Farmone")
+        order=Order.objects.get(order_date="2022-10-25")
+        produce=Produce.objects.get(name="eggs")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        response=c.post('/api/order/',{'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
+        self.assertEquals(response.status_code,20011)
+    def test_destroying(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        order=Order.objects.get(order_date="2022-10-25")
+        produce=Produce.objects.get(name="eggs")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        response=c.post('/api/order/',{'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
+        self.assertEquals(response.status_code,201)
+        response2=c.delete('/api/order/{id}/')
+        self.assertEquals(response2.status_code,200)
+    def test_partial_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        order=Order.objects.get(order_date="2022-10-25")
+        produce=Produce.objects.get(name="eggs")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        response=c.post({'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
+        self.assertEquals(response.status_code,201)
+        response2=c.patch(f'/api/order/{order.pk}/',{'quantity':20.0})
+        self.assertEquals(response2.status_code,200)
+    def test_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.get(name="eggs")
+        order=Order.objects.get(order_date="2022-10-25")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        response=c.post({'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
+        self.assertEquals(response.status_code,201)
+        response=c.put()
+        self.assertEquals(response.status_code,200)
+    def test_list(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.get(name="eggs")
+        order=Order.objects.get(order_date="2022-10-25")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        response=c.post({'order_id' :order,'produce_id':produce,'produce_variety_id' :producevariety,'quantity' : 10.0,'quantity_suffix_id' :producequantitysuffix})
+        self.assertEquals(response.status_code,201)
+        response2=c.get()
+        self.assertNotNone(response2)
+
+class OrderItemStockLinkViewsetTestCases(TestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+        supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code="204",description="just another area code")
+        stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
+    variety_id =producevariety,
+    quantity = 6.0,
+    quantity_suffix_id =producequantitysuffix,
+    supplier_id =supplier,
+    date_seeded = "2022-10-25",
+    date_planted = "2022-10-26",
+    date_picked = "2022-10-27",
+    ehd = "2022-10-28" ,
+    date_completed ="2022-10-29",
+    area_code_id=areacode)
+        customer=Customer.objects.create(organisation=organisatio,name = "Henry",phone_number="9191223445" )
+        order=Order.objects.create(organisation=organisatio,customer_id= customer,order_date="2022-10-25",completion_date="2023-10-25")
+        OrderItem.objects.create(order_id =order,produce_id=produce,produce_variety_id =producevariety,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
+    def test_creating(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{})
+        self.assertEquals(response.status_code,201)
+    def test_destroying(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.delete('')
+        self.assertEquals(response.status_code,201)
+    def test_partial_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.patch('')
+        self.assertEquals(response.status_code,201)
+    def test_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.put('')
+        self.assertEquals(response.status_code,201)
+    def test_list(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.get('')
+        self.assertEquals(response.status_code,201)
+
+class ProduceViewsetTestCases(TestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+    def test_creating(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':"eggs"})
+        self.assertEquals(response.status_code,201)
+    def test_destroying(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':"eggs"})
+        self.assertEquals(response.status_code,200)
+        response=c.delete('')
+        self.assertEquals(response.status_code,200)
+    def test_partial_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':"eggs"})
+        self.assertEquals(response.status_code,200)
+        response=c.patch('',{'name':'apple'})
+        self.assertEquals(response.status_code,200)
+    def test_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':"eggs"})
+        self.assertEquals(response.status_code,200)
+        response=c.put('',{})
+        self.assertEquals(response.status_code,200)
+    def test_list(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name':"eggs"})
+        self.assertEquals(response.status_code,200)
+        response2=c.get('')
+        self.assertNotNone(response2)
+
+class ProduceVarietyViewsetTestCases(TestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+    def test_creating(self):
+        c=Client()
+        produce =Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'variety':"brown"})
+        self.assertEquals(response.status_code,200)
+    def test_destroying(self):
+        c=Client()
+        produce =Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'variety':"brown"})
+        self.assertEquals(response.status_code,200)
+        response=c.delete('')
+        self.assertEquals(response.status_code,200)
+    def test_partial_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce =Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'variety':"brown"})
+        self.assertEquals(response.status_code,200)
+        response=c.patch('',{'variety':"green"})
+        self.assertEquals(response.status_code,200)
+    def test_update(self):
+        c=Client()
+        produce =Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'variety':"brown"})
+        self.assertEquals(response.status_code,200)
+        response=c.put('',{})
+        self.assertEquals(response.status_code,200)
+    def test_list(self):
+        c=Client()
+        produce =Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'variety':"brown"})
+        self.assertEquals(response.status_code,200)
+        response2=c.get('')
+        self.assertNotNone(response2)
+
+class ProduceQuantitySuffixViewsetTestCases(TestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+    def test_creating(self):
+        c=Client()
+        produce=Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        self.assertEquals(response.status_code,200)
+    def test_destroying(self):
+        c=Client()
+        produce=Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        self.assertEquals(response.status_code,200)
+        response=c.delete('')
+        self.assertEquals(response.status_code,200)
+    def test_partial_update(self):
+        c=Client()
+        produce=Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        self.assertEquals(response.status_code,200)
+        response2=c.patch('',{'suffix':"lorem"},kwargs={'pk':1})
+        self.assertEquals(response2.status_code,200)
+    def test_update(self):
+        c=Client()
+        produce=Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        self.assertEquals(response.status_code,200)
+        response2=c.put('')
+        self.assertEquals(response2.status_code,200)
+    def test_list(self):
+        c=Client()
+        produce=Produce.objects.get(name="eggs")
+        response=c.post('',{'produce_id':produce,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        self.assertEquals(response.status_code,200)
+        response=c.get('')
+        self.assertNotNone(response)
+
+class StockViewsetTestCases(TestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        produce=Produce.objects.create(organisation=organisatio,name="eggs")
+        producequantitysuffix=ProduceQuantitySuffix.objects.create(produce_id=produce,suffix="lorem ipsum",base_equivalent=5.0)
+        producevariety=ProduceVariety.objects.create(produce_id=produce,variety="brown")
+        supplier=Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
+        areacode=AreaCode.objects.create( organisation=organisatio,area_code="204",description="just another area code")
+        stock=Stock.objects.create(organisation=organisatio,produce_id =produce,
+    variety_id =producevariety,
+    quantity = 6.0,
+    quantity_suffix_id =producequantitysuffix,
+    supplier_id =supplier,
+    date_seeded = "2022-10-25",
+    date_planted = "2022-10-26",
+    date_picked = "2022-10-27",
+    ehd = "2022-10-28" ,
+    date_completed ="2022-10-29",
+    area_code_id=areacode)
+    def test_creating(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        areacode=AreaCode.objects.get(area_code="204")
+        produce=Produce.objects.get(name="eggs")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        supplier=Supplier.objects.get(name = "john")
+        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
+    'variety_id' :producevariety,
+    'quantity' :6.0,
+    'quantity_suffix_id' :producequantitysuffix,
+    'supplier_id' :supplier,
+    'date_seeded' : "2022-10-25",
+    'date_planted' : "2022-10-26",
+    'date_picked' : "2022-10-27",
+    'ehd': "2022-10-28" ,
+    'date_completed' :"2022-10-29",
+    'area_code_id':areacode})
+        self.assertEquals(response.status_code,200)
+    def test_destroying(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+
+        areacode=AreaCode.objects.get(area_code="204")
+        produce=Produce.objects.get(name="eggs")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        supplier=Supplier.objects.get(name = "john")
+        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
+    'variety_id' :producevariety,
+    'quantity' :6.0,
+    'quantity_suffix_id' :producequantitysuffix,
+    'supplier_id' :supplier,
+    'date_seeded' : "2022-10-25",
+    'date_planted' : "2022-10-26",
+    'date_picked' : "2022-10-27",
+    'ehd': "2022-10-28" ,
+    'date_completed' :"2022-10-29",
+    'area_code_id':areacode})
+        self.assertEquals(response.status_code,200)
+        response=c.delete('')
+        self.assertEquals(response.status_code,200)
+    def test_partial_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        areacode=AreaCode.objects.get(area_code="204")
+        produce=Produce.objects.get(name="eggs")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        supplier=Supplier.objects.get(name = "john")
+        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
+    'variety_id' :producevariety,
+    'quantity' :6.0,
+    'quantity_suffix_id' :producequantitysuffix,
+    'supplier_id' :supplier,
+    'date_seeded' : "2022-10-25",
+    'date_planted' : "2022-10-26",
+    'date_picked' : "2022-10-27",
+    'ehd': "2022-10-28" ,
+    'date_completed' :"2022-10-29",
+    'area_code_id':areacode})
+        self.assertEquals(response.status_code,200)
+        response=c.patch('',{'quantity' :7.0})
+        self.assertEquals(response.status_code,200)
+    def test_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+
+        areacode=AreaCode.objects.get(area_code="204")
+        produce=Produce.objects.get(name="eggs")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        supplier=Supplier.objects.get(name = "john")
+        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
+    'variety_id' :producevariety,
+    'quantity' :6.0,
+    'quantity_suffix_id' :producequantitysuffix,
+    'supplier_id' :supplier,
+    'date_seeded' : "2022-10-25",
+    'date_planted' : "2022-10-26",
+    'date_picked' : "2022-10-27",
+    'ehd': "2022-10-28" ,
+    'date_completed' :"2022-10-29",
+    'area_code_id':areacode})
+        self.assertEquals(response.status_code,200)
+        response=c.put('',{})
+        self.assertEquals(response.status_code,200)
+    def test_list(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+
+        areacode=AreaCode.objects.get(area_code="204")
+        produce=Produce.objects.get(name="eggs")
+        producevariety=ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix=ProduceQuantitySuffix.objects.get(suffix="lorem ipsum")
+        supplier=Supplier.objects.get(name = "john")
+        response=c.post('',{'organisation':organisatio,'produce_id' :produce,
+    'variety_id' :producevariety,
+    'quantity' :6.0,
+    'quantity_suffix_id' :producequantitysuffix,
+    'supplier_id' :supplier,
+    'date_seeded' : "2022-10-25",
+    'date_planted' : "2022-10-26",
+    'date_picked' : "2022-10-27",
+    'ehd': "2022-10-28" ,
+    'date_completed' :"2022-10-29",
+    'area_code_id':areacode})
+        self.assertEquals(response.status_code,200)
+        response=c.get('')
+        self.assertNotNone(response)
+
+class SupplierViewsetTestCases(TestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+        #Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
+    def test_creating(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        self.assertEquals(response.status_code,200)
+    def test_destroying(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        self.assertEquals(response.status_code,200)
+        response=c.delete('')
+        self.assertEquals(response.status_code,200)
+    def test_partial_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        self.assertEquals(response.status_code,200)
+        response=c.patch('',{'name':"jack"})
+        self.assertEquals(response.status_code,200)
+    def test_update(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        self.assertEquals(response.status_code,200)
+        response=c.put('',{})
+        self.assertEquals(response.status_code,200)
+    def test_list(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post('',{'organisation':organisatio,'name': "john",'phone_number':"1234567891"})
+        self.assertEquals(response.status_code,200)
+        response=c.get('')
+        self.assertNotNone(response)
+
+class TeamViewsetTestCases(TestCase):
+    def setUp(self):
+        org_code=generate_random_org_code()
+        Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
+        organisatio=Organisation.objects.get(name="Farmone")
+    def test_creating(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post({'category':"cricket",'name':"number1",'organisation':organisatio})
+        self.assertEquals(response.status_code,201)
+    def test_destroying(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post({'category':"cricket",'name':"number1",'organisation':organisatio})
+        self.assertEquals(response.status_code,201)
+        response=c.delete()
+        self.assertEquals(response.status_code,201)
+    def test_list(self):
+        c=Client()
+        organisatio=Organisation.objects.get(name="Farmone")
+        response=c.post({'category':"cricket",'name':"number1",'organisation':organisatio})
+        self.assertEquals(response.status_code,201)
+        response=c.get()
+        self.assertNotNone(response)
+
 
 
 ###class StockPickersTestCases(TestCase):
