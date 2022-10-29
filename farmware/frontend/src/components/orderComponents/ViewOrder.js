@@ -60,7 +60,22 @@ function ViewOrder() {
     }
 
     function markAsComplete() {
-        alert("Mark order as complete. Order id: " + location.state.id);
+        //todays date
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        let todayDate = yyyy + '-' + mm + '-' + dd;
+
+        //do a patch 
+        var patchObject = {
+            completion_date: todayDate
+        }
+        axiosInstance.patch('/order/' + location.state.id + "/", patchObject)
+            .catch((err) => {
+                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
+            });
+
         navigate("/orders");
     }
 
@@ -326,7 +341,7 @@ function ViewOrder() {
             newFormData["quantity"] = parsed_quantity;
             temporaryStockAdded.push(newFormData);
         }
-        
+
         setTemporaryStockAdded(temporaryStockAdded);
         console.log("A");
         console.log(temporaryStockAdded);
@@ -365,11 +380,11 @@ function ViewOrder() {
         var postObject = {
             items: temporaryStockAdded
         }
-        
+
         //make call to add all the stock:
         console.log("log: ");
         console.log(temporaryStockAdded);
-        axiosInstance.post('order_item/'+viewingOrderItemID+'/bulk_add_stock/', postObject)
+        axiosInstance.post('order_item/' + viewingOrderItemID + '/bulk_add_stock/', postObject)
             .catch((err) => {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
@@ -444,10 +459,10 @@ function ViewOrder() {
                         <TableHead>
                             <TableRow>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>ID</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce ID</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Name</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Produce</TableCell>
+                                {/* <TableCell className="tableCell" sx={{ textAlign: "center" }}>Name</TableCell> */}
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Variety</TableCell>
-                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>QTY SUFFIX</TableCell>
+                                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Suffix</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Order QTY</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Stock QTY Added</TableCell>
                                 <TableCell className="tableCell" sx={{ textAlign: "center" }}></TableCell>
@@ -457,10 +472,10 @@ function ViewOrder() {
                             {orderItems.map((order_item) => (
                                 <TableRow key={order_item.stock_id}>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.id}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_variety_id}</TableCell>
-                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity_suffix_id}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_name}</TableCell>
+                                    {/* <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.produce_id}</TableCell> */}
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.variety_name}</TableCell>
+                                    <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity_suffix_name}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.quantity}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order_item.stock_qty_added}</TableCell>
                                     <TableCell className="tableCell" sx={{ textAlign: "center" }}>
