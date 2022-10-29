@@ -11,8 +11,10 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
+import useNotification from "../alert/UseNotification";
 
 function UsersTable() {
+  const [msg, sendNotification] = useNotification();
 
   const [usersList, setUsersList] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -31,6 +33,14 @@ function UsersTable() {
     email: "",
     role: ""
   });
+
+  const [reloadFlag, setReloadFlag] = useState(false);
+  const reloadUsers = () => {
+    setUsersList([]);
+    setTeamlist([]);
+    setCurrentTeams([]);
+    setReloadFlag(!reloadFlag); //prompts a reload of customers
+  }
 
   const clearState = () => {
     const formValues = {
@@ -86,11 +96,7 @@ function UsersTable() {
         console.log(err)
         alert("ERROR: Getting teams failed");
       });
-
-
-
-
-  }, []);
+  }, [reloadFlag]);
 
   const handleTeamChange = (event) => {
     const {
@@ -173,10 +179,13 @@ function UsersTable() {
       });
 
     //reset values
-    clearState();
+    // clearState();
 
-    //reload page
-    window.location.reload();
+    reloadUsers();
+
+    setDisplayEditModal(!displayEditModal);
+
+    sendNotification({msg: 'Success: User Updated', variant: 'success'});
   };
 
   const handleEditClick = (event, row) => {
@@ -216,7 +225,9 @@ function UsersTable() {
         alert("Error code: " + err.response.status + "\n" + err.response.data.error);
       });
     clearState();
-    window.location.reload();
+    setDisplayEditModal(!displayEditModal);
+    reloadUsers();
+    sendNotification({msg: 'Success: User Deleted', variant: 'success'});
   }
 
 

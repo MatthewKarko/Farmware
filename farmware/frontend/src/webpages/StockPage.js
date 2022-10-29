@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Navbar from '../components/Navbar';
-import SuppliersTable from '../components/tables/SuppliersTable';
-import Header from '../components/Header';
 import '../css/DashboardPages.css';
+import Header from '../components/Header';
+import StockTable from '../components/tables/StockTable';
 import { SnackbarProvider } from 'notistack';
 
-export default function SuppliersPage() {
+export default function StockPage() {
     return (
         <div className='mainContainer'>
             <Navbar />
             <div className='componentContainer'>
                 <Header />
                 <SnackbarProvider maxSnack={3}>
-                    <SuppliersTable />
+                    <StockTable />
                 </SnackbarProvider>
             </div>
         </div>

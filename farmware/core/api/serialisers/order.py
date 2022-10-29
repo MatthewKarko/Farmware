@@ -13,15 +13,16 @@ class OrderSerialiser(serializers.ModelSerializer):
 class OrderCreationSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['customer_id', 'invoice_number', 'order_date', 
-        'completion_date']
+        exclude = ['organisation']
 
     def create(self, validated_data):        
         # Add organisational data
-        validated_data['organisation'] = self.\
-            context['request'].user.organisation
-        
+        validated_data['organisation'] = self.context['request'].user.organisation
         return Order.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data['organisation'] = self.context['request'].user.organisation
+        return super().update(instance=instance, validated_data=validated_data)
 
 
 class OrderUpdateSerialiser(serializers.ModelSerializer):
@@ -41,7 +42,7 @@ class OrderFullSerialiser(serializers.ModelSerializer):
         data['customer_name'] = Customer.objects.get(
             id=data['customer_id']).name
 
-        # TODO: fix
+        # TODO: fix?
         data['order_items'] = OrderItemListSerialiser(
             OrderItem.objects.all().filter(order_id=data.get('id')), 
             many=True

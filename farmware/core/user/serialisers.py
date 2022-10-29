@@ -38,25 +38,25 @@ class UserUpdateSerialiser(UserSerialiser):
             'first_name', 'last_name', 'role', 'teams'
         ]
 
-    def __init__(self, instance=None, data=empty, **kwargs):
-        if instance is not None:
-            self.role = serializers.ChoiceField(
-                choices=filter(lambda x: x[0] > instance.role, User.Roles.choices)
-            )
+    # def __init__(self, instance=None, data=empty, **kwargs):
+    #     if instance is not None:
+    #         self.role = serializers.ChoiceField(
+    #             choices=filter(lambda x: x[0] > instance.role, User.Roles.choices)
+    #         )
 
-        super().__init__(instance, data, **kwargs)
+    #     super().__init__(instance, data, **kwargs)
 
-    def validate_role(self, value):
-        if type(value) == str:
-            try:
-                value = User.Roles.labels.index(value)
-            except ValueError:
-                raise serializers.ValidationError("Role is not an option.")
+    # def validate_role(self, value):
+    #     if type(value) == str:
+    #         try:
+    #             value = User.Roles.labels.index(value)
+    #         except ValueError:
+    #             raise serializers.ValidationError("Role is not an option.")
 
-        if value not in self.role.choices:
-            raise serializers.ValidationError("Illegal role allocation.")
+    #     if value not in self.role.choices:
+    #         raise serializers.ValidationError("Illegal role allocation.")
 
-        return value
+    #     return value
 
 
 class LoginSerialiser(UserSerialiser):

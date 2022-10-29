@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import TeamsTable from '../components/tables/TeamsTable';
 import Header from '../components/Header';
 import '../css/DashboardPages.css';
+import { SnackbarProvider } from 'notistack';
 
 export default function SuppliersPage() {
     return (
@@ -10,7 +11,9 @@ export default function SuppliersPage() {
             <Navbar />
             <div className='componentContainer'>
                 <Header />
-                <TeamsTable />
+                <SnackbarProvider maxSnack={3}>
+                    <TeamsTable />
+                </SnackbarProvider>
             </div>
         </div>
     );

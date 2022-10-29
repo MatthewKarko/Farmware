@@ -1,14 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { useNavigate } from 'react-router-dom';
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography } from "@mui/material"
 import '../../css/PageMargin.css';
 import '../../css/Modal.css';
 import axiosInstance from '../../axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import useNotification from "../alert/UseNotification";
 
 function SuppliersPage() {
-    const navigate = useNavigate();
+    const [msg, sendNotification] = useNotification();
 
     const [suppliersList, setSuppliersList] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
@@ -24,6 +24,12 @@ function SuppliersPage() {
         name: "",
         phone_number: "",
     });
+
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadSuppliers = () => {
+        setSuppliersList([]);
+        setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
 
     const clearState = () => {
         const formValues = {
@@ -62,7 +68,7 @@ function SuppliersPage() {
             .catch((err) => {
                 alert("ERROR: Getting suppliers failed");
             });
-    }, []);
+    }, [reloadFlag]);
 
 
     const handleFormChange = (event) => {
@@ -117,8 +123,8 @@ function SuppliersPage() {
         //close modal
         setDisplayEditModal(!displayEditModal);
 
-        //reload page
-        window.location.reload();
+        reloadSuppliers();
+        sendNotification({msg: 'Success: Supplier Updated', variant: 'success'});
     };
 
     const handleEditClick = (event, row) => {
@@ -142,7 +148,10 @@ function SuppliersPage() {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
             });
         clearState();
-        window.location.reload();
+        setDisplayEditModal(!displayEditModal);
+        reloadSuppliers();
+        sendNotification({msg: 'Success: Supplier Deleted', variant: 'success'});
+
     }
 
     const handleCreateSubmit = (event) => {
@@ -172,7 +181,7 @@ function SuppliersPage() {
             phone_number: temporarySupplier.phone_number,
             organisation: organisationCode,
         }
-
+        console.log(postObject);
         axiosInstance.post(`supplier/`, postObject)
             .catch((err) => {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
@@ -184,8 +193,9 @@ function SuppliersPage() {
         setDisplayCreateModal(!displayCreateModal);
 
         //reload page
-        window.location.reload();
-        navigate("/suppliers");
+        reloadSuppliers();
+        sendNotification({msg: 'Success: Supplier Created', variant: 'success'});
+
     };
 
     return (

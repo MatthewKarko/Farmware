@@ -59,7 +59,7 @@ export default function AccountModify() {
         alert("Incorrect creditials entered");
       });
     axiosInstance
-		  .get(`teams/`, {
+		  .get(`team/`, {
 			})
 			.then((res) => {
 				
