@@ -30,9 +30,22 @@ function ProduceTable() {
     const [produceVarieties, setProduceVarieties] = useState([[]]);
     const [produceSuffixEquivalent, setProduceSuffixEquivalent] = useState();
     const [editModal, setEditModal] = useState(false);
-    const [editRow, setEditRow] = useState();
+    const [editRow, setEditRow] = useState([]);
     const [editView, setEditView] = useState('');
     const navigate = useNavigate();
+
+
+    const [reloadFlag, setReloadFlag] = useState(false);
+    const reloadProduce = () => {
+      setProduceObj([]);
+      setProduceList([]);
+      setEditRow([]);
+      setProduceName([]);
+      setEditProduceSuffix([]);
+      setCurrentProduceId([]);
+      setProduceVarieties([]);
+      setReloadFlag(!reloadFlag); //prompts a reload of customers
+    }
 
     useEffect(() => {
         axiosInstance
@@ -44,7 +57,7 @@ function ProduceTable() {
                     // console.log(res.data)
                 })
             })
-    }, []);
+    }, [reloadFlag]);
 
     const handleEditViewChange = (event) => {
         setEditView(event.target.value);
@@ -103,32 +116,12 @@ function ProduceTable() {
         setProduceVarieties(deleteData);
     };
 
-    
 
-    const handleEditClick = (event, row) => {
-        event.preventDefault();
-        setDisplayEditModal(!displayEditModal);
-
-        axiosInstance.get(`produce/${row.id}`)
-            .then((res) => {
-                console.log(res.data);
-                setProduceObj(res.data);
-                console.log(JSON.parse(res.data.quantity_suffixes));
-                setEditProduceSuffix(JSON.parse(res.data.quantity_suffixes));
-            })
-    };
-
-    const handleEditSubmit = (event) => {
-        event.preventDefault();
-
-    };
 
     const handleDeleteClick = (event, row) => {
         event.preventDefault();
-        // setDisplayDeleteModal(!displayDeleteModal);
-
-
         axiosInstance.delete(`produce/${row.id}/`);
+        reloadProduce();
         // Confirmation modal
     };
 
@@ -159,7 +152,7 @@ function ProduceTable() {
                 alert(err.response.data.name);
                 
                  });
-        ;
+        reloadProduce();
         
         
 
@@ -183,17 +176,20 @@ function ProduceTable() {
         
         axiosInstance
                 .post(`produce/${currentProduceId}/create_varieties/`, postObject)
-                .catch((err) =>{console.log(err)})
+                .catch((err)=> {
+                    console.log(err);
+                    alert(err.response.data);
+                    
+                     });
 
         setDisplayVarietyModal(!displayVarietyModal);
-        setProduceVarieties([[]]);
+        reloadProduce();
 
     }
 
     const handleProduceSuffixSubmit = (event) => {
         event.preventDefault();
-        setDisplaySuffixModal(!displaySuffixModal);
-        setDisplayVarietyModal(!displayVarietyModal);
+        
         console.log(produceVarieties);
         var postObject = {
             produce_id: currentProduceId,
@@ -201,21 +197,46 @@ function ProduceTable() {
             base_equivalent: produceSuffixEquivalent,
         };
 
-        axiosInstance.post(`produce_quantity_suffix/`, postObject).then((res) => console.log(res.data)).catch((err)=> console.log(err));
+        axiosInstance.post(`produce_quantity_suffix/`, postObject)
+            .then((res) => {
+                setDisplaySuffixModal(!displaySuffixModal);
+                setDisplayVarietyModal(!displayVarietyModal);
+            })
+            .catch((err)=> {
+                console.log(err);
+                if(err.response.data.suffix != null && err.response.data.base_equivalent != null){
+                    alert(`Suffix: ${err.response.data.suffix} \n Base Equivalent: ${err.response.data.base_equivalent} `);
+                } else if (err.response.data.suffix != null){
+                    alert(`Suffix: ${err.response.data.suffix} \n`);
+                }else{
+                    alert(`Base Equivalent: ${err.response.data.base_equivalent} \n`);
+                }
+                
+                 });
+        reloadProduce();
+        
+    };
+    const handleNameChange = (evt) => {
+        const value = evt.target.value;
+        setEditRow({
+          ...editRow,
+          [evt.target.name]: value
+    });
+    }
 
-        
-    };
-    const handleFormChange = (event) => {
+    const handleEditNameSubmit = (event) => {
         event.preventDefault();
-        
-        const fieldName = event.target.getAttribute("name");
-        const fieldValue = event.target.value;
-        
-        const newFormData = { ...temporaryUser };
-        newFormData[fieldName] = fieldValue;
-        
-        setProduceObj({ ...newFormData });
-    };
+
+        var postObject = {
+            name: editRow.name
+        }
+        axiosInstance
+            .patch(`produce/${editRow.id}/`, postObject)
+            .catch((err) => console.log(err));
+        setDisplayEditModal(!displayEditModal);
+        reloadProduce();
+           
+    }
 
     return (
         <React.Fragment>
@@ -342,48 +363,36 @@ function ProduceTable() {
                 <Typography variant="h4" sx={{
                     fontFamily: 'Lato',
                     fontWeight: 'bold',
-                    margin: "20px",
                     mt: 2,
                     textAlign: 'center'
-                    }}> Edit Produce
-                </Typography>
+                }}>Produce Name</Typography>
+                <Box component="form" onSubmit={handleEditNameSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-
-                <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Box noValidate>
-                        <TextField
-                        InputLabelProps={{ shrink: !! produceObj.name }}
+                    <TextField
+                        xs
+                        InputLabelProps={{ shrink: !! editRow.name }}
                         required
-                        margin="normal"
+                        margin="dense"
                         id="name"
-                        label="Produce Name"
+                        label="Product Name"
                         name="name"
                         autoComplete="name"
                         autoFocus
                         size="small"
-                        value={produceObj.name}
-                        onChange={handleFormChange}
-                        sx={{ width: "200px" }}
+                        value={editRow.name}
+                        onChange={handleNameChange}
                         variant="filled"
 
-                        />
-                        <TextField
+                    />   
 
-                        required
-                        margin="dense"
-                        name="last_name"
-                        label="Lastname"
-                        type="last_name"
-                        id="last_name"
-                        autoComplete="last_name"
-                        size="small"
-                        value={editProduceSuffix[0]?.suffix}
-                        onChange={handleFormChange}
-                        sx={{ width: "200px", mt: 2, ml: 2 }}
-                        variant="filled"
-                        />
-                    </Box>
-                </Box>
+                    <Button
+                        type="next"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, bgcolor: 'blue' }}
+                    >
+                        Next
+                    </Button>
+                </Box>         
 
         
             </div>
@@ -406,6 +415,7 @@ function ProduceTable() {
                 <Box component="form" onSubmit={handleCreateSubmit} noValidate sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
                     <TextField
+                        
                         xs
                         required
                         margin="dense"
