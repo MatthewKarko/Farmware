@@ -48,9 +48,7 @@ function TeamsPage() {
                 // Set the organisation code as well
                 setOrganisationCode(res.data.organisation)
             })
-            .catch((err) => {
-                alert("ERROR: user/me failed");
-            });
+
 
         axiosInstance
             .get(`team/`, {
@@ -61,9 +59,6 @@ function TeamsPage() {
                     console.log(res.data)
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting teams failed");
-            });
     }, [reloadFlag]);
 
 
