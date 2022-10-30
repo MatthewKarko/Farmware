@@ -1,12 +1,20 @@
 import React, { useState, useEffect, Fragment } from "react";
+import OrdersWidgetDashboard from './OrdersWidgetDashboard'
 import '../../css/DashboardWidgets.css';
-import { Typography } from "@mui/material";
+import Container from '@mui/material/Container';
+import { Typography } from "@mui/material"
 
 function DashboardWidgets() {
     return (
         <>
             <div>
-                <Typography> Dashboard will be remade. Will list things like number of open orders, stock pie charts, etc.</Typography>
+                <Container maxWidth="md" component="main" sx={{ paddingTop: "0px", marginLeft: "0px" }}>
+                    <Typography variant="h4" sx={{
+                                fontFamily: 'Lato',
+                                fontWeight: 'bold',
+                            }}> Dashboard</Typography>
+                    <OrdersWidgetDashboard />
+                </Container>
             </div>
         </>
     )
