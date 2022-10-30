@@ -433,25 +433,30 @@ function ViewOrder() {
                 alert("ERROR: Failed to delete stock link id");
             });
         // reloadOrderItems();
-        sendNotification({ msg: 'Success: Deleted Stock From Order', variant: 'success' });
         ///api/order_item_stock_link/{id}/
 
-        //need to reload the orderItemStock
-        //clear current
-        setOrderItemStock([]);
+        setDisplayViewAssignedStock(false);
 
-        //make the request for orderItemsStockData
-        axiosInstance
-            .get('/order_item/' + viewingOrderItemID + '/get_assigned_stock/', {
-            })
-            .then((res) => {
-                res.data.stock.map((data) => {
-                    setOrderItemStock(orderItemStock => [...orderItemStock, data])
-                })
-            })
-            .catch((err) => {
-                alert("ERROR: GET /api/order_item/{id}/get_assigned_stock/ failed");
-            });
+        reloadOrderItems();
+        
+        sendNotification({ msg: 'Success: Deleted Stock From Order', variant: 'success' });
+
+        // //need to reload the orderItemStock
+        // //clear current
+        // setOrderItemStock([]);
+
+        // //make the request for orderItemsStockData
+        // axiosInstance
+        //     .get('/order_item/' + viewingOrderItemID + '/get_assigned_stock/', {
+        //     })
+        //     .then((res) => {
+        //         res.data.stock.map((data) => {
+        //             setOrderItemStock(orderItemStock => [...orderItemStock, data])
+        //         })
+        //     })
+        //     .catch((err) => {
+        //         alert("ERROR: GET /api/order_item/{id}/get_assigned_stock/ failed");
+        //     });
     };
 
     return (
