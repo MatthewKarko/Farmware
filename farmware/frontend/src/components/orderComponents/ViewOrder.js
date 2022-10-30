@@ -241,6 +241,7 @@ function ViewOrder() {
     const [reloadFlag, setReloadFlag] = useState(false);
     const reloadOrderItems = () => {
         setOrderItems([]);
+        setProduceList([]);
         setReloadFlag(!reloadFlag);
     }
 
