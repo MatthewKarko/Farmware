@@ -28,9 +28,6 @@ export default function CustomPieChart() {
           setOrderList(orderList => [...orderList, data])
         })
       })
-      .catch((err) => {
-        alert("ERROR: Getting orders failed");
-      });
   }, []);
 
   const getResult = useMemo(() => {
@@ -45,8 +42,6 @@ export default function CustomPieChart() {
     let completed = 0;
 
     var today = new Date();
-
-    console.log(orderList.length);
 
     for (let i = 0; i < orderList.length; i++) {
       if(orderList[i].completion_date != null){

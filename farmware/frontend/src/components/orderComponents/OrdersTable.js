@@ -139,10 +139,7 @@ function OrdersTable() {
       postObject['invoice_number'] = temporaryOrder.invoice_number;
     }
 
-    axiosInstance.post(`order/`, postObject)
-      .catch((err) => {
-        alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-      });
+    axiosInstance.post(`order/`, postObject);
 
     clearTemporaryOrderState();
     setDisplayCreateModal(false);
@@ -198,9 +195,6 @@ function OrdersTable() {
     event.preventDefault();
     axiosInstance
       .delete('order/' + row.id + '/', {
-      })
-      .catch((err) => {
-        alert("ERROR: Failed to delete order");
       });
     reloadOrders();
     sendNotification({ msg: 'Success: Order Deleted', variant: 'success' });
@@ -216,11 +210,8 @@ function OrdersTable() {
     }
 
     //otherwise, send edit request
-    axiosInstance.put('order/' + edittingOrderID + '/', ret)
-        .catch((err) => {
-            alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-        });
-
+    axiosInstance.put('order/' + edittingOrderID + '/', ret);
+    
     setDisplayEditModal(false);
 
     clearTemporaryOrderState();

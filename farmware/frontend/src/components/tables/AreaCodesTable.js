@@ -48,9 +48,6 @@ function AreaCodesTable() {
                 // console.log(res.data);
                 // Set the organisation code as well
                 setOrganisationCode(res.data.organisation)
-            })
-            .catch((err) => {
-                alert("ERROR: user/me failed");
             });
 
         axiosInstance
@@ -61,9 +58,6 @@ function AreaCodesTable() {
                     setAreaCodesList(areaCodesList => [...areaCodesList, data])
                     // console.log(res.data)
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: Getting area_code failed");
             });
     }, [reloadFlag]);
 
@@ -107,10 +101,7 @@ function AreaCodesTable() {
         }
 
         //Send PUT request to update user
-        axiosInstance.put(`area_code/${temporaryAreaCode.id}/`, putObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.put(`area_code/${temporaryAreaCode.id}/`, putObject);
 
         //reset values
         clearState();
@@ -139,10 +130,7 @@ function AreaCodesTable() {
 
     const handleAreaCodeDelete = (event) => {
         event.preventDefault();
-        axiosInstance.delete(`area_code/${temporaryAreaCode.id}/`)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.delete(`area_code/${temporaryAreaCode.id}/`);
         clearState();
         reloadAreaCodes();
         setDisplayEditModal(!displayEditModal);
@@ -176,10 +164,7 @@ function AreaCodesTable() {
         }
 
         //Send PUT request to update user
-        axiosInstance.post(`area_code/`, postObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.post(`area_code/`, postObject);
 
         //reset values
         clearState();

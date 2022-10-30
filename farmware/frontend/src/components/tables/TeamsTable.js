@@ -44,7 +44,6 @@ function TeamsPage() {
             .get(`user/me/`, {
             })
             .then((res) => {
-                // console.log(res.data);
                 // Set the organisation code as well
                 setOrganisationCode(res.data.organisation)
             })
@@ -56,7 +55,6 @@ function TeamsPage() {
             .then((res) => {
                 res.data.map((data) => {
                     setTeamsList(teamsList => [...teamsList, data])
-                    console.log(res.data)
                 })
             })
     }, [reloadFlag]);
@@ -102,10 +100,7 @@ function TeamsPage() {
         }
 
         //Send PUT request to update user
-        axiosInstance.put(`team/${temporaryTeam.id}/`, putObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.put(`team/${temporaryTeam.id}/`, putObject);
 
         //reset values
         clearState();
@@ -134,10 +129,7 @@ function TeamsPage() {
 
     const handleTeamDelete = (event) => {
         event.preventDefault();
-        axiosInstance.delete(`team/${temporaryTeam.id}/`)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.delete(`team/${temporaryTeam.id}/`);
         clearState();
         reloadTeams();
         setDisplayEditModal(!displayEditModal);
@@ -174,10 +166,7 @@ function TeamsPage() {
         }
 
         //Send PUT request to update user
-        axiosInstance.post(`team/`, postObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.post(`team/`, postObject);
 
         //reset values
         clearState();
