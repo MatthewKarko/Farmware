@@ -6,6 +6,7 @@ from ..models.customer import Customer
 from ..models.produce import Produce, ProduceQuantitySuffix, ProduceVariety
 from ..models.order import Order, OrderItem, OrderItemStockLink
 from ..models.stock import Stock
+from ..models.supplier import Supplier
 
 ### ORDER #####################################################################
 class OrderSerialiser(serializers.ModelSerializer):
@@ -123,10 +124,13 @@ class OrderItemStockLinkAssignedStockSerialiser(serializers.ModelSerializer):
         stock: Stock = Stock.objects.get(id=data['stock_id'])
         produce: Produce = stock.produce_id
         variety: ProduceVariety = stock.variety_id
+        supplier: Supplier = stock.supplier_id
         
         data['produce_name'] = produce.name
         data['produce_variety'] = variety.variety
         data['quantity_suffix'] = ProduceQuantitySuffix.objects.get(id=data['quantity_suffix_id']).suffix
+        data['supplier_name'] = supplier.name
+        data['supplier_phone_number'] = supplier.phone_number
 
         return data
 ###############################################################################

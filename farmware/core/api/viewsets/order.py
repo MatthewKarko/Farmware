@@ -245,7 +245,6 @@ class OrderItemViewSet(ModelViewSet):
             order_item_id=order_item.pk
             ), many=True
         ).data
-        # append_foreign_tables(user, data)
         response = {'stock':data}
         return Response(response, status=status.HTTP_200_OK)
 
