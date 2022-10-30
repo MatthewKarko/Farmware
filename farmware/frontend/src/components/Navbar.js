@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
 import { Box, Drawer, List, Typography, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { Container } from '@mui/system';
@@ -13,10 +13,25 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import GroupsIcon from '@mui/icons-material/Groups';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import '../css/Navbar.css';
+import axiosInstance from '../axios';
 
 const drawerWidth = 240;
 
 function Navbar() {
+    const [orgCode, setOrganisationCode] = useState('');
+    useEffect(() => {
+        if(localStorage.getItem('organisation') != null){
+            setOrganisationCode(localStorage.getItem('organisation'));
+        }else{
+            axiosInstance
+            .get(`user/me/`)
+            .then((res) => {
+                localStorage.setItem('organisation', res.data.organisation);
+                setOrganisationCode(localStorage.getItem('organisation'));
+            })
+        }
+        
+    }, [])
     return (
         <div className='navbar'>
             <Box>
@@ -49,6 +64,11 @@ function Navbar() {
                             color: "#028357",
                             fontWeight: 'bold'
                         }}>Farmware</Typography>
+                        <Typography variant='subtitle1' sx={{
+                            fontFamily: 'Lato',
+                            color: "#ffffff",
+                            fontWeight: 'bold'
+                        }}>Org Code: {orgCode}</Typography>
                     </Container>
 
 
@@ -84,19 +104,6 @@ function Navbar() {
                             </ListItemButton>
                         </ListItem>
 
-                        {/* <ListItem key="Packaging" disablePadding>
-                            <ListItemButton component={Link} to="/" sx={{
-                                "&:hover": {
-                                    backgroundColor: "#028357",
-                                    borderRadius: "3px",
-                                },
-                            }}>
-                                <ListItemIcon>
-                                    <Inventory2Icon sx={{ color: "#ffffff" }} />
-                                </ListItemIcon>
-                                <ListItemText primary="Packaging" />
-                            </ListItemButton>
-                        </ListItem> */}
 
                         <ListItem key="Stock" disablePadding>
                             <ListItemButton component={Link} to="/stock" sx={{
