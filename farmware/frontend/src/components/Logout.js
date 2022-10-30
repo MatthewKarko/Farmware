@@ -11,6 +11,7 @@ const  Logout = () => {
 		});
 		localStorage.removeItem('access_token');
 		localStorage.removeItem('refresh_token');
+		localStorage.removeItem('organisation');
 		axiosInstance.defaults.headers['Authorization'] = null;
 		navigate('/login');
 	});

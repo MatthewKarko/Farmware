@@ -166,6 +166,7 @@ function OrdersTable() {
       })
       .then((res) => {
         setOrdersList(res.data);
+      })
 
   }, [reloadFlag]);
 
