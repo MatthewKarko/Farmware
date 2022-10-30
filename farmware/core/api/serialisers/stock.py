@@ -27,18 +27,9 @@ class BulkAddStockSerialiser(serializers.ModelSerializer):
 
     def validate_items(self, items):
         for item in items:
-            stock_id = item.get('stock_id')
-            try:
-                stock = Stock.objects.get(
-                    organisation=self.context['request'].user.organisation,
-                    id=stock_id
-                )
-
-                if stock.date_completed is not None:
-                    raise serializers.ValidationError(f'Stock ({stock_id}) has been completed.')
-
-            except ObjectDoesNotExist:
-                raise serializers.ValidationError(f'Stock ({stock_id}) does not exist.')
+            stock = item.get('stock')
+            if stock.date_completed is not None:
+                raise serializers.ValidationError(f'Stock ({stock.pk}) has been completed.')
         return items
 
 
