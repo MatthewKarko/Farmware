@@ -424,39 +424,18 @@ function ViewOrder() {
     };
 
     const handleOrderItemStockDelete = (stock_link_id) => {
-        //HERETODO
-        // event.preventDefault();
         axiosInstance
             .delete('order_item_stock_link/' + stock_link_id + '/', {
             })
             .catch((err) => {
                 alert("ERROR: Failed to delete stock link id");
             });
-        // reloadOrderItems();
-        ///api/order_item_stock_link/{id}/
 
         setDisplayViewAssignedStock(false);
 
         reloadOrderItems();
         
         sendNotification({ msg: 'Success: Deleted Stock From Order', variant: 'success' });
-
-        // //need to reload the orderItemStock
-        // //clear current
-        // setOrderItemStock([]);
-
-        // //make the request for orderItemsStockData
-        // axiosInstance
-        //     .get('/order_item/' + viewingOrderItemID + '/get_assigned_stock/', {
-        //     })
-        //     .then((res) => {
-        //         res.data.stock.map((data) => {
-        //             setOrderItemStock(orderItemStock => [...orderItemStock, data])
-        //         })
-        //     })
-        //     .catch((err) => {
-        //         alert("ERROR: GET /api/order_item/{id}/get_assigned_stock/ failed");
-        //     });
     };
 
     return (
