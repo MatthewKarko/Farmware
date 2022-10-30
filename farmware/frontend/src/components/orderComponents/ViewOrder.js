@@ -381,7 +381,7 @@ function ViewOrder() {
         for (let i = 0; i < temporaryStockAdded.length; i++) {
             if (!isNaN(+temporaryStockAdded[i].quantity)) {
                 //number
-                if (temporaryStockAdded[i].quantity < 1) {
+                if (temporaryStockAdded[i].quantity < 0) {
                     //error
                     alert("ERROR: Quantity must be greater than 0.");
                     return;
