@@ -381,7 +381,7 @@ class AreaCodeViewsetTestCases(APITestCase):
         user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", organisatio.code, None,is_staff=True)
         self.client.force_authenticate(user)
         response=self.client.post('/api/area_code/',{'organisation':organisatio.name,'area_code':000000,'description':"all good"})
-        print(response.content)
+        #print(response.content)
         self.assertEquals(response.status_code,200)
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmtwo",logo="sheep")
@@ -654,7 +654,7 @@ class OrderItemStockLinkViewsetTestCases(APITestCase):
         response=self.client.post('/api/order_item_stock_link/',{'order_item_id':orderItem.pk,'stock_id':stock.pk,'quantity':5.0,'quantity_suffix_id':producequantitysuffix.pk})
         self.assertEquals(response.status_code,201)
         response3=self.client.get('/api/order_item_stock_link/')
-        response2=self.client.delete(f'/api/order_item_stock_link/{user.pk}/')
+        #response2=self.client.delete(f'/api/order_item_stock_link/{user.pk}/')
         #self.assertEquals(response2.status_code,200)
     def test_partial_update(self):
         organisatio=Organisation.objects.get(name="Farmone")
@@ -683,7 +683,7 @@ class OrderItemStockLinkViewsetTestCases(APITestCase):
 
         organisatio=Organisation.objects.get(name="Farmone")
         response=self.client.get('/api/order_item/')
-        print(response.content)
+        #print(response.content)
         self.assertEquals(response.status_code,200)
 
 class ProduceViewsetTestCases(APITestCase):
@@ -706,7 +706,8 @@ class ProduceViewsetTestCases(APITestCase):
         self.client.force_authenticate(user)
         response=self.client.post('/api/produce/',{'organisation':organisatio,'name':"eggs"})
         self.assertEquals(response.status_code,200)
-        response2=self.client.get(f'/api/produce/',kwargs={'pk':user.pk})
+        response2=self.client.delete(f'/api/produce/{1}/')
+        print(response2.content)
         self.assertEquals(response2.status_code,200)
     def test_partial_update(self):
         organisatio=Organisation.objects.get(name="Farmone")
@@ -714,7 +715,8 @@ class ProduceViewsetTestCases(APITestCase):
         self.client.force_authenticate(user)
         response=self.client.post('/api/produce/',{'organisation':organisatio,'name':"eggs"})
         self.assertEquals(response.status_code,200)
-        response=self.client.post(f'/api/produce/',{'name':'apple'},kwargs={'pk':user.pk})
+        response=self.client.patch(f'/api/produce/',{'name':'apple'},kwargs={'pk':user.pk})
+        print(response.content)
         self.assertEquals(response.status_code,200)
     def test_update(self):
         organisatio=Organisation.objects.get(name="Farmone")
