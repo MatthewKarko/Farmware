@@ -53,9 +53,6 @@ function CustomersTable() {
                 }
                 // Set the organisation code as well
                 setOrganisationCode(res.data.organisation)
-            })
-            .catch((err) => {
-                alert("ERROR: user/me failed");
             });
 
         axiosInstance
@@ -66,9 +63,6 @@ function CustomersTable() {
                     setCustomersList(customersList => [...customersList, data])
                     // console.log(res.data)
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: Getting customers failed");
             });
     }, [reloadFlag]);
 
@@ -113,10 +107,7 @@ function CustomersTable() {
         }
 
         //Send PUT request to update user
-        axiosInstance.put(`customer/${temporaryCustomer.id}/`, putObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.put(`customer/${temporaryCustomer.id}/`, putObject);
 
         //reset values
         clearState();
@@ -145,10 +136,7 @@ function CustomersTable() {
 
     const handleCustomerDelete = (event) => {
         event.preventDefault();
-        axiosInstance.delete(`customer/${temporaryCustomer.id}/`)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.delete(`customer/${temporaryCustomer.id}/`);
         clearState();
         setDisplayEditModal(!displayEditModal);
         reloadCustomers();
@@ -184,10 +172,7 @@ function CustomersTable() {
         }
 
         //Send PUT request to update user
-        axiosInstance.post(`customer/`, postObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.post(`customer/`, postObject);
 
         //reset values
         clearState();

@@ -34,9 +34,6 @@ function ViewOrder() {
                 res.data.stock.map((data) => {
                     setOrderItemStock(orderItemStock => [...orderItemStock, data])
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: GET /api/order_item/{id}/get_assigned_stock/ failed");
             });
 
         //clear temporary
@@ -61,9 +58,6 @@ function ViewOrder() {
                 res.data.stock.map((data) => {
                     setOrderItemStock(orderItemStock => [...orderItemStock, data])
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: GET /api/order_item/{id}/get_available_stock/ failed.");
             });
 
         //clear temporary
@@ -84,10 +78,7 @@ function ViewOrder() {
         var patchObject = {
             completion_date: todayDate
         }
-        axiosInstance.patch('/order/' + location.state.id + "/", patchObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.patch('/order/' + location.state.id + "/", patchObject);
 
         navigate("/orders");
     }
@@ -148,9 +139,6 @@ function ViewOrder() {
                 res.data.map((data) => {
                     setProduceSuffixes(produceSuffixes => [...produceSuffixes, data])
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: Getting suffixes for produce id failed");
             });
     }
 
@@ -168,9 +156,6 @@ function ViewOrder() {
                 res.data.map((data) => {
                     setProduceVarieties(produceVarieties => [...produceVarieties, data])
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: Getting suffixes for produce id failed");
             });
     }
 
@@ -205,10 +190,7 @@ function ViewOrder() {
             return;
         }
         //send off the request
-        axiosInstance.post(`order_item/`, postObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.post(`order_item/`, postObject);
 
         clearTemporaryProduce();
 
@@ -270,9 +252,6 @@ function ViewOrder() {
             })
             .then((res) => {
                 setCustomerName(res.data.name);
-            })
-            .catch((err) => {
-                alert("ERROR: customer/{id}/ failed.");
             });
 
         axiosInstance
@@ -280,9 +259,6 @@ function ViewOrder() {
             })
             .then((res) => {
                 setOrderItems(res.data.order_items);
-            })
-            .catch((err) => {
-                alert("ERROR: order items request failed");
             });
 
         axiosInstance
@@ -292,9 +268,6 @@ function ViewOrder() {
                 res.data.map((data) => {
                     setProduceList(produceList => [...produceList, data])
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: Getting produce failed");
             });
     }, [reloadFlag]);
 
@@ -398,10 +371,7 @@ function ViewOrder() {
         }
 
         //make call to add all the stock:
-        axiosInstance.post('order_item/' + viewingOrderItemID + '/bulk_add_stock/', postObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.post('order_item/' + viewingOrderItemID + '/bulk_add_stock/', postObject);
 
         reloadOrderItems();
 
@@ -415,9 +385,6 @@ function ViewOrder() {
         event.preventDefault();
         axiosInstance
             .delete('order_item/' + row.id + '/', {
-            })
-            .catch((err) => {
-                alert("ERROR: Failed to delete stock");
             });
         reloadOrderItems();
         sendNotification({ msg: 'Success: Order Item Deleted', variant: 'success' });
@@ -426,9 +393,6 @@ function ViewOrder() {
     const handleOrderItemStockDelete = (stock_link_id) => {
         axiosInstance
             .delete('order_item_stock_link/' + stock_link_id + '/', {
-            })
-            .catch((err) => {
-                alert("ERROR: Failed to delete stock link id");
             });
 
         setDisplayViewAssignedStock(false);
