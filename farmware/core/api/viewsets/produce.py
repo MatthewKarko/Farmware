@@ -37,7 +37,7 @@ class ProduceViewSet(ModelViewSet):
         permission_classes = [IsAuthenticated, IsInOrganisation]
 
         # Updating or deleting information
-        if self.action != 'retrieve' or self.action != 'list':
+        if not (self.action == 'retrieve' or self.action == 'list'):
             permission_classes.append(IsHigherThanWorkerHierarchy)
 
         return [permission() for permission in permission_classes]
