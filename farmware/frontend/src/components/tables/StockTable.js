@@ -380,6 +380,7 @@ function StockTable() {
         }
 
         //send off the request
+        console.log(ret);
         axiosInstance.post(`stock/`, ret)
             .catch((err) => {
                 alert("Error code: " + err.response.status + "\n" + err.response.data.error);
