@@ -76,6 +76,7 @@ export const EditProduceVarieties = () => {
         axiosInstance
             .post(`produce_variety/`, postObject)
             .catch((err) => console.log(err));
+        setDisplayCreateModal(!displayCreateModal);
         reloadVarieties();
     }
 

@@ -152,7 +152,6 @@ function ProduceTable() {
                 alert(err.response.data.name);
                 
                  });
-        reloadProduce();
         
         
 
@@ -190,7 +189,6 @@ function ProduceTable() {
     const handleProduceSuffixSubmit = (event) => {
         event.preventDefault();
         
-        console.log(produceVarieties);
         var postObject = {
             produce_id: currentProduceId,
             suffix: produceSuffix,
@@ -199,6 +197,7 @@ function ProduceTable() {
 
         axiosInstance.post(`produce_quantity_suffix/`, postObject)
             .then((res) => {
+                
                 setDisplaySuffixModal(!displaySuffixModal);
                 setDisplayVarietyModal(!displayVarietyModal);
             })
@@ -213,7 +212,6 @@ function ProduceTable() {
                 }
                 
                  });
-        reloadProduce();
         
     };
     const handleNameChange = (evt) => {
@@ -275,8 +273,7 @@ function ProduceTable() {
                             <col style={{ width: '20%' }} />
                             <col style={{ width: '65%' }} />
                             <col style={{ width: '5%' }} />
-                            <col style={{ width: '5%' }} />
-                            <col style={{ width: '5%' }} />
+                            <col style={{ width: '10%' }} />
                         </colgroup>
                         <TableHead>
                             <TableRow sx={{
@@ -286,6 +283,7 @@ function ProduceTable() {
                             }}>
                                 <TableCell className="tableCell">Produce ID</TableCell>
                                 <TableCell className="tableCell">Produce Name</TableCell>
+                                <TableCell className="tableCell"></TableCell>
                                 <TableCell className="tableCell"></TableCell>
                             </TableRow>
                         </TableHead>
