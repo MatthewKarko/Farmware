@@ -65,9 +65,7 @@ function UsersTable() {
           setIsAdmin(true)
         }
       })
-      .catch((err) => {
-        alert("ERROR: user/me failed");
-      });
+
 
     axiosInstance
       .get(`user/`, {
@@ -78,9 +76,7 @@ function UsersTable() {
           // console.log(res.data)
         })
       })
-      .catch((err) => {
-        alert("ERROR: Getting users failed");
-      });
+
 
     //get the teams and store them
     axiosInstance
@@ -92,10 +88,7 @@ function UsersTable() {
           // console.log(res.data)
         })
       })
-      .catch((err) => {
-        console.log(err)
-        alert("ERROR: Getting teams failed");
-      });
+
   }, [reloadFlag]);
 
   const handleTeamChange = (event) => {

@@ -35,9 +35,7 @@ function OrdersWidgetDashboard() {
                     setCustomerList(customerList => [...customerList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: customers failed.");
-            });
+
 
         axiosInstance
             .get(`stock/`, {
@@ -47,9 +45,7 @@ function OrdersWidgetDashboard() {
                     setStockList(stockList => [...stockList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting stock failed");
-            });
+
 
         axiosInstance
             .get(`order/`, {
@@ -59,9 +55,7 @@ function OrdersWidgetDashboard() {
                     setOrderList(orderList => [...orderList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting orders failed");
-            });
+
     }, [reloadFlag]);
 
     return (

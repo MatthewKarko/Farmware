@@ -23,12 +23,12 @@ axiosInstance.interceptors.response.use(
 		const originalRequest = error.config;
 
 		if (typeof error.response === 'undefined') {
+			window.location.reload();
 			alert(
 				'A server/network error occurred. ' +
 					'Looks like CORS might be the problem. ' +
 					'Sorry about this - we will get it fixed shortly.'
 			);
-			window.location.reload();
 			return Promise.reject(error);
 		}
 

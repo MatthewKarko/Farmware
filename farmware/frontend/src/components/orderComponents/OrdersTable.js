@@ -159,19 +159,14 @@ function OrdersTable() {
       .then((res) => {
         setCustomersList(res.data);
       })
-      .catch((err) => {
-        alert("ERROR: customer/ failed");
-      });
+
 
     axiosInstance
       .get(`order/`, {
       })
       .then((res) => {
         setOrdersList(res.data);
-      })
-      .catch((err) => {
-        alert("ERROR: order/ failed");
-      });
+
   }, [reloadFlag]);
 
   const [edittingOrderID, setEdittingOrderID] = useState(-1);

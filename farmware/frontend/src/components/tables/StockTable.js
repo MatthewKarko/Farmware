@@ -40,9 +40,7 @@ function StockTable() {
                     setStockList(stockList => [...stockList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting stock failed");
-            });
+
 
         axiosInstance
             .get(`produce/`, {
@@ -52,9 +50,7 @@ function StockTable() {
                     setProduceList(produceList => [...produceList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting produce failed");
-            });
+
 
         axiosInstance
             .get(`area_code/`, {
@@ -64,9 +60,7 @@ function StockTable() {
                     setAreaCodeList(areaCodeList => [...areaCodeList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting area codes failed");
-            });
+
 
         axiosInstance
             .get(`supplier/`, {
@@ -76,9 +70,6 @@ function StockTable() {
                     setSupplierList(supplierList => [...supplierList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting suppliers failed");
-            });
     }, [reloadFlag]);
 
     const [edittingStockID, setEdittingStockID] = useState(-1);

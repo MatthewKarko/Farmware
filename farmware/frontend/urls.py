@@ -20,6 +20,8 @@ urlpatterns = [
     path('teams',index),
     path('area_codes',index),
     path('stock',index),
+    path('edit-produce-suffix', index),
+    path('edit-produce-varieties', index),
     path('docs/',include_docs_urls(title='FarmwareAPI')),
     path('schema', get_schema_view(
         title='FarmwareAPI',
