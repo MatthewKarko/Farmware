@@ -1,26 +1,26 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from .models.organisation import *
-from .models.team import *
-from .models.areacode import *
-from .models.produce import *
-from .models.stock import *
-from .models.supplier import *
-from .models.customer import *
-from .models.order import *
+from ...models.organisation import *
+from ...models.team import *
+from ...models.areacode import *
+from ...models.produce import *
+from ...models.stock import *
+from ...models.supplier import *
+from ...models.customer import *
+from ...models.order import *
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django_test_migrations.migrator import Migrator
 from django.db import migrations, models
 from core.api.migrations import *
 # 0001_initial,0002_initial,0003_auto_20221018_0824,0004_auto_20221018_1055,0005_auto_20221018_1132
-from .urls import *
+from ...urls import *
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
 from django.test import Client
 from rest_framework.test import APITestCase
 
 
-class OrderViewsetTestCases(APITestCase):
+class OrderItemViewsetTestCases(APITestCase):
     def setUp(self):
         org_code = generate_random_org_code()
         Organisation.objects.create(code=org_code, name="Farmone", logo="goat")
@@ -49,66 +49,90 @@ class OrderViewsetTestCases(APITestCase):
             organisation=organisatio, name="Henry", phone_number="9191223445")
         order = Order.objects.create(organisation=organisatio, customer_id=customer,
                                      order_date="2022-10-25", completion_date="2023-10-25")
-        OrderItem.objects.create(order_id=order, produce_id=produce, produce_variety_id=producevariety,
-                                 quantity=10.0, quantity_suffix_id=producequantitysuffix)
+        #OrderItem.objects.create(order_id =order.pk,produce_id=produce,produce_variety_id =producevariety,quantity = 10.0,quantity_suffix_id =producequantitysuffix)
 
     def test_creating(self):
         organisatio = Organisation.objects.get(name="Farmone")
+        customer = Customer.objects.get(name="Henry")
         user = get_user_model().objects.create_user("email@gmail.com", "first_name",
                                                     "last_name", organisatio.code, None, is_staff=True)
         self.client.force_authenticate(user)
-        customer = Customer.objects.get(name="Henry")
-        response = self.client.post(
-            '/api/order/', {'organisation': organisatio, 'customer_id': customer.pk, 'order_date': "2022-10-25", 'completion_date': "2023-10-25"})
+        order = Order.objects.get(order_date="2022-10-25")
+        produce = Produce.objects.get(name="eggs")
+        producevariety = ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix = ProduceQuantitySuffix.objects.get(
+            suffix="lorem ipsum")
+        response = self.client.post('/api/order/', {'order_id': order.pk, 'produce_id': produce.pk, 'produce_variety_id': producevariety.pk,
+                                    'quantity': 10.0, 'quantity_suffix_id': producequantitysuffix.pk, 'order_date': "2022-09-12", 'customer_id': customer.pk})
         self.assertEquals(response.status_code, 200)
 
     def test_destroying(self):
         organisatio = Organisation.objects.get(name="Farmone")
+        customer = Customer.objects.get(name="Henry")
         user = get_user_model().objects.create_user("email@gmail.com", "first_name",
                                                     "last_name", organisatio.code, None, is_staff=True)
         self.client.force_authenticate(user)
-        customer = Customer.objects.get(name="Henry")
-        response = self.client.post(
-            '/api/order/', {'organisation': organisatio, 'customer_id': customer.pk, 'order_date': "2022-10-25", 'completion_date': "2023-10-25"})
+        order = Order.objects.get(order_date="2022-10-25")
+        produce = Produce.objects.get(name="eggs")
+        producevariety = ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix = ProduceQuantitySuffix.objects.get(
+            suffix="lorem ipsum")
+        response = self.client.post('/api/order/', {'order_id': order.pk, 'produce_id': produce.pk, 'produce_variety_id': producevariety.pk,
+                                    'quantity': 10.0, 'quantity_suffix_id': producequantitysuffix.pk, 'order_date': "2022-09-12", 'customer_id': customer.pk})
         self.assertEquals(response.status_code, 200)
         response2 = self.client.delete(f'/api/order/{user.pk}/')
         self.assertEquals(response2.status_code, 200)
 
     def test_partial_update(self):
         organisatio = Organisation.objects.get(name="Farmone")
+        customer = Customer.objects.get(name="Henry")
         user = get_user_model().objects.create_user("email@gmail.com", "first_name",
                                                     "last_name", organisatio.code, None, is_staff=True)
         self.client.force_authenticate(user)
-        customer = Customer.objects.get(name="Henry")
-        response = self.client.post(
-            '/api/order/', {'organisation': organisatio, 'customer_id': customer.pk, 'order_date': "2022-10-25", 'completion_date': "2023-10-25"})
+        order = Order.objects.get(order_date="2022-10-25")
+        produce = Produce.objects.get(name="eggs")
+        producevariety = ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix = ProduceQuantitySuffix.objects.get(
+            suffix="lorem ipsum")
+        response = self.client.post('/api/order/', {'order_id': order.pk, 'produce_id': produce.pk, 'produce_variety_id': producevariety.pk,
+                                    'quantity': 10.0, 'quantity_suffix_id': producequantitysuffix.pk, 'order_date': "2022-09-12", 'customer_id': customer.pk})
         self.assertEquals(response.status_code, 200)
         response2 = self.client.patch(
-            f'/api/order/{user.pk}/', {'order_date': "2022-10-26"})
+            f'/api/order/{order.pk}/', {'quantity': 20.0})
         self.assertEquals(response2.status_code, 200)
 
     def test_update(self):
         organisatio = Organisation.objects.get(name="Farmone")
+        customer = Customer.objects.get(name="Henry")
         user = get_user_model().objects.create_user("email@gmail.com", "first_name",
                                                     "last_name", organisatio.code, None, is_staff=True)
         self.client.force_authenticate(user)
-        customer = Customer.objects.get(name="Henry")
-        response = self.client.post(
-            '/api/order/', {'organisation': organisatio, 'customer_id': customer.pk, 'order_date': "2022-10-25", 'completion_date': "2023-10-25"})
+        order = Order.objects.get(order_date="2022-10-25")
+        produce = Produce.objects.get(name="eggs")
+        producevariety = ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix = ProduceQuantitySuffix.objects.get(
+            suffix="lorem ipsum")
+        response = self.client.post('/api/order/', {'order_id': order.pk, 'produce_id': produce.pk, 'produce_variety_id': producevariety.pk,
+                                    'quantity': 10.0, 'quantity_suffix_id': producequantitysuffix.pk, 'order_date': "2022-09-12", 'customer_id': customer.pk})
         self.assertEquals(response.status_code, 200)
-        response2 = self.client.put(f'/api/order/{user.pk}/', {'organisation': organisatio,
-                                    'customer_id': customer.pk, 'order_date': "2022-10-27", 'completion_date': "2023-10-15"})
-        self.assertEquals(response2.status_code, 200)
+        response = self.client.put(f'/api/order/{user.pk}/', {'order_id': order.pk, 'produce_id': produce.pk, 'produce_variety_id': producevariety.pk,
+                                   'quantity': 10.0, 'quantity_suffix_id': producequantitysuffix.pk, 'order_date': "2022-09-12", 'customer_id': customer.pk})
+        self.assertEquals(response.status_code, 200)
 
     def test_list(self):
         organisatio = Organisation.objects.get(name="Farmone")
+        customer = Customer.objects.get(name="Henry")
         user = get_user_model().objects.create_user("email@gmail.com", "first_name",
                                                     "last_name", organisatio.code, None, is_staff=True)
         self.client.force_authenticate(user)
-        customer = Customer.objects.get(name="Henry")
-        response = self.client.post(
-            '/api/order/', {'organisation': organisatio, 'customer_id': customer.pk, 'order_date': "2022-10-25", 'completion_date': "2023-10-25"})
+        order = Order.objects.get(order_date="2022-10-25")
+        produce = Produce.objects.get(name="eggs")
+        producevariety = ProduceVariety.objects.get(variety="brown")
+        producequantitysuffix = ProduceQuantitySuffix.objects.get(
+            suffix="lorem ipsum")
+        response = self.client.post('/api/order/', {'order_id': order.pk, 'produce_id': produce.pk, 'produce_variety_id': producevariety.pk,
+                                    'quantity': 10.0, 'quantity_suffix_id': producequantitysuffix.pk, 'order_date': "2022-09-12", 'customer_id': customer.pk})
         self.assertEquals(response.status_code, 200)
         response2 = self.client.get('/api/order/')
         res = response2.json()
-        self.assertEquals(res[0]['order_date'], "2022-10-25")
+        self.assertEquals(res[0]["quantity"], 10.0)

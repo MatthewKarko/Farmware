@@ -1,25 +1,25 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from .models.organisation import *
-from .models.team import *
-from .models.areacode import *
-from .models.produce import *
-from .models.stock import *
-from .models.supplier import *
-from .models.customer import *
-from .models.order import *
+from ...models.organisation import *
+from ...models.team import *
+from ...models.areacode import *
+from ...models.produce import *
+from ...models.stock import *
+from ...models.supplier import *
+from ...models.customer import *
+from ...models.order import *
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django_test_migrations.migrator import Migrator
 from django.db import migrations, models
 from core.api.migrations import *
-from .urls import *
+from ...urls import *
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
 from django.test import Client
 from rest_framework.test import APITestCase
 
 
-class ProduceViewsetTestCases(APITestCase):
+class ProduceQuantitySuffixViewsetTestCases(APITestCase):
     def setUp(self):
         org_code = generate_random_org_code()
         Organisation.objects.create(code=org_code, name="Farmone", logo="goat")
@@ -35,8 +35,9 @@ class ProduceViewsetTestCases(APITestCase):
         user = get_user_model().objects.create_superuser(email="email@gmail.com",
                                                          first_name="first_name", last_name="last_name", password=None)
         self.client.force_authenticate(user)
-        response = self.client.post(
-            '/api/produce/', {'organisation': organisatio, 'name': "eggs"})
+        produce = Produce.objects.get(name="eggs")
+        response = self.client.post('/api/produce_quantity_suffix/', {
+                                    'produce_id': produce.pk, 'suffix': "lorem ipsum", 'base_equivalent': 5.0})
         self.assertEquals(response.status_code, 200)
 
     def test_destroying(self):
@@ -44,46 +45,36 @@ class ProduceViewsetTestCases(APITestCase):
         user = get_user_model().objects.create_superuser(email="email@gmail.com",
                                                          first_name="first_name", last_name="last_name", password=None)
         self.client.force_authenticate(user)
-        response = self.client.post(
-            '/api/produce/', {'organisation': organisatio, 'name': "eggs"})
+        produce = Produce.objects.get(name="eggs")
+        response = self.client.post('/api/produce_quantity_suffix/', {
+                                    'produce_id': produce.pk, 'suffix': "lorem ipsum", 'base_equivalent': 5.0})
         self.assertEquals(response.status_code, 200)
-        response2 = self.client.delete(f'/api/produce/{user.pk}/')
-        # print(response2.content)
-        self.assertEquals(response2.status_code, 200)
+        response = self.client.delete(
+            f'/api/produce_quantity_suffix/{user.pk}/')
+        self.assertEquals(response.status_code, 200)
 
     def test_partial_update(self):
         organisatio = Organisation.objects.get(name="Farmone")
         user = get_user_model().objects.create_superuser(email="email@gmail.com",
                                                          first_name="first_name", last_name="last_name", password=None)
         self.client.force_authenticate(user)
-        response = self.client.post(
-            '/api/produce/', {'organisation': organisatio, 'name': "eggs"})
+        produce = Produce.objects.get(name="eggs")
+        response = self.client.post('/api/produce_quantity_suffix/', {
+                                    'produce_id': produce.pk, 'suffix': "lorem ipsum", 'base_equivalent': 5.0})
         self.assertEquals(response.status_code, 200)
-        response = self.client.patch(
-            f'/api/produce/{user.pk}/', {'name': 'apple'})
-        # print(response.content)
-        self.assertEquals(response.status_code, 200)
-
-    def test_update(self):
-        organisatio = Organisation.objects.get(name="Farmone")
-        user = get_user_model().objects.create_superuser(email="email@gmail.com",
-                                                         first_name="first_name", last_name="last_name", password=None)
-        self.client.force_authenticate(user)
-        response = self.client.post(
-            '/api/produce/', {'organisation': organisatio, 'name': "eggs"})
-        self.assertEquals(response.status_code, 200)
-        response = self.client.put(
-            f'/api/produce/{user.pk}/', {'organisation': organisatio, 'name': "egs"})
-        self.assertEquals(response.status_code, 200)
+        response2 = self.client.patch(
+            f'/api/produce_quantity_suffix/{user.pk}/', {'suffix': "lorem"})
+        self.assertEquals(response2.status_code, 200)
 
     def test_list(self):
         organisatio = Organisation.objects.get(name="Farmone")
         user = get_user_model().objects.create_superuser(email="email@gmail.com",
                                                          first_name="first_name", last_name="last_name", password=None)
         self.client.force_authenticate(user)
-        response = self.client.post(
-            '/api/produce/', {'organisation': organisatio, 'name': "eggs"})
+        produce = Produce.objects.get(name="eggs")
+        response = self.client.post('/api/produce_quantity_suffix/', {
+                                    'produce_id': produce.pk, 'suffix': "lorem ipsum", 'base_equivalent': 5.0})
         self.assertEquals(response.status_code, 200)
-        response2 = self.client.get('/api/produce/')
+        response = self.client.get('/api/produce_quantity_suffix/')
         res = response.json()
-        self.assertEquals(res[0]['name'], "eggs")
+        self.assertEquals(res[0]['suffix'], "lorem ipsum")
