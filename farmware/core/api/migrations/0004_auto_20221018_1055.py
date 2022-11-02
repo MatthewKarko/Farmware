@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
         migrations.AlterModelOptions(
             name='organisation',
             options={'verbose_name': 'organisation', 'verbose_name_plural': 'organisations'},
-        ),
+        ), 
         migrations.AlterModelOptions(
             name='produce',
             options={'verbose_name': 'produce', 'verbose_name_plural': 'produce'},
