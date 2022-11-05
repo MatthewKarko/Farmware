@@ -195,18 +195,21 @@ class UserViewSet(
     def create_user(self, request):
         """Create a new user."""
         data: QueryDict = request.data
+        user: User = request.user
+        try:
+            validate_password(data['password'], user)
+        except exceptions.ValidationError as e:
+            return Response(e, status=status.HTTP_400_BAD_REQUEST)
 
-        serliaser = self.get_serializer_class()(data=data)  # type: ignore
-
-        if serliaser.is_valid():
-            user: User = serliaser.save()
-            # TODO: validate_password(serliaser.validated_data['password'], user)
+        serialiser = self.get_serializer_class()(data=data)  # type: ignore
+        if serialiser.is_valid():
+            user: User = serialiser.save()
             if user:
                 # TODO: activate send confirmation email
                 # self.send_email_verification(request, user)
                 return Response(status=status.HTTP_201_CREATED)
 
-        return Response(serliaser.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serialiser.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def send_email_verification(self, request, user: User) -> None:
         """Send an email verification to the given user."""

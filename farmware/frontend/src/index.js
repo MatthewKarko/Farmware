@@ -17,6 +17,8 @@ import TeamsPage from "./webpages/TeamsPage";
 import AreaCodesPage from "./webpages/AreaCodesPage";
 import ViewOrderPage from "./webpages/ViewOrderPage";
 import StockPage from "./webpages/StockPage";
+import EditProduceSuffixPage from "./webpages/EditProduceSuffixPage";
+import EditProduceVarietiesPage from "./webpages/EditProduceVarietiesPage";
 
 const routing = (
     <Router>
@@ -36,6 +38,8 @@ const routing = (
             <Route path="/orders" element={<OrdersPage />}/>
             <Route path="/view-order" element={<ViewOrderPage />} />
             <Route path="/stock" element={<StockPage />} />
+            <Route path="/edit-produce-suffix" element={<EditProduceSuffixPage/>} />
+            <Route path="/edit-produce-varieties" element={<EditProduceVarietiesPage/>} />
 
         </Routes>
     </Router>

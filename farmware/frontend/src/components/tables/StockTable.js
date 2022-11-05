@@ -40,9 +40,7 @@ function StockTable() {
                     setStockList(stockList => [...stockList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting stock failed");
-            });
+
 
         axiosInstance
             .get(`produce/`, {
@@ -52,9 +50,7 @@ function StockTable() {
                     setProduceList(produceList => [...produceList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting produce failed");
-            });
+
 
         axiosInstance
             .get(`area_code/`, {
@@ -64,9 +60,7 @@ function StockTable() {
                     setAreaCodeList(areaCodeList => [...areaCodeList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting area codes failed");
-            });
+
 
         axiosInstance
             .get(`supplier/`, {
@@ -76,9 +70,6 @@ function StockTable() {
                     setSupplierList(supplierList => [...supplierList, data])
                 })
             })
-            .catch((err) => {
-                alert("ERROR: Getting suppliers failed");
-            });
     }, [reloadFlag]);
 
     const [edittingStockID, setEdittingStockID] = useState(-1);
@@ -138,10 +129,7 @@ function StockTable() {
         }
 
         //otherwise, send edit request
-        axiosInstance.put('stock/' + edittingStockID + '/', ret)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.put('stock/' + edittingStockID + '/', ret);
 
         setDisplayEditModal(false);
 
@@ -153,9 +141,6 @@ function StockTable() {
         event.preventDefault();
         axiosInstance
             .delete('stock/' + row.id + '/', {
-            })
-            .catch((err) => {
-                alert("ERROR: Failed to delete stock");
             });
         reloadStock();
         sendNotification({ msg: 'Success: Stock Deleted', variant: 'success' });
@@ -233,9 +218,6 @@ function StockTable() {
                 res.data.map((data) => {
                     setProduceSuffixes(produceSuffixes => [...produceSuffixes, data])
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: Getting suffixes for produce id failed");
             });
     }
 
@@ -253,9 +235,6 @@ function StockTable() {
                 res.data.map((data) => {
                     setProduceVarieties(produceVarieties => [...produceVarieties, data])
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: Getting suffixes for produce id failed");
             });
     }
 
@@ -380,11 +359,8 @@ function StockTable() {
         }
 
         //send off the request
-        axiosInstance.post(`stock/`, ret)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
-
+        console.log(ret);
+        axiosInstance.post(`stock/`, ret);
         clearTemporaryStock();
 
         setDisplayCreateModal(false);
@@ -482,10 +458,7 @@ function StockTable() {
     }
 
     const handleCompleteClick = (event, row) => {
-        axiosInstance.get('stock/' + row.id + '/toggle_date_completed/')
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.get('stock/' + row.id + '/toggle_date_completed/');
         reloadStock();
         sendNotification({ msg: 'Success: Stock Completed', variant: 'success' });
     }

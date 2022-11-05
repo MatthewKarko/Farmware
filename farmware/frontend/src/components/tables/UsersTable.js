@@ -51,8 +51,6 @@ function UsersTable() {
       role: '',
     };
     setTemporaryUser({ ...formValues });
-
-    // console.log("reset form data")
   };
 
   useEffect(() => {
@@ -60,14 +58,11 @@ function UsersTable() {
       .get(`user/me/`, {
       })
       .then((res) => {
-        // console.log(res.data);
         if (res.data.role.level < 200) {
           setIsAdmin(true)
         }
       })
-      .catch((err) => {
-        alert("ERROR: user/me failed");
-      });
+
 
     axiosInstance
       .get(`user/`, {
@@ -75,12 +70,9 @@ function UsersTable() {
       .then((res) => {
         res.data.map((data) => {
           setUsersList(usersList => [...usersList, data])
-          // console.log(res.data)
         })
       })
-      .catch((err) => {
-        alert("ERROR: Getting users failed");
-      });
+
 
     //get the teams and store them
     axiosInstance
@@ -89,13 +81,9 @@ function UsersTable() {
       .then((res) => {
         res.data.map((data) => {
           setTeamlist(teamList => [...teamList, data])
-          // console.log(res.data)
         })
       })
-      .catch((err) => {
-        console.log(err)
-        alert("ERROR: Getting teams failed");
-      });
+
   }, [reloadFlag]);
 
   const handleTeamChange = (event) => {
@@ -112,8 +100,6 @@ function UsersTable() {
     event.preventDefault();
 
     setCurrentRole(event.target.value);
-    console.log(event.target.value);
-
   };
 
   const handleFormChange = (event) => {
@@ -171,12 +157,8 @@ function UsersTable() {
 
     postObject["teams"] = updatedTeams;
     postObject["role"] = currentRole;
-    // console.log(postObject)
     //Send PUT request to update user
-    axiosInstance.put(`user/${temporaryUser.id}/`, postObject)
-      .catch((err) => {
-        alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-      });
+    axiosInstance.put(`user/${temporaryUser.id}/`, postObject);
 
     //reset values
     // clearState();
@@ -204,13 +186,8 @@ function UsersTable() {
       .then((res) => {
         res.data.teams.map((data) => {
           // teamList.push(data.name);
-          // console.log(data);
           setCurrentTeams(currentTeams => [...currentTeams, data.name])
         })
-      })
-      .catch((err) => {
-        console.log("AXIOS ERROR: ", err);
-        // alert("ERROR: Incorrect call");
       });
     setTemporaryUser({ ...formValues });
     setCurrentRole(row.role.level);
@@ -220,10 +197,7 @@ function UsersTable() {
 
   const handleUserDelete = (event) => {
     event.preventDefault();
-    axiosInstance.delete(`user/${temporaryUser.id}/`)
-      .catch((err) => {
-        alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-      });
+    axiosInstance.delete(`user/${temporaryUser.id}/`);
     clearState();
     setDisplayEditModal(!displayEditModal);
     reloadUsers();

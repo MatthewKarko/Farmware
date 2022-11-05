@@ -6,6 +6,7 @@ from ..models.customer import Customer
 from ..models.produce import Produce, ProduceQuantitySuffix, ProduceVariety
 from ..models.order import Order, OrderItem, OrderItemStockLink
 from ..models.stock import Stock
+from ..models.supplier import Supplier
 
 ### ORDER #####################################################################
 class OrderSerialiser(serializers.ModelSerializer):
@@ -82,9 +83,12 @@ class OrderItemDetailedSerialiser(serializers.ModelSerializer):
         order_item: OrderItem = OrderItem.objects.get(id=data['id'])
 
         # Convert to relative form
-        quantity_suffix: ProduceQuantitySuffix = order_item.quantity_suffix_id
-        base_equivalent = quantity_suffix.base_equivalent
-        quantity_used = quantity_used / base_equivalent
+        if quantity_used is not None:
+            quantity_suffix: ProduceQuantitySuffix = order_item.quantity_suffix_id
+            base_equivalent = quantity_suffix.base_equivalent
+            quantity_used = quantity_used / base_equivalent
+        else:
+            quantity_used = 0
 
         data['quantity_used'] = quantity_used
 
@@ -112,7 +116,7 @@ class OrderItemStockLinkSerialiser(serializers.ModelSerializer):
 class OrderItemStockLinkAssignedStockSerialiser(serializers.ModelSerializer):
     class Meta:
         model = OrderItemStockLink
-        fields = ['quantity', 'stock_id', 'quantity_suffix_id']
+        fields = ['id', 'quantity', 'stock_id', 'quantity_suffix_id']
 
     def to_representation(self, data):
         data = super(OrderItemStockLinkAssignedStockSerialiser, self).to_representation(data)
@@ -120,10 +124,13 @@ class OrderItemStockLinkAssignedStockSerialiser(serializers.ModelSerializer):
         stock: Stock = Stock.objects.get(id=data['stock_id'])
         produce: Produce = stock.produce_id
         variety: ProduceVariety = stock.variety_id
+        supplier: Supplier = stock.supplier_id
         
         data['produce_name'] = produce.name
         data['produce_variety'] = variety.variety
         data['quantity_suffix'] = ProduceQuantitySuffix.objects.get(id=data['quantity_suffix_id']).suffix
+        data['supplier_name'] = supplier.name
+        data['supplier_phone_number'] = supplier.phone_number
 
         return data
 ###############################################################################

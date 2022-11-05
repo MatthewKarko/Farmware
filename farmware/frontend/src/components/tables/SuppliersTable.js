@@ -52,10 +52,6 @@ function SuppliersPage() {
                 // Set the organisation code as well
                 setOrganisationCode(res.data.organisation)
             })
-            .catch((err) => {
-                alert("ERROR: user/me failed");
-            });
-
         axiosInstance
             .get(`supplier/`, {
             })
@@ -64,9 +60,6 @@ function SuppliersPage() {
                     setSuppliersList(suppliersList => [...suppliersList, data])
                     // console.log(res.data)
                 })
-            })
-            .catch((err) => {
-                alert("ERROR: Getting suppliers failed");
             });
     }, [reloadFlag]);
 
@@ -112,10 +105,7 @@ function SuppliersPage() {
         }
 
         //Send PUT request to update user
-        axiosInstance.put(`supplier/${temporarySupplier.id}/`, putObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.put(`supplier/${temporarySupplier.id}/`, putObject);
 
         //reset values
         clearState();
@@ -143,10 +133,7 @@ function SuppliersPage() {
 
     const handleSupplierDelete = (event) => {
         event.preventDefault();
-        axiosInstance.delete(`supplier/${temporarySupplier.id}/`)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.delete(`supplier/${temporarySupplier.id}/`);
         clearState();
         setDisplayEditModal(!displayEditModal);
         reloadSuppliers();
@@ -182,10 +169,7 @@ function SuppliersPage() {
             organisation: organisationCode,
         }
         console.log(postObject);
-        axiosInstance.post(`supplier/`, postObject)
-            .catch((err) => {
-                alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-            });
+        axiosInstance.post(`supplier/`, postObject);
         //reset values
         clearState();
 

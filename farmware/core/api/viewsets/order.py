@@ -245,7 +245,6 @@ class OrderItemViewSet(ModelViewSet):
             order_item_id=order_item.pk
             ), many=True
         ).data
-        # append_foreign_tables(user, data)
         response = {'stock':data}
         return Response(response, status=status.HTTP_200_OK)
 
@@ -259,10 +258,10 @@ class OrderItemViewSet(ModelViewSet):
         for stock_item in serialiser.validated_data.get('items'):  # type: ignore
             # Create new order item stock link (OrderItemStockLink)
             OrderItemStockLink.objects.create(
-                order_item_id=order_item.pk,
-                stock_id = stock_item.stock_id,
-                quantity = stock_item.quantity,
-                quantity_suffix_id = stock_item.quantity_suffix_id
+                order_item_id=order_item,
+                stock_id = stock_item.get('stock'),
+                quantity = stock_item.get('quantity'),
+                quantity_suffix_id = stock_item.get('quantity_suffix')
             )
 
         return Response(serialiser.data, status=status.HTTP_200_OK)

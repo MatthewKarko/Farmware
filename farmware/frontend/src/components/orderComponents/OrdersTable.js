@@ -49,7 +49,6 @@ function OrdersTable() {
 
   function handleViewOrderClick(order) {
     //get customer name based on id
-    console.log(order);
     navigate("/view-order", { state: order });
   }
 
@@ -77,7 +76,6 @@ function OrdersTable() {
   };
 
   const handleCustomerChange = (event) => {
-    console.log('val:' + event.target.value)
     const newFormData = { ...temporaryOrder };
     newFormData["customer_id"] = event.target.value;
     setTemporaryOrder({ ...newFormData });
@@ -141,10 +139,7 @@ function OrdersTable() {
       postObject['invoice_number'] = temporaryOrder.invoice_number;
     }
 
-    axiosInstance.post(`order/`, postObject)
-      .catch((err) => {
-        alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-      });
+    axiosInstance.post(`order/`, postObject);
 
     clearTemporaryOrderState();
     setDisplayCreateModal(false);
@@ -160,22 +155,16 @@ function OrdersTable() {
       })
       .then((res) => {
         setCustomersList(res.data);
-        console.log(res.data);
       })
-      .catch((err) => {
-        alert("ERROR: customer/ failed");
-      });
+
 
     axiosInstance
       .get(`order/`, {
       })
       .then((res) => {
         setOrdersList(res.data);
-        console.log(res.data);
       })
-      .catch((err) => {
-        alert("ERROR: order/ failed");
-      });
+
   }, [reloadFlag]);
 
   const [edittingOrderID, setEdittingOrderID] = useState(-1);
@@ -206,9 +195,6 @@ function OrdersTable() {
     event.preventDefault();
     axiosInstance
       .delete('order/' + row.id + '/', {
-      })
-      .catch((err) => {
-        alert("ERROR: Failed to delete order");
       });
     reloadOrders();
     sendNotification({ msg: 'Success: Order Deleted', variant: 'success' });
@@ -224,11 +210,8 @@ function OrdersTable() {
     }
 
     //otherwise, send edit request
-    axiosInstance.put('order/' + edittingOrderID + '/', ret)
-        .catch((err) => {
-            alert("Error code: " + err.response.status + "\n" + err.response.data.error);
-        });
-
+    axiosInstance.put('order/' + edittingOrderID + '/', ret);
+    
     setDisplayEditModal(false);
 
     clearTemporaryOrderState();
@@ -322,7 +305,7 @@ const handleCreateClick = () => {
             <TableHead>
               <TableRow>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>ID</TableCell>
-                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Customer Name (is id atm)</TableCell>
+                <TableCell className="tableCell" sx={{ textAlign: "center" }}>Customer</TableCell>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Invoice Number</TableCell>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Date Created</TableCell>
                 <TableCell className="tableCell" sx={{ textAlign: "center" }}>Completion Date</TableCell>
@@ -334,7 +317,7 @@ const handleCreateClick = () => {
               {ordersList.map((order) => (
                 <TableRow key={order.order_id} >
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.id}</TableCell>
-                  <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.customer_id}</TableCell>
+                  <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.customer_name}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.invoice_number}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{dayjs(order.order_date).format('DD/MM/YYYY')}</TableCell>
                   <TableCell className="tableCell" sx={{ textAlign: "center" }}>{order.completion_date}</TableCell>

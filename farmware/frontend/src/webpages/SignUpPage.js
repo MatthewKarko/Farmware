@@ -46,13 +46,52 @@ export default function SignUp() {
         console.log(res)
         console.log(res.data)
       })
+      .catch((err) => {
+        console.log(err);
+        if (err.response.data != null && err.response.data.email != null){
+          alert(err.response.data.email )
+        }
+        else if(err.response.data != null && err.response.data.detail != null){
+          alert(err.response.data.detail);
+        }
+        else if(err.response.data != null && err.response.data.org_code != null){
+          alert(err.response.data.org_code);
+        } 
+        else if(err.response.data != null && err.response.data.password != null){
+          alert(err.response.data.password);
+        } 
+        else if(err.response.data != null ){
+          alert(err.response.data);
+        } 
+      })
     }else{
       postObject["org_code"] = data.get('org_code');
-      axiosInstance.post(`user/register/user/`, postObject).then((res)=>{
-        navigate('/login')
-        console.log(res)
-        console.log(res.data)
-      })
+      axiosInstance
+        .post(`user/register/user/`, postObject)
+        .then((res)=>{
+          navigate('/login')
+          console.log(res)
+          console.log(res.data)
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.response.data != null && err.response.data.email != null){
+            alert(err.response.data.email )
+          }
+          else if(err.response.data != null && err.response.data.detail != null){
+            alert(err.response.data.detail);
+          } 
+          else if(err.response.data != null && err.response.data.org_code != null){
+            alert(err.response.data.org_code);
+          } 
+          else if(err.response.data != null && err.response.data.password != null){
+            alert(err.response.data.password);
+          } 
+          else if(err.response.data != null ){
+            alert(err.response.data);
+          } 
+          
+        })
     }
     
    
