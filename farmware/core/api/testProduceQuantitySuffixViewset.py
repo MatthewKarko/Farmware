@@ -17,6 +17,7 @@ from .urls import *
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
 from django.test import Client
 from rest_framework.test import APITestCase
+import pdb;
 
 class ProduceQuantitySuffixViewsetTestCases(APITestCase):
     def setUp(self):
@@ -37,17 +38,20 @@ class ProduceQuantitySuffixViewsetTestCases(APITestCase):
         organisatio=Organisation.objects.get(name="Farmone")
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
-        produce=Produce.objects.get(name="eggs")
-        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        res = self.client.post('/api/produce/', {'name': 'Apple'})
+        produce_id = list(res.data.values())[0]
+        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce_id,'suffix':"lorem ipsum",'base_equivalent':5.0})
         self.assertEquals(response.status_code,200)
-        response=self.client.delete(f'/api/produce_quantity_suffix/{user.pk}/')
-        self.assertEquals(response.status_code,200)
+        suffix_id = list(response.data.values())[0]
+        response=self.client.delete(f'/api/produce_quantity_suffix/{suffix_id}/')
+        self.assertEquals(response.status_code,200)   
     def test_partial_update(self):
         organisatio=Organisation.objects.get(name="Farmone")
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
         produce=Produce.objects.get(name="eggs")
         response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
+        
         self.assertEquals(response.status_code,200)
         response2=self.client.patch(f'/api/produce_quantity_suffix/{user.pk}/',{'suffix':"lorem"})
         self.assertEquals(response2.status_code,200)
