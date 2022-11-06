@@ -9,7 +9,7 @@ class UserManager(BaseUserManager):
     """User Manager."""
     def create_user(self, email, first_name, last_name, organisation, password=None, **extra_fields):
         """Create and save a regular User with the given email and password."""
-        if not email: 
+        if not email:
             raise ValueError('You must provide an email address.')
 
         if not organisation:
@@ -28,14 +28,13 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', False)
         # TODO: delete once in production / email verification is implemented.
         extra_fields.setdefault('is_active', True)
-
         email = self.normalize_email(email)
         user: User = self.model(
-            email=email, 
-            first_name=first_name, 
-            last_name=last_name, 
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
             organisation=organisation,
-            password=password, 
+            password=password,
             **extra_fields)
 
         user.set_password(password)
@@ -43,16 +42,16 @@ class UserManager(BaseUserManager):
         return user
 
     def create_admin(
-        self, 
-        email, 
-        first_name, 
-        last_name, 
-        organisation, 
-        password=None, 
+        self,
+        email,
+        first_name,
+        last_name,
+        organisation,
+        password=None,
         **extra_fields
         ):
         return self.create_user(
-            email, first_name, last_name, organisation, password, 
+            email, first_name, last_name, organisation, password,
             role=User.Roles.ORGANISATION_ADMIN,
             **extra_fields
             )
@@ -96,8 +95,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     role = models.SmallIntegerField(
-        _("role"), 
-        choices=Roles.choices, 
+        _("role"),
+        choices=Roles.choices,
         default=Roles.WORKER
         )
 
