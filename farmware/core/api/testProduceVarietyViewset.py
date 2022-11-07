@@ -32,32 +32,35 @@ class ProduceVarietyViewsetTestCases(APITestCase):
         produce =Produce.objects.get(name="eggs")
         response=self.client.post('/api/produce_variety/',{'produce_id':produce.pk,'variety':"brown"})
         self.assertEquals(response.status_code,200)
-    def test_destroying(self):
+    def test_delete(self):
         organisatio=Organisation.objects.get(name="Farmone")
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
-        produce =Produce.objects.get(name="eggs")
-        response=self.client.post('/api/produce_variety/',{'produce_id':produce.pk,'variety':"brown"})
-        #print(response.content)
+        res = self.client.post('/api/produce/', {'name': 'Pear'})
+        produce_id = list(res.data.values())[0]
+        response=self.client.post('/api/produce_variety/',{'produce_id':produce_id,'variety':"Tropical"})
+        variety_id = response.json()['id']
         self.assertEquals(response.status_code,200)
-        response=self.client.delete(f'/api/produce/produce_variety/{user.pk}/')
+        response=self.client.delete(f'/api/produce_variety/{variety_id}/')
         self.assertEquals(response.status_code,200)
     def test_partial_update(self):
         organisatio=Organisation.objects.get(name="Farmone")
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
-        produce =Produce.objects.get(name="eggs")
-        response=self.client.post('/api/produce_variety/',{'produce_id':produce.pk,'variety':"brown"})
-        #print(response.content)
+        res = self.client.post('/api/produce/', {'name': 'Pear'})
+        produce_id = list(res.data.values())[0]
+        response=self.client.post('/api/produce_variety/',{'produce_id':produce_id,'variety':"brown"})
         self.assertEquals(response.status_code,200)
-        response=self.client.patch(f'/api/produce_variety/{user.pk}/',{'variety':"green"})
+        variety_id = response.json()['id']
+        response=self.client.patch(f'/api/produce_variety/{variety_id}/',{'variety':"green"})
         self.assertEquals(response.status_code,200)
     def test_list(self):
         organisatio=Organisation.objects.get(name="Farmone")
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
-        produce =Produce.objects.get(name="eggs")
-        response=self.client.post('/api/produce_variety/',{'produce_id':produce.pk,'variety':"brown"})
+        res = self.client.post('/api/produce/', {'name': 'Pear'})
+        produce_id = list(res.data.values())[0]
+        response=self.client.post('/api/produce_variety/',{'produce_id':produce_id,'variety':"brown"})
         self.assertEquals(response.status_code,200)
         response2=self.client.get('/api/produce_variety/')
         res=response2.json()

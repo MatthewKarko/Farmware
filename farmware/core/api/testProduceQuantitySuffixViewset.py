@@ -34,7 +34,7 @@ class ProduceQuantitySuffixViewsetTestCases(APITestCase):
         produce=Produce.objects.get(name="eggs")
         response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
         self.assertEquals(response.status_code,200)
-    def test_destroying(self):
+    def test_delete(self):
         organisatio=Organisation.objects.get(name="Farmone")
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
@@ -49,20 +49,25 @@ class ProduceQuantitySuffixViewsetTestCases(APITestCase):
         organisatio=Organisation.objects.get(name="Farmone")
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
-        produce=Produce.objects.get(name="eggs")
-        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
-        
+        res = self.client.post('/api/produce/', {'name': 'Apple'})
+        produce_id = list(res.data.values())[0]
+        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce_id,'suffix':"tonne",'base_equivalent':5.0})
+        suffix_id = list(response.data.values())[0]
         self.assertEquals(response.status_code,200)
-        response2=self.client.patch(f'/api/produce_quantity_suffix/{user.pk}/',{'suffix':"lorem"})
+        response2=self.client.patch(f'/api/produce_quantity_suffix/{suffix_id}/',{'suffix':"kg"})
         self.assertEquals(response2.status_code,200)
     
     def test_list(self):
-        organisatio=Organisation.objects.get(name="Farmone")
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
-        produce=Produce.objects.get(name="eggs")
-        response=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce.pk,'suffix':"lorem ipsum",'base_equivalent':5.0})
-        self.assertEquals(response.status_code,200)
+        res = self.client.post('/api/produce/', {'name': 'Apple'})
+        produce_id = list(res.data.values())[0]
+        res=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce_id,'suffix':"grams",'base_equivalent':5.0})
+        self.assertEquals(res.status_code,200)
         response=self.client.get('/api/produce_quantity_suffix/')
         res=response.json()
-        self.assertEquals(res[0]['suffix'],"lorem ipsum")
+        self.assertEquals(res[0]['suffix'],"grams")
+        res=self.client.post('/api/produce_quantity_suffix/',{'produce_id':produce_id,'suffix':"kgs",'base_equivalent':1.0})
+        response=self.client.get('/api/produce_quantity_suffix/')
+        res=response.json()
+        self.assertEquals(len(res), 2)
