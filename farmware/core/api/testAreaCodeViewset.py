@@ -42,6 +42,9 @@ class AreaCodeViewsetTestCases(APITestCase):
         # here i am checking the status code for success
         self.assertEquals(response.status_code, 200)
 
+        #check was added correctly
+        self.assertEquals(AreaCode.objects.get(area_code=000000).description,"all good")
+
     # Test deleting an area code using DELETE to /api/area_code/{id}/ endpoint
     def test_destroying(self):
         # First, create an area code.
@@ -94,7 +97,7 @@ class AreaCodeViewsetTestCases(APITestCase):
 
         area_code_index = AreaCode.objects.get(area_code=333333).id
 
-        put_response = self.client.patch('/api/area_code/'+str(area_code_index)+'/', { 'area_code': '333333', 'description': "all seems to be good"})
+        put_response = self.client.put('/api/area_code/'+str(area_code_index)+'/', { 'area_code': '333333', 'description': "all seems to be good"})
         self.assertEquals(put_response.status_code, 200)
 
         # Check it updated
@@ -120,11 +123,11 @@ class AreaCodeViewsetTestCases(APITestCase):
         #check the json response is correct
         self.assertEquals(len(json_response),2)
 
-        self.assertAlmostEquals(int(json_response[0]['area_code']),000000)
-        self.assertAlmostEquals(json_response[0]['description'],"all good")
+        self.assertEquals(int(json_response[0]['area_code']),000000)
+        self.assertEquals(json_response[0]['description'],"all good")
 
-        self.assertAlmostEquals(int(json_response[1]['area_code']),111111)
-        self.assertAlmostEquals(json_response[1]['description'],"all good again")
+        self.assertEquals(int(json_response[1]['area_code']),111111)
+        self.assertEquals(json_response[1]['description'],"all good again")
 
 
     # Test that the area code endpoints are not accessible to an unauthorised user.
