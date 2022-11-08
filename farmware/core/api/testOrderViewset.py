@@ -61,7 +61,7 @@ class OrderViewsetTestCases(APITestCase):
         #get the order id
         order_id = Order.objects.get(customer_id=customer.pk).id
 
-        response2 = self.client.delete(f'/api/order/'+str(order_id)+"/")
+        response2 = self.client.delete('/api/order/'+str(order_id)+"/")
         self.assertEquals(response2.status_code, 200)
 
         # Check it no longer exists
@@ -83,7 +83,7 @@ class OrderViewsetTestCases(APITestCase):
         order_id = Order.objects.get(customer_id=customer.pk).id
 
         response2 = self.client.patch(
-            f'/api/order/'+str(order_id)+"/", {'order_date': "2022-10-26"})
+            '/api/order/'+str(order_id)+"/", {'order_date': "2022-10-26"})
         self.assertEquals(response2.status_code, 200)
 
         #check it updated
@@ -103,7 +103,7 @@ class OrderViewsetTestCases(APITestCase):
         #get the order id
         order_id = Order.objects.get(customer_id=customer.pk).id
         
-        response2 = self.client.put(f'/api/order/'+str(order_id)+"/", {'organisation': org,
+        response2 = self.client.put('/api/order/'+str(order_id)+"/", {'organisation': org,
                                     'customer_id': customer.pk, 'order_date': "2022-10-27", 'completion_date': "2023-10-15"})
         self.assertEquals(response2.status_code, 200)
 
@@ -150,7 +150,7 @@ class OrderViewsetTestCases(APITestCase):
         self.assertEquals(response.status_code, 401)
 
         #secondly, test deleting customer
-        delete_response = self.client.delete(f'/api/order/0/')
+        delete_response = self.client.delete('/api/order/0/')
         self.assertEquals(delete_response.status_code, 401)
 
         #thirdly, test partial updating order
@@ -159,7 +159,7 @@ class OrderViewsetTestCases(APITestCase):
         self.assertEquals(patch_response.status_code, 401)
 
         #fourthly, test updating customer
-        put_response = self.client.put(f'/api/order/0/', {'organisation': org,
+        put_response = self.client.put('/api/order/0/', {'organisation': org,
                                     'customer_id': customer.pk, 'order_date': "2022-10-27", 'completion_date': "2023-10-15"})
         self.assertEquals(put_response.status_code, 401)
 
