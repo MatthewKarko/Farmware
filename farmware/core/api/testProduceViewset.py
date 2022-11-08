@@ -185,8 +185,6 @@ class ProduceViewsetTestCases(APITestCase):
         res = self.client.delete(f'/api/produce_quantity_suffix/{suffix_id}/')
         res = res.json()
         self.assertEquals(len(res), 1)
-
-    
     def test_get_varieties(self):
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
@@ -211,7 +209,6 @@ class ProduceViewsetTestCases(APITestCase):
         res = self.client.get(f'/api/produce/{produce_id}/get_varieties/')
         res = res.json()
         self.assertEquals(len(res), 2)
-
     def test_list(self):
         user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
         self.client.force_authenticate(user)
@@ -220,3 +217,9 @@ class ProduceViewsetTestCases(APITestCase):
         res=self.client.get('/api/produce/')
         res=res.json()
         self.assertEquals(res[0]['name'],"Pear")
+    def test_list_empty(self):
+        user=get_user_model().objects.create_superuser(email="email@gmail.com",first_name= "first_name",last_name= "last_name",password=None)
+        self.client.force_authenticate(user)
+        res=self.client.get('/api/produce/')
+        res=res.json()
+        self.assertEquals(len(res),0)
