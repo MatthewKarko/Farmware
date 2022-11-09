@@ -166,3 +166,59 @@ class OrderViewsetTestCases(APITestCase):
         #lastly, test listing customer
         get_response = self.client.get('/api/order/')
         self.assertEquals(get_response.status_code,401)
+    
+    #Test GET /api/order/{id}/get_order_items/
+    def test_get_order_items(self):
+        org = Organisation.objects.get(name="Farmone")
+        user = get_user_model().objects.create_user("email@gmail.com", "first_name",
+                                                    "last_name", org.code, None, is_staff=True)
+        self.client.force_authenticate(user)
+        customer = Customer.objects.get(name="Henry")
+
+        # create order
+        customer = Customer.objects.create(
+            organisation=org, name="Henry", phone_number="9191223445")
+        order = Order.objects.create(organisation=org, customer_id=customer,
+                                     order_date="2022-10-25", completion_date="2023-10-25")
+
+        # create a produce can use in tests
+        produce = Produce.objects.create(organisation=org, name="Apple")
+        produce_quantity_suffix = ProduceQuantitySuffix.objects.create(
+            produce_id=produce, suffix="tonne", base_equivalent=1000.0)
+        produce_variety = ProduceVariety.objects.create(
+            produce_id=produce, variety="Red Apple")
+
+        #create order first order item
+        post_response = self.client.post("/api/order_item/", {
+            'order_id': order.id,
+            'produce_id': produce.id,
+            'produce_variety_id': produce_variety.id,
+            'quantity_suffix_id': produce_quantity_suffix.id,
+            'quantity': 10
+        })
+        self.assertEquals(post_response.status_code, 201)
+
+        #create order second order item
+        post_response = self.client.post("/api/order_item/", {
+            'order_id': order.id,
+            'produce_id': produce.id,
+            'produce_variety_id': produce_variety.id,
+            'quantity_suffix_id': produce_quantity_suffix.id,
+            'quantity': 6
+        })
+        self.assertEquals(post_response.status_code, 201)
+
+        #test the get
+        get_order_items_response = self.client.get('/api/order/'+str(order.id)+"/get_order_items/")
+        self.assertEquals(get_order_items_response.status_code, 200)
+
+        #check the contents is right
+        json_response = get_order_items_response.json()['order_items']
+
+        self.assertEquals(len(json_response),2)
+
+        self.assertEquals(json_response[0]['order_id'],order.id)
+        self.assertEquals(json_response[0]['quantity'],10)
+
+        self.assertEquals(json_response[1]['order_id'],order.id)
+        self.assertEquals(json_response[1]['quantity'],6)
