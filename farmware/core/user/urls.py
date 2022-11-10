@@ -12,7 +12,7 @@ from .viewsets import UserViewSet
 router = DefaultRouter()
 app_name = 'user'
 
-router.register(' ', UserViewSet,'user')
+router.register('', UserViewSet,'user')
 
 urlpatterns = [
     # Activate account
