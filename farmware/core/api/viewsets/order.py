@@ -255,6 +255,7 @@ class OrderItemViewSet(ModelViewSet):
 
         serialiser: BulkAddStockSerialiser = self.get_serializer(data=data)
         serialiser.is_valid(raise_exception=True)
+        
         for stock_item in serialiser.validated_data.get('items'):  # type: ignore
             # Create new order item stock link (OrderItemStockLink)
             OrderItemStockLink.objects.create(
