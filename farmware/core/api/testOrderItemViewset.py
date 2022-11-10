@@ -18,6 +18,7 @@ from django_test_migrations.contrib.unittest_case import MigratorTestCase
 from django.test import Client
 from rest_framework.test import APITestCase
 from django.http import JsonResponse
+import json
 
 # Tests the OrderItem Viewset (doesn't include OrderItemStockLink)
 class OrderItemViewsetTestCases(APITestCase):
@@ -402,8 +403,7 @@ class OrderItemViewsetTestCases(APITestCase):
         # {'items':['stock_id':1, 'quantity':10, 'quantity_suffix_id':0]}
 
         request_json = {
-            'items': [
-                {
+            'items': [{
                     'stock_id': stock.id,
                     'quantity': 1,
                     'quantity_suffix_id': produce_quantity_suffix.id 
@@ -415,11 +415,11 @@ class OrderItemViewsetTestCases(APITestCase):
                 }
             ]
         }
-        
-        post_response = self.client.post("/api/order_item/"+str(order_item_obj.id)+"/bulk_add_stock/", 
-            JsonResponse(request_json))
 
-        self.assertEquals(post_response.status_code, 201)
+        post_response = self.client.post("/api/order_item/"+str(order_item_obj.id)+"/bulk_add_stock/", 
+            json.dumps(request_json), content_type='application/json')
+
+        self.assertEquals(post_response.status_code, 200)
 
         #check the stock was added
         get_assigned_stock_response = self.client.get('/api/order_item/'+str(order_item_obj.id)+"/get_assigned_stock/")
