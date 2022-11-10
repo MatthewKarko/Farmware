@@ -19,50 +19,22 @@ from django.test import Client
 from rest_framework.test import APITestCase
 
 
-class  SupplierTestCases(TestCase):
+class SupplierTestCases(TestCase):
     def setUp(self):
-        org_code=generate_random_org_code()
-        Organisation.objects.create(code =org_code,name="Farmon",logo="oat")
-        organisatio=Organisation.objects.get(name="Farmon")
-        Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "1234567891")
-    def test_Supplier1(self):
-        supplier = Supplier.objects.get(name = "john")
-        self.assertEqual(supplier.phone_number,"1234567891")
-    def test_Supplier2(self):
-        org_code=generate_random_org_code()
-        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
-        organisatio=Organisation.objects.get(name="Farmo")
-        with self.assertRaises(ValidationError):
-            Supplier.objects.create(organisation=organisatio,name = "john",phone_number = "12345678911")
-            raise ValidationError("error")
+        self.org_code = generate_random_org_code()
+        self.org = Organisation.objects.create(code = self.org_code, name = "Org", logo="img")
+        self.s_name = "Supplier"
+        self.s_pn = "012456789"
+        self.s = Supplier.objects.create(organisation=self.org, name = self.s_name, phone_number = self.s_pn)
+        self.s2 = Supplier.objects.create(organisation=self.org, name = self.s_name+"2", phone_number = self.s_pn+"2")
 
-    def test_Supplier3(self):
-        org_code=generate_random_org_code()
-        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
-        organisatio=Organisation.objects.get(name="Farmo")
-        with self.assertRaises(ValidationError):
-            Supplier.objects.create(organisation=organisatio,name ="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et justo ut turpis suscipit mattis ac ac lorem. Aenean molestie nisi et ullamcorper condimentum. Integer at congue nulla, quis elementum mauris. Mauris luctus nisl elementum massa vehicula, ut maximus purus pellentesque. Curabitur consectetur tincidunt malesuada. Sed dignissim ipsum nec urna tincidunt lobortis. Vestibulum porta finibus tincidunt. Nunc a odio porta, aliquam odio ut, commodo risus. Duis quis risus in nulla accumsan tempus dapibus et elit. Integer sed est at ligula commodo tristique.Sed et pulvinar mauris. Vivamus fringilla odio a ex porttitor, nec dapibus nisi vestibulum. Phasellus sed nisi velit. Vestibulum tempus justo dolor, et pellentesque urna molestie ut. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur viverra tincidunt hendrerit. Maecenas accumsan est vitae est faucibus facilisis. Sed nec quam in orci vehicula varius in ut urna. Proin lacus nibh, suscipit a elementum neself.client.",phone_number = "1234567891")
-            raise ValidationError("error")
-    def test_Supplier4(self):
-        org_code=generate_random_org_code()
-        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
-        organisatio=Organisation.objects.get(name="Farmo")
-        with self.assertRaises(ValidationError):
-            Supplier.objects.create(organisation=organisatio,name = 2,phone_number = "1234567891")
-            raise ValidationError("error")
-    def test_Supplier5(self):
-        org_code=generate_random_org_code()
-        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
-        organisatio=Organisation.objects.get(name="Farmo")
-        with self.assertRaises(ValidationError):
-            Supplier.objects.create(organisation=organisatio,name = "name2",phone_number = 1234567891)
-            raise ValidationError("error")
-    def test_Supplier6(self):
-        org_code=generate_random_org_code()
-        Organisation.objects.create(code =org_code,name="Farmo",logo="oat")
-        organisatio=Organisation.objects.get(name="Farmo")
-        try:
-             supplier = Supplier.objects.create(organisation=organisatio,name = 2,phone_number = 12345678919)
-             supplier.clean_fields()
-        except ValidationError:
-             raise ValidationError("error")
+    # Checking whether the supplier objects have been created correctly
+    def test_SupplierFields(self):
+        self.assertEquals(self.s.name, self.s_name)
+        self.assertEquals(self.s.phone_number, self.s_pn)
+        self.assertEquals(self.s2.name, self.s_name+"2")
+        self.assertEquals(self.s2.phone_number, self.s_pn+"2")
+
+    def test_SupplierCreationException(self):
+        with self.assertRaises(ValueError):
+            Supplier.objects.create(organisation=0, phone_number=self.s_pn)
