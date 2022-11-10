@@ -157,3 +157,27 @@ class AreaCodeViewsetTestCases(APITestCase):
         #lastly, test listing area codes
         get_response = self.client.get('/api/area_code/')
         self.assertEquals(get_response.status_code,401)
+
+    #Tests the field limits in AreaCode model
+    def test_field_validation(self):
+        organisatio = Organisation.objects.get(name="Farmone")
+        # creating the user
+        user = get_user_model().objects.create_user("email@gmail.com", "first_name",
+                                                    "last_name", organisatio.code, None, is_staff=True)
+        # forcing the authentication
+        self.client.force_authenticate(user)
+
+        #first check area code beneath limits
+        response = self.client.post(
+            '/api/area_code/', {'organisation': organisatio.name, 'area_code': "a"*50, 'description': "d"*200})
+        self.assertEquals(response.status_code, 200)
+
+        #check area code above area_code limit
+        response = self.client.post(
+            '/api/area_code/', {'organisation': organisatio.name, 'area_code': "a"*51, 'description': "d"*200})
+        self.assertEquals(response.status_code, 400)
+
+        #check area code above description limit
+        response = self.client.post(
+            '/api/area_code/', {'organisation': organisatio.name, 'area_code': "a"*50, 'description': "d"*201})
+        self.assertEquals(response.status_code, 400)

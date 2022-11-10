@@ -189,3 +189,25 @@ class CustomerViewsetTestCases(APITestCase):
         #lastly, test listing customer
         get_response = self.client.get('/api/customer/')
         self.assertEquals(get_response.status_code,401)
+
+    #Tests the field limits in AreaCode model
+    def test_field_validation(self):
+        organisatio = Organisation.objects.get(name="Farmone")
+        user = get_user_model().objects.create_user("email@gmail.com", "first_name",
+                                                    "last_name", organisatio.code, None, is_staff=True)
+        self.client.force_authenticate(user)
+
+        #first test within limits
+        response = self.client.post(
+            '/api/customer/', {'name': 'a'*50, 'phone_number': "a"*10})
+        self.assertEquals(response.status_code, 200)
+
+        #exceed name limit
+        response = self.client.post(
+            '/api/customer/', {'name': 'a'*51, 'phone_number': "a"*10})
+        self.assertEquals(response.status_code, 400)
+
+        #exceed number limit
+        response = self.client.post(
+            '/api/customer/', {'name': 'a'*50, 'phone_number': "a"*11})
+        self.assertEquals(response.status_code, 400)

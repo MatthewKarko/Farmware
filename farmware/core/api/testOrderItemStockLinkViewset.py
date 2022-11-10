@@ -214,3 +214,53 @@ class OrderItemStockLinkViewsetTestCases(APITestCase):
 
         get_response = self.client.get('/api/order_item_stock_link/')
         self.assertEquals(get_response.status_code, 401)
+    
+    #Tests field validation in order item stock link endpoint
+    def test_field_validation(self):
+        organisatio = Organisation.objects.get(name="Farmone")
+        user = get_user_model().objects.create_user("email@gmail.com", "first_name",
+                                                    "last_name", organisatio.code, None, is_staff=True)
+        self.client.force_authenticate(user)
+        stock = Stock.objects.get(quantity=6.0)
+        orderItem = OrderItem.objects.get(quantity=10.0)
+        producequantitysuffix = ProduceQuantitySuffix.objects.get(
+            suffix="tonne")
+
+        response = self.client.post('/api/order_item_stock_link/', {
+                                    'order_item_id': orderItem.id, 
+                                    'stock_id': stock.id, 
+                                    'quantity': 5.0, 
+                                    'quantity_suffix_id': producequantitysuffix.id})
+        self.assertEquals(response.status_code, 201)
+
+        #invalid order item id
+        response = self.client.post('/api/order_item_stock_link/', {
+                                    'order_item_id': 123, 
+                                    'stock_id': stock.id, 
+                                    'quantity': 5.0, 
+                                    'quantity_suffix_id': producequantitysuffix.id})
+        self.assertEquals(response.status_code, 400)
+
+        #invalid stock id
+        response = self.client.post('/api/order_item_stock_link/', {
+                                    'order_item_id': orderItem.id, 
+                                    'stock_id': 123, 
+                                    'quantity': 5.0, 
+                                    'quantity_suffix_id': producequantitysuffix.id})
+        self.assertEquals(response.status_code, 400)
+
+        #invalid quantity suffix id
+        response = self.client.post('/api/order_item_stock_link/', {
+                                    'order_item_id': orderItem.id, 
+                                    'stock_id': stock.id, 
+                                    'quantity': 5.0, 
+                                    'quantity_suffix_id': 123})
+        self.assertEquals(response.status_code, 400)
+
+        #invalid quantity
+        response = self.client.post('/api/order_item_stock_link/', {
+                                    'order_item_id': orderItem.id, 
+                                    'stock_id': stock.id, 
+                                    'quantity': "abc5.0", 
+                                    'quantity_suffix_id': producequantitysuffix.id})
+        self.assertEquals(response.status_code, 400)

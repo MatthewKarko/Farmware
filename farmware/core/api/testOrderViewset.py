@@ -13,7 +13,6 @@ from django.core.exceptions import ValidationError
 from django_test_migrations.migrator import Migrator
 from django.db import migrations, models
 from core.api.migrations import *
-# 0001_initial,0002_initial,0003_auto_20221018_0824,0004_auto_20221018_1055,0005_auto_20221018_1132
 from .urls import *
 from django_test_migrations.contrib.unittest_case import MigratorTestCase
 from django.test import Client
@@ -31,7 +30,6 @@ class OrderViewsetTestCases(APITestCase):
         customer = Customer.objects.create(
             organisation=org, name="Henry", phone_number="9191223445")
 
-
     #Test creating an order
     def test_creating(self):
         org = Organisation.objects.get(name="Farmone")
@@ -45,7 +43,6 @@ class OrderViewsetTestCases(APITestCase):
 
         #test it was created
         self.assertEquals(str(Order.objects.get(customer_id=customer.id).order_date),"2022-10-25")
-
 
     #Test deleting an order
     def test_destroying(self):
@@ -66,7 +63,6 @@ class OrderViewsetTestCases(APITestCase):
 
         # Check it no longer exists
         self.assertRaises(Order.DoesNotExist, Order.objects.get, customer_id=customer.pk)
-
 
     #Test partial update an order
     def test_partial_update(self):
@@ -110,6 +106,7 @@ class OrderViewsetTestCases(APITestCase):
         #check it updated
         self.assertEquals(str(Order.objects.get(customer_id=customer.id).order_date),"2022-10-27")
 
+    #Test get all orders
     def test_list(self):
         org = Organisation.objects.get(name="Farmone")
         user = get_user_model().objects.create_user("email@gmail.com", "first_name",
@@ -222,3 +219,40 @@ class OrderViewsetTestCases(APITestCase):
 
         self.assertEquals(json_response[1]['order_id'],order.id)
         self.assertEquals(json_response[1]['quantity'],6)
+    
+    #Tests field validation in order endpoint
+    def test_field_validation(self):
+        org = Organisation.objects.get(name="Farmone")
+        user = get_user_model().objects.create_user("email@gmail.com", "first_name",
+                                                    "last_name", org.code, None, is_staff=True)
+        self.client.force_authenticate(user)
+        customer = Customer.objects.get(name="Henry")
+
+        response = self.client.post(
+            '/api/order/', {'customer_id': customer.pk, 'order_date': "2022-10-25", 'completion_date': "2023-10-25"})
+        self.assertEquals(response.status_code, 200)
+
+        #invalid customer
+        response = self.client.post(
+            '/api/order/', {'customer_id': 123, 'order_date': "2022-10-25", 'completion_date': "2023-10-25"})
+        self.assertEquals(response.status_code, 400)
+
+        #no order date
+        response = self.client.post(
+            '/api/order/', {'customer_id': customer.pk})
+        self.assertEquals(response.status_code, 400)
+
+        #invoice number valid
+        response = self.client.post(
+            '/api/order/', {'customer_id': customer.pk, 'order_date': "2022-10-25", 'invoice_number': 123})
+        self.assertEquals(response.status_code, 200)
+
+        #invoice number valid string
+        response = self.client.post(
+            '/api/order/', {'customer_id': customer.pk, 'order_date': "2022-10-25", 'invoice_number': "123"})
+        self.assertEquals(response.status_code, 200)
+
+        #invoice number too long
+        response = self.client.post(
+            '/api/order/', {'customer_id': customer.pk, 'order_date': "2022-10-25", 'invoice_number': "a"*21})
+        self.assertEquals(response.status_code, 400)

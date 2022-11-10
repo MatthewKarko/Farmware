@@ -436,3 +436,66 @@ class OrderItemViewsetTestCases(APITestCase):
         self.assertEquals(json_response[1]['produce_name'],"Banana")
         self.assertEquals(json_response[1]['quantity'],2)
         self.assertEquals(json_response[1]['stock_id'],stock_2.id)
+
+    #Tests field validation in order item endpoint
+    def test_field_validation(self):
+        org = Organisation.objects.get(name="Farmone")
+        user = get_user_model().objects.create_user("email@gmail.com", "first_name",
+                                                    "last_name", org.code, None, is_staff=True)
+        self.client.force_authenticate(user)
+
+        # use created order and produce
+        order = Order.objects.get(order_date="2022-10-25")
+        produce = Produce.objects.get(name="Apple")
+        produce_variety = ProduceVariety.objects.get(variety="Red Apple")
+        produce_quantity_suffix = ProduceQuantitySuffix.objects.get(suffix="tonne")
+
+        #invalid order id
+        post_response = self.client.post("/api/order_item/", {
+            'order_id': 123,
+            'produce_id': produce.id,
+            'produce_variety_id': produce_variety.id,
+            'quantity_suffix_id': produce_quantity_suffix.id,
+            'quantity': 10
+        })
+        self.assertEquals(post_response.status_code, 400)
+
+        #invalid produce id
+        post_response = self.client.post("/api/order_item/", {
+            'order_id': order.id,
+            'produce_id': 123,
+            'produce_variety_id': produce_variety.id,
+            'quantity_suffix_id': produce_quantity_suffix.id,
+            'quantity': 10
+        })
+        self.assertEquals(post_response.status_code, 400)
+
+        #invalid variety id
+        post_response = self.client.post("/api/order_item/", {
+            'order_id': order.id,
+            'produce_id': produce.id,
+            'produce_variety_id': 123,
+            'quantity_suffix_id': produce_quantity_suffix.id,
+            'quantity': 10
+        })
+        self.assertEquals(post_response.status_code, 400)
+
+        #invalid suffix id
+        post_response = self.client.post("/api/order_item/", {
+            'order_id': order.id,
+            'produce_id': produce.id,
+            'produce_variety_id': produce_variety.id,
+            'quantity_suffix_id': 123,
+            'quantity': 10
+        })
+        self.assertEquals(post_response.status_code, 400)
+
+        #invalid quantity
+        post_response = self.client.post("/api/order_item/", {
+            'order_id': order.id,
+            'produce_id': produce.id,
+            'produce_variety_id': produce_variety.id,
+            'quantity_suffix_id': produce_quantity_suffix.id,
+            'quantity': "abc"
+        })
+        self.assertEquals(post_response.status_code, 400)

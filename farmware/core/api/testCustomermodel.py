@@ -34,27 +34,6 @@ class CustomerTestCases(TestCase):
         customer = Customer.objects.get(name="Henry")
         self.assertEqual(customer.phone_number, "9191223445")
 
-    #Test that an integrity error is raised for empty name and number, and too long name and number
-    def test_Customer_field_limits(self):
-        print("\n\nLUKE WARNING: testCustomermodel.py Validation Errors Commented Out.\n")
-        org = Organisation.objects.get(name="Farmone")
-
-        # with self.assertRaises(ValidationError):
-        #     Customer.objects.create(
-        #        organisation=org, name="", phone_number="0444333111")
-        
-        # with self.assertRaises(ValidationError):
-        #     Customer.objects.create(
-        #         organisation=org, name="bob", phone_number="")
-        
-        # with self.assertRaises(ValidationError):
-        #     Customer.objects.create(
-        #         organisation=org, name="A"*51, phone_number="0444333111")
-
-        # with self.assertRaises(ValidationError):
-        #     Customer.objects.create(
-        #         organisation=org, name="Bob", phone_number="1"*11)
-
     #Test that multiple customers can be added to the organisation
     def test_Customer_multiple(self):
         #customer = Customer.objects.get(name = "Henry")

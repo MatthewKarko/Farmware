@@ -39,25 +39,6 @@ class AreaCodeTestCases(TestCase):
             AreaCode.objects.create(
                 area_code="204", description="just another area code")
 
-    # Test exceed AreaCode code and description limit raises ValidationError
-    def test_AreaCode_field_limits(self):
-        org_code = generate_random_org_code()
-        Organisation.objects.create(code=org_code, name="Farmon", logo="got")
-        org = Organisation.objects.get(name="Farmon")
-
-        print("\n\nLUKE WARNING: testAreaCodemodel.py Validation Errors Commented Out.\n")
-        # with self.assertRaises(ValidationError):
-        #     AreaCode.objects.create(
-        #         organisation=org, area_code="A"*51, description="A")
-
-        # with self.assertRaises(ValidationError):
-        #     AreaCode.objects.create(
-        #         organisation=org, area_code="A"*50, description="A"*201)
-
-        # with self.assertRaises(ValidationError):
-        #     AreaCode.objects.create(
-        #         organisation=org, area_code="", description="")
-
     # Test that multiple Area Codes can be added to an organisation
     def test_AreaCode_multiple(self):
         org_code = generate_random_org_code()
