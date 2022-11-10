@@ -2,7 +2,7 @@ from django.test import TestCase
 from ..models import *
 from ..models.order import *
 
-class  OrderStockTestCases(TestCase):
+class OrderStockTestCases(TestCase):
     def setUp(self):
         org_code=generate_random_org_code()
         Organisation.objects.create(code =org_code,name="Farmone",logo="goat")
