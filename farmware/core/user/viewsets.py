@@ -17,9 +17,9 @@ from rest_framework.viewsets import GenericViewSet
 from .models import User
 from .permissions import IsInOrganisation, UserHierarchy, OnlyYou
 from .serialisers import (
-    RegisterUserSerialiser,
-    RegisterAdminSerialiser,
-    UserSerialiser,
+    RegisterUserSerialiser, 
+    RegisterAdminSerialiser, 
+    UserSerialiser, 
     UserUpdateSerialiser,
     PasswordSerialiser
 )
@@ -42,7 +42,7 @@ class UserViewSet(
     queryset = User.objects.all()
 
     def get_permissions(self):
-        """Instantiates and returns the list of permissions that this viewset
+        """Instantiates and returns the list of permissions that this viewset 
         requires."""
 
         # Not instantiated
@@ -52,7 +52,7 @@ class UserViewSet(
         if 'register' in self.action: return [AllowAny()]
 
         # Set Password
-        if self.action == self.set_password.__name__:
+        if self.action == self.set_password.__name__: 
             return [OnlyYou()]
 
         # All others
@@ -72,7 +72,7 @@ class UserViewSet(
             organisation=user.organisation,
             **kwargs
             )
-
+    
     def get_serializer_class(self):
         """Get the serialiser class for the appropriate action."""
         if self.action == 'register_admin': return RegisterAdminSerialiser
@@ -103,17 +103,17 @@ class UserViewSet(
 
         if str(user.id) != str(pk):  # type: ignore
             return Response(
-                {'error': 'You do not have permission to do this.'},
+                {'error': 'You do not have permission to do this.'}, 
                 status=status.HTTP_400_BAD_REQUEST
                 )
 
-        if not serialiser.is_valid():
+        if not serialiser.is_valid(): 
             return Response(serialiser.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Check old password
         if not user.check_password(serialiser.data.get("old_password")):  # type: ignore
             return Response(
-                {"old_password": ["Wrong password."]},
+                {"old_password": ["Wrong password."]}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -148,7 +148,7 @@ class UserViewSet(
             teams.append(fields)
 
         return Response({'teams': teams}, status=status.HTTP_200_OK)
-
+    
     @action(detail=True, methods=['get'], url_path='teams')
     def users_teams(self, request, pk=None):
         """Get all the teams a user is a member of."""
@@ -173,7 +173,7 @@ class UserViewSet(
 
         # Serialiser
         serialiser = self.get_serializer_class()(
-            instance=user,
+            instance=user, 
             data=data,   # type: ignore
             partial=True)
         serialiser.is_valid(raise_exception=True)
@@ -224,7 +224,7 @@ class UserViewSet(
         plain_message = strip_tags(html_message)
         to_email = user.email
         send_mail(
-            subject=mail_subject,
+            subject=mail_subject, 
             message=plain_message,
             from_email=None,
             recipient_list=[to_email],

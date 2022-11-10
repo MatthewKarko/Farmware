@@ -10,7 +10,7 @@ from ..models.produce import Produce, ProduceVariety, ProduceQuantitySuffix
 from ..responses import DefaultResponses
 from ..serialisers.produce import (
     ProduceQuantitySuffixUpdateSerialiser,
-    ProduceSerialiser,
+    ProduceSerialiser, 
     ProduceCreationSerialiser,
     ProduceFullSerialiser,
     ProduceVarietySerialiser,
@@ -27,7 +27,7 @@ class ProduceViewSet(ModelViewSet):
     responses = DefaultResponses(context='Produce')
 
     def get_permissions(self):
-        """Instantiates and returns the list of permissions that this viewset
+        """Instantiates and returns the list of permissions that this viewset 
         requires."""
 
         # Not instantiated
@@ -81,7 +81,7 @@ class ProduceViewSet(ModelViewSet):
         varieties = json.loads(data['name'].replace("\'", "\""))
         if (len(varieties) == 0):
             return self.responses.BAD_REQUEST
-
+        
         output = []
         prod = Produce.objects.all().filter(id=kwargs.get('pk'), organisation=user.organisation).first()
         if (prod != None):
@@ -192,7 +192,7 @@ class ProduceVarietyViewSet(ModelViewSet):
             return self.responses.BAD_REQUEST
         else:
             return self.responses.json(item)
-
+    
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
         return self.responses.DELETION_SUCCESS

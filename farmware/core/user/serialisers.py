@@ -15,7 +15,7 @@ class UserSerialiser(serializers.ModelSerializer):
         fields = [
             'id',
             'email',
-            'first_name', 'last_name', 'password',
+            'first_name', 'last_name', 'password', 
             'organisation', 'role', 'teams'
         ]
         read_only_field = ['created', 'updated']
@@ -25,7 +25,7 @@ class UserSerialiser(serializers.ModelSerializer):
         data = super(UserSerialiser, self).to_representation(data)
         user: User = User.objects.get(id=data.get('id'))
         data['role'] = {
-            'level': user.role,
+            'level': user.role, 
             'name': dict(User.Roles.choices)[user.role]
             }
         return data
@@ -73,7 +73,7 @@ class RegisterSerialiser(UserSerialiser):
 
     class Meta(UserSerialiser.Meta):
         fields = [
-            'first_name', 'last_name', 'password', 'email',
+            'first_name', 'last_name', 'password', 'email', 
         ]
         read_only_field = ['id']
 
@@ -96,10 +96,10 @@ class RegisterAdminSerialiser(RegisterSerialiser):
             user = User.objects.get(email=validated_data['email'])
         except ObjectDoesNotExist:
             user = User.objects.create_admin(
-                email=validated_data['email'],
+                email=validated_data['email'], 
                 first_name=validated_data['first_name'],
                 last_name=validated_data['last_name'],
-                organisation=organisation,
+                organisation=organisation, 
                 password=validated_data['password']
             )
         return user
@@ -124,7 +124,7 @@ class RegisterUserSerialiser(RegisterSerialiser):
             user = User.objects.get(email=validated_data['email'])
         except ObjectDoesNotExist:
             user = User.objects.create_user(
-                email=validated_data['email'],
+                email=validated_data['email'], 
                 first_name=validated_data['first_name'],
                 last_name=validated_data['last_name'],
                 organisation=organisation,
