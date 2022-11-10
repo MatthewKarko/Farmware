@@ -22,7 +22,7 @@ To ensure everything is ready for production
 1. Run `python manage.py collectstatic`
 
 ## Running The Application in Deployment
-1. Create an EC2 instance and SSH into it
+1. Create an EC2 instance with appropriate settings and SSH into it
 1. Update apt via `sudo apt-get update`
 1. Install pip3 via `sudo apt-get install python3-pip`
 1. Clone the production branch of the repository in the current directory
