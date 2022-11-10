@@ -1,33 +1,40 @@
 from django.test import TestCase
 
 from ..models import User
-from ..serialisers import UserSerialiser
+from ..serialisers import (
+    UserSerialiser, 
+    UserUpdateSerialiser,
+    LoginSerialiser,
+    RegisterAdminSerialiser,
+    RegisterUserSerialiser
+)
 from ...api.models.organisation import Organisation
+
+# User details
+FIRST_NAME = 'Johnny'
+LAST_NAME = 'Appleseed'
+EMAIL = 'johnnyappleseed@example.com'
+PASSWORD = "password"
+
+ORG_CODE = '000000'
+
+ORGANISATION = dict(code=ORG_CODE, name="Test Farm", logo="<logo>")
 
 class UserSerialiserTests(TestCase):
     def setUp(self):
-        org_code = '000000'
-
-        self.organisation = Organisation.objects.create(
-            code=org_code, name="Test Farm", logo="<logo>")
-
-        # User details
-        self.first_name = 'Johnny'
-        self.last_name = 'Appleseed'
-        self.email = 'johnnyappleseed@example.com'
-        self.password = "password"
+        self.organisation = Organisation.objects.create(**ORGANISATION)
 
         self.user: User = User.objects.create_user(
-            self.email, 
-            self.first_name, 
-            self.last_name, 
+            EMAIL, 
+            FIRST_NAME, 
+            LAST_NAME, 
             self.organisation.code, 
-            self.password)
+            PASSWORD)
         
         self.serialiser = UserSerialiser(self.user)
 
     def test_contains_expected_fields(self):
-        """Ensure all fields are expected"""
+        """Ensure all fields are expected."""
         data = self.serialiser.data
 
         self.assertEqual(
@@ -45,9 +52,9 @@ class UserSerialiserTests(TestCase):
         """Ensure all fields contain the correct information."""
         data = self.serialiser.data
 
-        self.assertEqual(data['first_name'], self.first_name)
-        self.assertEqual(data['last_name'], self.last_name)
-        self.assertEqual(data['email'], self.email)
+        self.assertEqual(data['first_name'], FIRST_NAME)
+        self.assertEqual(data['last_name'], LAST_NAME)
+        self.assertEqual(data['email'], EMAIL)
 
         expected_role = {
             'level': self.user.role,
@@ -58,91 +65,84 @@ class UserSerialiserTests(TestCase):
         # TODO: teams
 
 
-# TODO:
-# class UserUpdateSerialiserTests():
-#     def setUp(self):
-#         org_code=generate_random_org_code()
-#         Organisation.objects.create(code=org_code,name="nameoforg", logo="logoofog")
-#         Org=Organisation.objects.get(name="nameoforg")
-#         response=Response()
-#         response['email']='example@gmail.com'
-#         response['first_name']='firstn'
-#         response['last_name']='lastn'
-#         response['password']='passwd'
-#         response['organisation']=Org
-#         response['role']=400
-#         self.user=get_user_model().objects.create_user(email="email@gmail.com", first_name="first_name", last_name="last_name",organisation=Org,password="password123",role=400)
-#         #self.user=get_user_model().objects.create_user(response)
-#         #serializer=UserSerialiser(user)
-#         #updatedSerializer=UserUpdateSerialiser()
-#     def test_testingValidateRole(self):
-#         #serializer=UserSerialiser(self.user)
-#         #updatedSerializer=UserUpdateSerialiser(serializer,self.user)
-#         #self.assertEquals(updatedSerializer.validate_role(10),"Illegal role allocation.")
-#         #self.assertEquals(updatedSerializer.validate_role("any role"),"Role is not an option.")
-#         #self.assertEquals(updatedSerializer.validate_role(1),1)
-#         pass
+class UserUpdateSerialiserTests(TestCase):
+    def setUp(self):
+        self.organisation = Organisation.objects.create(**ORGANISATION)
 
-# class LoginSerialiserTests():
-#     def seUp(self):
-#         org_code=generate_random_org_code()
-#         Organisation.objects.create(code=org_code,name="nameoforg", logo="logoofog")
-#         Org=Organisation.objects.get(name="nameoforg")
-#         self.user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", Org,"password123")
-#         self.serializer=UserSerialiser(self.user)
-#         LoginSerialiser(self.serializer)
-#     def testing_fields(self):
-#         #user= get_user_model().objects.get(first_name="first_name")
-#         #Org=Organisation.objects.get(name="nameoforg")
-#         #serializer=UserSerialiser(user)
-#         #raise ValueError(user.email)
-#         ls = LoginSerialiser(self.serializer)
-#         #ls=LoginSerialiser({'email':'email@gmail.com','password':'pass@123'})
-#         #raise ValueError(ls.data)
-#         #raise ValueError(ls)
-#         raise ValueError(ls.data.keys())
-#         ldata = ls.data
-#         raise ValueError(ls.data.keys())
-#         #raise ValueError(ldata)
-#         self.assertEquals(ldata['email'],"email@gmail.com")
-# class RegisterSerialiserTests():
-#     def setUp(self):
-#         org_code=generate_random_org_code()
-#         Organisation.objects.create(code=org_code,name="nameoforg", logo="logoofog")
-#         Org=Organisation.objects.get(name="nameoforg")
-#         user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", Org,"password123")
-#         serializer=UserSerialiser()
-#         rs=RegisterSerialiser(serializer)
-#     def testing_fields(self):
-#         user=get_user_model().objects.get(first_name="first_name")
-#         serializer=UserSerialiser(user)
-#         rs=RegisterSerialiser(serializer)
-#         data = rs.data
-#         self.assertEquals(set(data.keys()),set( [
-#             'first_name', 'last_name', 'password', 'email',
-#         ],['id']))
-# class RegisterUserSerialiserTests():
-#     def setUp(self):
-#         orgcode=generate_random_org_code()
-#         Organisation.objects.create(code=orgcode,name="nameoforg", logo="logoofog")
-#         Org=Organisation.objects.get(name="nameoforg")
-#         self.user=get_user_model().objects.create_user("email@gmail.com", "first_name", "last_name", Org,"password123")
-#         serializer=UserSerialiser(user)
-#         rs=RegisterSerialiser(serializer)
-#         rus=RegisterUserSerialiser(rs)
-#     def test_testing_fields(self):
-#         serializer=UserSerialiser(instance=self.User)
-#         rs=RegisterSerialiser(serializer)
-#         rus=RegisterUserSerialiser(rs)
-#         data = self.rus.data
-#         self.assertEquals(set(data.keys()),set( [
-#             'first_name', 'last_name', 'password', 'email','org_name',
-#         ],['id']))
-#     def test_testing_create(self):
-#         serializer=UserSerialiser()
-#         rs=RegisterSerialiser(serializer)
-#         rus=RegisterUserSerialiser(rs)
-#         Org=Organisation.objects.get(name="nameoforg")
-#         serializer_data = {'email': 'example@gmail.com','first_name':'firstn','last_name':'lastn','password':'passwd','organisation':Org}
-#         rus.org_code=Org.code
-#         self.assertIsNotNone(rus.create(serializer_data))
+        self.user: User = User.objects.create_user(
+            EMAIL, 
+            FIRST_NAME, 
+            LAST_NAME, 
+            self.organisation.code, 
+            PASSWORD)
+
+        self.serialiser = UserUpdateSerialiser(self.user)
+
+    def test_contains_expected_fields(self):
+        """Ensure all fields are expected."""
+        data = self.serialiser.data
+
+        self.assertEqual(
+            set(data.keys()), 
+            set([ 'id','email','first_name', 'last_name', 
+            'role', 'teams']
+            )
+        )
+
+        with self.assertRaises(KeyError):
+            data['password']
+            data['organisation']
+
+
+class LoginSerialiserTests(TestCase):
+    def setUp(self):
+        self.organisation = Organisation.objects.create(**ORGANISATION)
+
+        data = {
+               'email' : EMAIL,
+            'password' : PASSWORD,
+            }
+
+        self.serialiser = LoginSerialiser(data=data)  # type: ignore
+
+    def test_contains_expected_fields(self):
+        """Ensure all fields are expected."""
+        self.assertTrue(self.serialiser.is_valid())
+
+
+class RegisterAdminSerialiserTests(TestCase):
+    def setUp(self):
+        self.organisation = Organisation.objects.create(**ORGANISATION)
+
+        data = {
+                'first_name' : FIRST_NAME,
+                 'last_name' : LAST_NAME,
+                     'email' : EMAIL,
+                  'password' : PASSWORD,
+                  'org_name' : 'New Farm'
+            }
+
+        self.serialiser = RegisterAdminSerialiser(data=data)  # type: ignore
+
+    def test_contains_expected_fields(self):
+        """Ensure all fields are expected."""
+        self.assertTrue(self.serialiser.is_valid())
+
+
+class RegisterUserSerialiserTests(TestCase):
+    def setUp(self):
+        self.organisation = Organisation.objects.create(**ORGANISATION)
+
+        data = {
+                'first_name' : FIRST_NAME,
+                 'last_name' : LAST_NAME,
+                     'email' : EMAIL,
+                  'password' : PASSWORD,
+                  'org_code' : '800085'
+            }
+
+        self.serialiser = RegisterUserSerialiser(data=data)  # type: ignore
+
+    def test_contains_expected_fields(self):
+        """Ensure all fields are expected."""
+        self.assertTrue(self.serialiser.is_valid())

@@ -94,8 +94,26 @@ class UserViewSetTestCases(APITestCase):
         Test creating a new user with weak passwords, i.e., too short, common,
         etc.
         """
-        # TODO
-        pass
+        weak_passwords = [
+            'password', 'mypassword', 'pw', 'admin', 'admin1'
+            ]
+
+        for password in weak_passwords:
+            payload = {
+                     'email' : TEST_USER_EMAIL,
+                'first_name' : 'first_name',
+                 'last_name' : 'last_name',
+                  'password' : password,
+                  'org_code' : self.organisation.code
+                }
+
+            response: HttpResponse = self.client.post(
+                '/api/user/register/user/', 
+                json.dumps(payload), 
+                content_type=CONTENT_TYPE
+                )
+
+            self.assertEquals(response.status_code, 400)
 
     def test_register_user_org_code_does_not_exist(self):
         """Test creating a new user with a bad organisational code."""
