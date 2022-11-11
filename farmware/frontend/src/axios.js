@@ -3,7 +3,7 @@ import axios from 'axios';
 const PRODUCTION = true;
 
 const baseURL = PRODUCTION ? 
-	'http://ec2-3-233-73-5.compute-1.amazonaws.com/api/' : 'http://127.0.0.1:8000/api/';
+	'http://ec2-34-234-120-44.compute-1.amazonaws.com/api/' : 'http://127.0.0.1:8000/api/';
 
 const axiosInstance = axios.create({
 	baseURL: baseURL,
