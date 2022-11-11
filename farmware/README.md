@@ -41,5 +41,11 @@ To ensure everything is ready for production
     - DJANGO_DEBUG = False
     - SENDGRID_DISTRIBUTED_API_KEY = <YOUR_API_KEY>
 1. Copy the `uwsgi.ini` file in the Farmware deployment directory to `Farmware/farmware/`
+2. Restart the server using `sudo service nginx restart`
 1. Run uwsgi using `uwsgi uwsgi.ini --plugin python3`
 1. Ensure everything is working by visiting the EC2 url
+
+### Troubleshooting
+1. If there is an issue with the static files
+    - Run `python manage.py collectstatic` within the EC2 console
+    - Ensure the permissions are not too restrictive, e.g., `sudo chmod a+rwx ubuntu/`
