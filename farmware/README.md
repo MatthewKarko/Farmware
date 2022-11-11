@@ -50,3 +50,12 @@ To ensure everything is ready for production
 1. If there is an issue with the static files
     - Run `python manage.py collectstatic` within the EC2 console
     - Ensure the permissions are not too restrictive, e.g., `sudo chmod a+rwx ubuntu/`
+
+## Database Access
+Current deployment uses a simple sqlite3 database, with plans of pushing to 
+cloud storage.
+
+1. Install sqlite tools via `sudo apt-get install sqlite3 libsqlite3-dev`
+1. The database can be inspected using `python3 manage.py dbshell`
+1. Alternatively, you can use the `python3 manage.py shell_plus` command to 
+interact with the models through a python notebook interface
