@@ -48,7 +48,7 @@ To ensure everything is ready for production
 
 ### Troubleshooting
 1. If there is an issue with the static files
-    - Run `python manage.py collectstatic` within the EC2 console
+    - Run `python3 manage.py collectstatic` within the EC2 console
     - Ensure the permissions are not too restrictive, e.g., `sudo chmod a+rwx ubuntu/`
 
 ## Database Access
