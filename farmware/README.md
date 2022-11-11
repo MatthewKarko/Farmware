@@ -17,6 +17,9 @@ The frontend is made using the React JavaScript framework.
 - To test the application, run `python manage.py test`.
 - All tests can be found in a _tests_ folder for all appropriate django apps. 
 
+### Coverage
+![](./test-coverage.png)
+
 ## Getting Ready for Production
 To ensure everything is ready for production
 1. Go into the frontend directory and run `npm run build`
