@@ -22,7 +22,10 @@ To ensure everything is ready for production
 1. Run `python manage.py collectstatic`
 
 ## Running The Application in Deployment
-1. Create an EC2 instance with appropriate settings and SSH into it
+1. Create an EC2 instance with appropriate settings
+1. Add instance URL to `ALLOWED_HOSTS` inside `settings.py`
+1. Add URL to the axios base URL in the `frontend`
+1. Connect to EC2 instance
 1. Update apt via `sudo apt-get update`
 1. Install pip3 via `sudo apt-get install python3-pip`
 1. Clone the production branch of the repository in the current directory
@@ -38,5 +41,11 @@ To ensure everything is ready for production
     - DJANGO_DEBUG = False
     - SENDGRID_DISTRIBUTED_API_KEY = <YOUR_API_KEY>
 1. Copy the `uwsgi.ini` file in the Farmware deployment directory to `Farmware/farmware/`
+2. Restart the server using `sudo service nginx restart`
 1. Run uwsgi using `uwsgi uwsgi.ini --plugin python3`
 1. Ensure everything is working by visiting the EC2 url
+
+### Troubleshooting
+1. If there is an issue with the static files
+    - Run `python manage.py collectstatic` within the EC2 console
+    - Ensure the permissions are not too restrictive, e.g., `sudo chmod a+rwx ubuntu/`
