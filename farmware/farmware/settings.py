@@ -50,8 +50,6 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'django_extensions',
-
-    'django_nose',
 ]
 
 MIDDLEWARE = [
@@ -207,13 +205,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'contactfarmware@gmail.com'
 ###############################################################################
-
-# Use nose to run all tests
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
-# Tell nose to measure coverage on the 'foo' and 'bar' apps
-NOSE_ARGS = [
-    '--with-coverage',
-    '--cover-package=core.api.models,core.api.viewsets,core.user.viewsets,core.user.models',
-    '--cover-html',
-]
