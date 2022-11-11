@@ -21,7 +21,7 @@ class AreaCodeViewsetTestCases(APITestCase):
         self.client.force_authenticate(user)
         # now ,its time to send a post request to create the areacode object , i have just created and sent the data without naming it
         response = self.client.post(
-            '/api/area_code/', {'organisation': organisation.name, 'area_code': 000000, 'description': "all good"})
+            '/api/area_code/', {'area_code': 000000, 'description': "all good"})
         # here i am checking the status code for success
         self.assertEquals(response.status_code, 200)
 
@@ -36,7 +36,7 @@ class AreaCodeViewsetTestCases(APITestCase):
                                                     "last_name", organisation.code, None, is_staff=True)
         self.client.force_authenticate(user)
         response = self.client.post(
-            '/api/area_code/', {'organisation': organisation.name, 'area_code': 111111, 'description': "all good"})
+            '/api/area_code/', {'area_code': 111111, 'description': "all good"})
         self.assertEquals(response.status_code, 200)
 
         # Get the id of the area code created
@@ -56,7 +56,7 @@ class AreaCodeViewsetTestCases(APITestCase):
                                                     "last_name", organisation.code, None, is_staff=True)
         self.client.force_authenticate(user)
         response = self.client.post(
-            '/api/area_code/', {'organisation': organisation.name, 'area_code': 222222, 'description': "test desc"})
+            '/api/area_code/', {'area_code': 222222, 'description': "test desc"})
         self.assertEquals(response.status_code, 200)
         
         # Get the id of the area code created
@@ -93,9 +93,9 @@ class AreaCodeViewsetTestCases(APITestCase):
                                                     "last_name", organisation.code, None, is_staff=True)
         self.client.force_authenticate(user)
         self.client.post(
-            '/api/area_code/', {'organisation': organisation.name, 'area_code': 000000, 'description': "all good"})
+            '/api/area_code/', {'area_code': 000000, 'description': "all good"})
         self.client.post(
-            '/api/area_code/', {'organisation': organisation.name, 'area_code': 111111, 'description': "all good again"})
+            '/api/area_code/', {'area_code': 111111, 'description': "all good again"})
         # this one is the most easiest of them all , all you have to do is call the path using get and that's it
         get_response = self.client.get('/api/area_code/')
         self.assertEquals(get_response.status_code,200)
@@ -121,7 +121,7 @@ class AreaCodeViewsetTestCases(APITestCase):
                                                     "last_name", organisation.code, None, is_staff=True)
         #first, test creating area code
         response = self.client.post(
-            '/api/area_code/', {'organisation': organisation.name, 'area_code': 000000, 'description': "all good"})
+            '/api/area_code/', {'area_code': 000000, 'description': "all good"})
         # here i am checking the status code for success
         self.assertEquals(response.status_code, 401)
 
@@ -152,15 +152,15 @@ class AreaCodeViewsetTestCases(APITestCase):
 
         #first check area code beneath limits
         response = self.client.post(
-            '/api/area_code/', {'organisation': organisation.name, 'area_code': "a"*50, 'description': "d"*200})
+            '/api/area_code/', {'area_code': "a"*50, 'description': "d"*200})
         self.assertEquals(response.status_code, 200)
 
         #check area code above area_code limit
         response = self.client.post(
-            '/api/area_code/', {'organisation': organisation.name, 'area_code': "a"*51, 'description': "d"*200})
+            '/api/area_code/', {'area_code': "a"*51, 'description': "d"*200})
         self.assertEquals(response.status_code, 400)
 
         #check area code above description limit
         response = self.client.post(
-            '/api/area_code/', {'organisation': organisation.name, 'area_code': "a"*50, 'description': "d"*201})
+            '/api/area_code/', {'area_code': "a"*50, 'description': "d"*201})
         self.assertEquals(response.status_code, 400)

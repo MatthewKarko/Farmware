@@ -82,21 +82,6 @@ class CustomerViewsetTestCases(APITestCase):
 
     # Test updating customer works using PUT to /api/customer/{id}/ endpoint
     def test_update(self):
-        # organisatio = Organisation.objects.get(name="Farmone")
-        # user = get_user_model().objects.create_user("email@gmail.com", "first_name",
-        #                                             "last_name", organisatio.code, None, is_staff=True)
-        # self.client.force_authenticate(user)
-        # response = self.client.post(
-        #     '/api/customer/', {'organisation': organisatio, 'name': 'ralph', 'phone_number': '9170002894'})
-        # self.assertEquals(response.status_code, 200)
-        # org_code = generate_random_org_code()
-        # Organisation.objects.create(
-        #     code=org_code, name="Farmtwo", logo="sheep")
-        # organisatio2 = Organisation.objects.get(name="Farmtwo")
-        # response2 = self.client.put(f'/api/customer/{user.pk}/', {
-        #                             'organisation': organisatio2, 'name': 'regal', 'phone_number': '9170002895'})
-        # self.assertEquals(response2.status_code, 200)
-
         #setup the user
         organisation = Organisation.objects.get(name="Farmone")
         user = get_user_model().objects.create_user("email@gmail.com", "first_name",
