@@ -7,6 +7,8 @@ import json
 from ..models import User
 from ...api.models.organisation import Organisation
 
+import base64
+
 TEST_USER_EMAIL = 'user@example.com'
 TEST_ADMIN_EMAIL = 'admin@example.com'
 STRONG_PASSWORD = 'qWejf-djjd3-$dksm'
@@ -33,6 +35,10 @@ class UserViewSetTestCases(APITestCase):
             self.last_name, 
             self.organisation.code, 
             self.password)
+        
+        self.auth_headers = {
+            'HTTP_AUTHORIZATION': 'Basic ' + base64.b64encode(f'{self.email}:{self.password}'.encode()).decode('ascii'),
+        }
 
     def test_successful_register_new_user(self):
         """Test a successful user register."""
@@ -117,8 +123,21 @@ class UserViewSetTestCases(APITestCase):
 
     def test_register_user_org_code_does_not_exist(self):
         """Test creating a new user with a bad organisational code."""
-        # TODO
-        pass
+        invalid_org_code = "111111"
+        payload = {
+            'email' : TEST_USER_EMAIL,
+                'first_name' : 'first_name',
+                 'last_name' : 'last_name',
+                  'password' : STRONG_PASSWORD,
+                  'org_code' : invalid_org_code
+        }
+
+        response: HttpResponse = self.client.post(
+                '/api/user/register/user/', 
+                json.dumps(payload), 
+                content_type=CONTENT_TYPE
+                )
+        self.assertEquals(response.status_code, 406)
 
     def test_successful_register_admin(self):
         """Test a successful admin register."""
@@ -150,26 +169,96 @@ class UserViewSetTestCases(APITestCase):
         Test creating a new admin with weak passwords, i.e., too short, common,
         etc.
         """
-        # TODO
-        pass
+        weak_passwords = [
+            'password', 'mypassword', 'pw', 'admin', 'admin1'
+            ]
+        for password in weak_passwords:
+            payload = {
+                'email' : TEST_ADMIN_EMAIL,
+                'first_name' : 'first_name',
+                'last_name' : 'last_name',
+                'password' : password,
+                'org_name' : 'Test Organisation'
+                }
+
+            response: HttpResponse = self.client.post(
+                '/api/user/register/admin/', 
+                json.dumps(payload), 
+                content_type=CONTENT_TYPE
+                )
+
+            self.assertEquals(response.status_code, 400)
 
     def test_register_admin_organisation_name_exists(self):
         """
         Test creating a new admin with a name that already exists. It should be
         okay.
         """
-        # TODO
-        pass
+        # First register admin
+        payload = {
+            'email' : TEST_ADMIN_EMAIL,
+            'first_name' : 'first_name',
+            'last_name' : 'last_name',
+            'password' : STRONG_PASSWORD,
+            'org_name' : 'Test Organisation'
+            }
+
+        response: HttpResponse = self.client.post(
+            '/api/user/register/admin/', 
+            json.dumps(payload), 
+            content_type=CONTENT_TYPE
+            )
+
+        self.assertEquals(response.status_code, 201)
+
+        # Register admin of the same name (but different email)
+        payload = {
+            'email' : 'admin2@example.com',
+            'first_name' : 'first_name',
+            'last_name' : 'last_name',
+            'password' : STRONG_PASSWORD,
+            'org_name' : 'Test Organisation'
+            }
+
+        response: HttpResponse = self.client.post(
+            '/api/user/register/admin/', 
+            json.dumps(payload), 
+            content_type=CONTENT_TYPE
+            )
+
+        self.assertEquals(response.status_code, 201)
 
     def test_set_password_successful(self):
         """Test setting the password of the user to a valid password."""
-        # TODO
-        pass
+        payload = {
+            'old_password' : self.password,
+            'new_password' : STRONG_PASSWORD,
+            }
+
+        response: HttpResponse = self.client.post(
+            f'/api/user/{self.user.pk}/set_password/', 
+            json.dumps(payload), 
+            content_type=CONTENT_TYPE,
+            **self.auth_headers
+            )
+
+        self.assertEquals(response.status_code, 200)
 
     def test_set_password_unsuccessful(self):
         """Test setting the password of the user to something not valid."""
-        # TODO
-        pass
+        payload = {
+            'old_password' : self.password,
+            'new_password' : self.password,
+            }
+
+        response: HttpResponse = self.client.post(
+            f'/api/user/{self.user.pk}/set_password/', 
+            json.dumps(payload), 
+            content_type=CONTENT_TYPE,
+            **self.auth_headers
+            )
+
+        self.assertEquals(response.status_code, 400)
 
     def test_removing_user(self):
         """
@@ -188,8 +277,13 @@ class UserViewSetTestCases(APITestCase):
         This should only list users within their organisation.
         Extra information should be displayed.
         """
-        # TODO
-        pass
+        response: HttpResponse = self.client.get(
+            f'/api/user/', 
+            **self.auth_headers
+            )
+
+        self.assertEquals(response.status_code, 200)
+        # TODO check the response of users is correct
 
     def test_getting_teams(self):
         """
@@ -198,7 +292,13 @@ class UserViewSetTestCases(APITestCase):
         Should only return their teams. 
         """
         # TODO
-        pass
+        response: HttpResponse = self.client.get(
+            f'/api/user/{self.user.pk}/teams/', 
+            **self.auth_headers
+            )
+
+        self.assertEquals(response.status_code, 200)
+        # TODO check the response of teams is correct
 
     def test_partial_updates(self):
         """
@@ -207,7 +307,18 @@ class UserViewSetTestCases(APITestCase):
         - A user TODO(verify this claim) should not be able to change their 
         password.
         - A user should not be able to change their role.
-        - Anuser should not be able to change their organisation.
+        - A user should not be able to change their organisation.
         """
         # TODO
-        pass
+        payload = {
+            'password' : "new random !2312sad pwrod",
+            }
+        
+        response: HttpResponse = self.client.patch(
+            f'/api/user/{self.user.pk}/', 
+            json.dumps(payload), 
+            content_type=CONTENT_TYPE,
+            **self.auth_headers
+            )
+
+        self.assertEquals(response.status_code, 200)
