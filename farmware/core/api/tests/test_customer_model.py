@@ -17,7 +17,6 @@ class CustomerTestCases(TestCase):
 
     #Test that multiple customers can be added to the organisation
     def test_Customer_multiple(self):
-        #customer = Customer.objects.get(name = "Henry")
         org = Organisation.objects.get(name="Farmone")
         Customer.objects.create(organisation=org, name="Billy Brown", phone_number="9119119123")
         Customer.objects.create(organisation=org, name="Sam Brown", phone_number="1233213211")

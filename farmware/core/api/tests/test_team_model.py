@@ -16,13 +16,13 @@ class TeamTestCases(TestCase):
     
 
     # Test Team raises error if same name & category is used again.
-    def test_AreaCode_repeat_integrity_error(self):
+    def test_team_repeat_integrity_error(self):
         org = Organisation.objects.get(name="Farmone")
         with self.assertRaises(IntegrityError):
             Team.objects.create(category ="j",name = "jack",organisation = org)
 
     # Test that multiple Teams can be added to an organisation
-    def test_AreaCode_multiple(self):
+    def test_team_multiple(self):
         org_code = generate_random_org_code()
         Organisation.objects.create(code=org_code, name="Farm2", logo="go")
         org = Organisation.objects.get(code=org_code)
