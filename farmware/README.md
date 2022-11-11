@@ -27,7 +27,7 @@ To ensure everything is ready for production
 1. Install pip3 via `sudo apt-get install python3-pip`
 1. Clone the production branch of the repository in the current directory
 1. Use `cd Farmware` to go into the Farmware directory
-1. Install requirements via `pip -r requirements.txt`
+1. Install requirements via `pip install -r requirements.txt`
 1. Use `sudo apt-get install nginx` to install nginx
 1. Use `sudo service nginx status` to check the status of the server.
     - If it is not running, use `sudo service nginx start`
