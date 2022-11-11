@@ -22,7 +22,10 @@ To ensure everything is ready for production
 1. Run `python manage.py collectstatic`
 
 ## Running The Application in Deployment
-1. Create an EC2 instance with appropriate settings and SSH into it
+1. Create an EC2 instance with appropriate settings
+1. Add instance URL to `ALLOWED_HOSTS` inside `settings.py`
+1. Add URL to the axios base URL in the `frontend`
+1. Connect to EC2 instance
 1. Update apt via `sudo apt-get update`
 1. Install pip3 via `sudo apt-get install python3-pip`
 1. Clone the production branch of the repository in the current directory
