@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!td613#smw32fc+4&*kf)&rxli1bo)+p@5ba*o&e%)odu08kgl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', True)
+DEBUG = os.environ.get('DJANGO_DEBUG', '').lower() == 'true'
 
 ALLOWED_HOSTS = [
     '.localhost', '127.0.0.1', '[::1]', 
@@ -50,8 +50,6 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'django_extensions',
-
-    'django_nose',
 ]
 
 MIDDLEWARE = [
@@ -207,13 +205,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'contactfarmware@gmail.com'
 ###############################################################################
-
-# Use nose to run all tests
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
-# Tell nose to measure coverage on the 'foo' and 'bar' apps
-NOSE_ARGS = [
-    '--with-coverage',
-    '--cover-package=core.api.models,core.api.viewsets,core.user.viewsets,core.user.models',
-    '--cover-html',
-]
