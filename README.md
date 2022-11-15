@@ -10,7 +10,10 @@ deep insight into the farm’s practices to assist decisions.
 | Name | UniKey | SID |
 |:----:|:------:|:---:|
 | Keegan Potgieter | kpot0443 | 500409208 |
-| Utkarsh Vashisht  | uvas7225 | 490589593 |
 | Shirley Andrew | sand5508 | 490300448 |
 | Matt Karko | mkar6206 | 500493791 |
 | Luke Henning-Smith | lhen4176 | 490386774 |
+
+
+# Contribution and Collaboration
+This is a private project thus distribution and use of this folder and its projects is strictly prohibited.
